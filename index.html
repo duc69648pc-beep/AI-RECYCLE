@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Recycle — Hệ Thống Thùng Rác Thông Minh</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          eco: {
+            50:  '#f0fdf4',
+            100: '#dcfce7',
+            200: '#bbf7d0',
+            300: '#86efac',
+            400: '#4ade80',
+            500: '#22c55e',
+            600: '#16a34a',
+            700: '#15803d',
+            800: '#166534',
+            900: '#14532d',
+          },
+          leaf: '#2d6a4f',
+          moss: '#40916c',
+          sage: '#74c69d',
+          mint: '#b7e4c7',
+        },
+        fontFamily: {
+          display: ['Space Grotesk', 'sans-serif'],
+          body: ['Nunito', 'sans-serif'],
+        },
+      }
+    }
+  }
+</script>
+
+<style>
+  /* ===== BASE ===== */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Nunito', sans-serif; background: #f8fffe; color: #1a1a1a; }
+
+  /* ===== SCROLLBAR ===== */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #f0fdf4; }
+  ::-webkit-scrollbar-thumb { background: #86efac; border-radius: 99px; }
+
+  /* ===== SIDEBAR ===== */
+  #sidebar {
+    position: fixed; left: 0; top: 0; bottom: 0;
+    width: 260px; z-index: 40;
+    background: linear-gradient(180deg, #14532d 0%, #166534 40%, #15803d 100%);
+    display: flex; flex-direction: column;
+    transition: transform 0.3s ease;
+    box-shadow: 4px 0 24px rgba(21,128,61,0.18);
+  }
+  #sidebar.hidden-mobile { transform: translateX(-100%); }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 20px; border-radius: 12px; margin: 3px 10px;
+    color: #bbf7d0; cursor: pointer; font-weight: 600; font-size: 0.88rem;
+    transition: all 0.2s ease; position: relative; overflow: hidden;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.1); color: #fff; transform: translateX(4px); }
+  .nav-item.active {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: #fff; box-shadow: 0 4px 14px rgba(34,197,94,0.4);
+  }
+  .nav-item .nav-icon { width: 20px; text-align: center; font-size: 1rem; flex-shrink: 0; }
+
+  /* ===== MAIN CONTENT ===== */
+  #main { margin-left: 260px; min-height: 100vh; transition: margin 0.3s ease; }
+  @media (max-width: 768px) {
+    #main { margin-left: 0; }
+    #sidebar { transform: translateX(-100%); }
+    #sidebar.open { transform: translateX(0); }
+  }
+
+  /* ===== TOPBAR ===== */
+  #topbar {
+    position: sticky; top: 0; z-index: 30;
+    background: rgba(248,255,254,0.9); backdrop-filter: blur(12px);
+    border-bottom: 1.5px solid #dcfce7;
+    padding: 0 24px; height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  /* ===== PAGES ===== */
+  .page { display: none; padding: 28px 24px; animation: fadeUp 0.35s ease; }
+  .page.active { display: block; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== CARDS ===== */
+  .eco-card {
+    background: #fff; border-radius: 20px;
+    box-shadow: 0 2px 16px rgba(21,128,61,0.07);
+    border: 1.5px solid #dcfce7;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .eco-card:hover { box-shadow: 0 8px 32px rgba(21,128,61,0.13); transform: translateY(-2px); }
+
+  /* ===== STAT CARDS ===== */
+  .stat-card {
+    background: linear-gradient(135deg, #fff 60%, #f0fdf4);
+    border-radius: 18px; padding: 22px;
+    border: 1.5px solid #dcfce7;
+    box-shadow: 0 2px 12px rgba(21,128,61,0.06);
+    position: relative; overflow: hidden;
+  }
+  .stat-card::after {
+    content: ''; position: absolute; right: -20px; bottom: -20px;
+    width: 80px; height: 80px; border-radius: 50%;
+    background: rgba(34,197,94,0.08);
+  }
+
+  /* ===== POINTS BADGE ===== */
+  .points-badge {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    border-radius: 24px; padding: 28px 32px; color: #fff;
+    position: relative; overflow: hidden;
+    box-shadow: 0 8px 32px rgba(22,163,74,0.35);
+  }
+  .points-badge::before {
+    content: ''; position: absolute; top: -40px; right: -40px;
+    width: 150px; height: 150px; border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+  }
+  .points-badge::after {
+    content: ''; position: absolute; bottom: -60px; left: 40px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+
+  /* ===== BUTTONS ===== */
+  .btn-eco {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: #fff; border: none; border-radius: 12px;
+    padding: 10px 22px; font-weight: 700; font-size: 0.88rem;
+    cursor: pointer; transition: all 0.2s; font-family: 'Nunito', sans-serif;
+    box-shadow: 0 4px 14px rgba(22,163,74,0.3);
+  }
+  .btn-eco:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(22,163,74,0.4); }
+  .btn-eco:active { transform: scale(0.97); }
+  .btn-eco:disabled { background: #86efac; cursor: not-allowed; box-shadow: none; transform: none; }
+
+  .btn-outline {
+    background: transparent; color: #16a34a;
+    border: 2px solid #22c55e; border-radius: 12px;
+    padding: 9px 20px; font-weight: 700; font-size: 0.85rem;
+    cursor: pointer; transition: all 0.2s; font-family: 'Nunito', sans-serif;
+  }
+  .btn-outline:hover { background: #f0fdf4; }
+
+  /* ===== TOAST ===== */
+  #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+  .toast {
+    background: #fff; border-radius: 14px; padding: 14px 18px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12); min-width: 280px;
+    display: flex; align-items: center; gap: 12px;
+    border-left: 4px solid #22c55e;
+    animation: slideIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    font-size: 0.88rem; font-weight: 600;
+  }
+  .toast.error { border-left-color: #ef4444; }
+  .toast.warn  { border-left-color: #f59e0b; }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(60px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes slideOut {
+    from { opacity: 1; transform: translateX(0); }
+    to   { opacity: 0; transform: translateX(60px); }
+  }
+
+  /* ===== TABLE ===== */
+  .eco-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+  .eco-table th {
+    background: #f0fdf4; color: #15803d; font-weight: 700;
+    padding: 12px 16px; text-align: left; font-size: 0.8rem;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    border-bottom: 2px solid #dcfce7;
+  }
+  .eco-table td { padding: 13px 16px; border-bottom: 1px solid #f0fdf4; color: #374151; }
+  .eco-table tr:hover td { background: #f9fffe; }
+  .eco-table tr:last-child td { border-bottom: none; }
+
+  /* ===== STORE GRID ===== */
+  .store-card {
+    background: #fff; border-radius: 18px; overflow: hidden;
+    border: 1.5px solid #dcfce7; transition: all 0.25s;
+    display: flex; flex-direction: column;
+  }
+  .store-card:hover { box-shadow: 0 12px 36px rgba(21,128,61,0.14); transform: translateY(-4px); }
+  .store-img {
+    height: 130px; background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3.5rem; position: relative; overflow: hidden;
+  }
+  .store-img::after {
+    content: ''; position: absolute; bottom: -15px; right: -15px;
+    width: 60px; height: 60px; border-radius: 50%;
+    background: rgba(134,239,172,0.2);
+  }
+
+  /* ===== STATUS BADGES ===== */
+  .badge { padding: 4px 11px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+  .badge-green  { background: #dcfce7; color: #15803d; }
+  .badge-red    { background: #fee2e2; color: #dc2626; }
+  .badge-yellow { background: #fef9c3; color: #a16207; }
+  .badge-blue   { background: #dbeafe; color: #1d4ed8; }
+
+  /* ===== CAPACITY BAR ===== */
+  .capacity-bar { height: 8px; border-radius: 99px; background: #f0fdf4; overflow: hidden; }
+  .capacity-fill { height: 100%; border-radius: 99px; transition: width 0.6s ease; }
+
+  /* ===== LEADERBOARD ===== */
+  .lb-row {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 18px; border-radius: 14px;
+    transition: background 0.15s;
+  }
+  .lb-row:hover { background: #f0fdf4; }
+  .lb-avatar {
+    width: 42px; height: 42px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 0.9rem; flex-shrink: 0;
+  }
+  .rank-1 { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #78350f; box-shadow: 0 4px 14px rgba(245,158,11,0.4); }
+  .rank-2 { background: linear-gradient(135deg, #d1d5db, #9ca3af); color: #374151; }
+  .rank-3 { background: linear-gradient(135deg, #f97316, #ea580c); color: #fff; }
+  .rank-n { background: #f0fdf4; color: #15803d; }
+
+  /* ===== HERO SECTION ===== */
+  .hero-bg {
+    background: linear-gradient(135deg, #14532d 0%, #166534 30%, #15803d 60%, #16a34a 100%);
+    border-radius: 24px; color: #fff; padding: 48px 40px;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg::before {
+    content: ''; position: absolute; top: -80px; right: -80px;
+    width: 300px; height: 300px; border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .hero-bg::after {
+    content: ''; position: absolute; bottom: -100px; left: 60px;
+    width: 250px; height: 250px; border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+
+  /* ===== TECH CARD ===== */
+  .tech-card {
+    background: #fff; border-radius: 18px; padding: 22px;
+    border: 1.5px solid #dcfce7; text-align: center;
+    transition: all 0.25s;
+  }
+  .tech-card:hover { border-color: #86efac; box-shadow: 0 8px 28px rgba(21,128,61,0.1); transform: translateY(-3px); }
+  .tech-icon { width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-size: 1.5rem; }
+
+  /* ===== LOGIN CARD ===== */
+  .login-card { background: #fff; border-radius: 24px; padding: 36px 32px; border: 1.5px solid #dcfce7; box-shadow: 0 8px 40px rgba(21,128,61,0.1); }
+  .login-input {
+    width: 100%; padding: 13px 16px; border: 2px solid #dcfce7; border-radius: 12px;
+    font-family: 'Nunito', sans-serif; font-size: 0.9rem; outline: none;
+    transition: border-color 0.2s;
+  }
+  .login-input:focus { border-color: #22c55e; }
+  .qr-box {
+    width: 140px; height: 140px; border-radius: 16px;
+    background: repeating-conic-gradient(#dcfce7 0% 25%, #fff 0% 50%) 0 0 / 8px 8px;
+    border: 3px solid #22c55e; margin: 0 auto; display: flex;
+    align-items: center; justify-content: center; font-size: 2rem; color: #15803d;
+  }
+
+  /* ===== MAP LIST ===== */
+  .map-item {
+    background: #fff; border-radius: 16px; padding: 18px 20px;
+    border: 1.5px solid #dcfce7; display: flex; align-items: center; gap: 16px;
+    transition: all 0.2s;
+  }
+  .map-item:hover { border-color: #86efac; box-shadow: 0 4px 18px rgba(21,128,61,0.1); }
+  .map-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; animation: pulse 2s infinite; }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(34,197,94,0); }
+  }
+
+  /* ===== MOBILE OVERLAY ===== */
+  #sidebar-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+    z-index: 39; backdrop-filter: blur(2px);
+  }
+  #sidebar-overlay.show { display: block; }
+
+  /* ===== DIVIDER ===== */
+  .divider { height: 1px; background: linear-gradient(90deg, transparent, #dcfce7, transparent); margin: 6px 0; }
+
+  /* Section label */
+  .section-label {
+    font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: #86efac; padding: 10px 20px 4px;
+  }
+
+  /* Number counter animation */
+  @keyframes countUp { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+  .count-anim { animation: countUp 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+
+  /* Green dot live indicator */
+  .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; animation: pulse 1.5s infinite; display: inline-block; }
+
+  /* Page title */
+  .page-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.55rem; font-weight: 700; color: #14532d; }
+  .page-sub { font-size: 0.875rem; color: #6b7280; margin-top: 2px; }
+</style>
+</head>
+
+<body>
+
+<!-- ═══════════════════════════════════════════════════
+     TOAST CONTAINER
+═══════════════════════════════════════════════════ -->
+<div id="toast-container"></div>
+
+<!-- ═══════════════════════════════════════════════════
+     SIDEBAR OVERLAY (mobile)
+═══════════════════════════════════════════════════ -->
+<div id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<!-- ═══════════════════════════════════════════════════
+     SIDEBAR
+═══════════════════════════════════════════════════ -->
+<aside id="sidebar">
+  <!-- Logo -->
+  <div style="padding: 22px 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#22c55e,#86efac);display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:0 4px 14px rgba(34,197,94,0.4);">
+        <i class="fas fa-recycle" style="color:#fff;"></i>
+      </div>
+      <div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:1.05rem;line-height:1.1;">AI Recycle</div>
+        <div style="font-size:0.68rem;color:#86efac;letter-spacing:0.05em;">Smart Waste System</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nav items -->
+  <nav style="flex:1;overflow-y:auto;padding:10px 0;" id="sidebar-nav">
+    <div class="section-label">Chính</div>
+    <div class="nav-item active" onclick="navigate('home')" data-page="home">
+      <i class="fas fa-home nav-icon"></i>
+      <span>Trang Chủ</span>
+    </div>
+    <div class="nav-item" onclick="navigate('login')" data-page="login">
+      <i class="fas fa-sign-in-alt nav-icon"></i>
+      <span>Đăng Nhập</span>
+    </div>
+
+    <div class="section-label" style="margin-top:8px;">Cá Nhân</div>
+    <div class="nav-item" onclick="navigate('dashboard')" data-page="dashboard">
+      <i class="fas fa-chart-pie nav-icon"></i>
+      <span>Dashboard Tích Điểm</span>
+    </div>
+    <div class="nav-item" onclick="navigate('store')" data-page="store">
+      <i class="fas fa-store nav-icon"></i>
+      <span>Đổi Thưởng Eco-Store</span>
+    </div>
+
+    <div class="section-label" style="margin-top:8px;">Cộng Đồng</div>
+    <div class="nav-item" onclick="navigate('map')" data-page="map">
+      <i class="fas fa-map-marker-alt nav-icon"></i>
+      <span>Bản Đồ Trạm</span>
+    </div>
+    <div class="nav-item" onclick="navigate('leaderboard')" data-page="leaderboard">
+      <i class="fas fa-trophy nav-icon"></i>
+      <span>Bảng Xếp Hạng</span>
+      <span style="margin-left:auto;background:#22c55e;color:#fff;font-size:0.65rem;padding:2px 7px;border-radius:10px;font-weight:700;">HOT</span>
+    </div>
+
+    <div class="divider" style="margin:12px 14px;"></div>
+  </nav>
+
+  <!-- User avatar bottom -->
+  <div style="padding:14px 18px;border-top:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;gap:10px;">
+    <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#4ade80);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;color:#14532d;flex-shrink:0;">NV</div>
+    <div style="flex:1;min-width:0;">
+      <div style="color:#fff;font-weight:700;font-size:0.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Nguyễn Văn An</div>
+      <div style="color:#86efac;font-size:0.7rem;">HS - Trường THPT Chu Văn An</div>
+    </div>
+    <i class="fas fa-ellipsis-v" style="color:#86efac;cursor:pointer;font-size:0.8rem;"></i>
+  </div>
+</aside>
+
+<!-- ═══════════════════════════════════════════════════
+     MAIN CONTENT
+═══════════════════════════════════════════════════ -->
+<div id="main">
+
+  <!-- TOP BAR -->
+  <header id="topbar">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <button onclick="toggleSidebar()" style="background:none;border:none;cursor:pointer;padding:6px;border-radius:8px;color:#15803d;font-size:1.1rem;display:flex;align-items:center;" id="menu-btn">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div>
+        <div id="topbar-title" style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#14532d;font-size:1rem;">Trang Chủ</div>
+        <div style="font-size:0.72rem;color:#86efac;display:flex;align-items:center;gap:4px;">
+          <span class="live-dot"></span> Hệ thống hoạt động bình thường
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <!-- Points indicator -->
+      <div id="topbar-points" style="background:#f0fdf4;border:1.5px solid #dcfce7;border-radius:12px;padding:7px 14px;display:flex;align-items:center;gap:7px;cursor:pointer;" onclick="navigate('dashboard')">
+        <i class="fas fa-leaf" style="color:#22c55e;font-size:0.85rem;"></i>
+        <span id="topbar-pts-val" style="font-weight:800;color:#15803d;font-size:0.9rem;">1.240</span>
+        <span style="font-size:0.72rem;color:#6b7280;font-weight:600;">điểm</span>
+      </div>
+      <!-- Notification -->
+      <button style="background:none;border:none;cursor:pointer;width:38px;height:38px;border-radius:10px;background:#f0fdf4;border:1.5px solid #dcfce7;color:#15803d;font-size:0.95rem;display:flex;align-items:center;justify-content:center;position:relative;" onclick="showToast('Bạn có 3 thông báo mới!','info')">
+        <i class="fas fa-bell"></i>
+        <span style="position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:#ef4444;border:1.5px solid #fff;"></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ════════════════════════════════
+       PAGE 1: HOME (Trang Chủ)
+  ════════════════════════════════ -->
+  <div class="page active" id="page-home">
+    <div style="max-width:1100px;">
+
+      <!-- Hero Banner -->
+      <div class="hero-bg" style="margin-bottom:28px;">
+        <div style="position:relative;z-index:1;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+            <span style="background:rgba(255,255,255,0.2);border-radius:20px;padding:4px 14px;font-size:0.75rem;font-weight:700;letter-spacing:0.06em;">🏆 FINALIST — AI YOUNG GURU 2024</span>
+          </div>
+          <h1 style="font-family:'Space Grotesk',sans-serif;font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;line-height:1.2;margin-bottom:10px;">
+            AI Recycle<br/>
+            <span style="color:#86efac;">Thùng Rác Thông Minh</span> Thế Hệ Mới
+          </h1>
+          <p style="font-size:0.9rem;color:rgba(255,255,255,0.8);max-width:560px;line-height:1.65;margin-bottom:22px;">
+            Hệ thống phân loại và nén rác tự động tích hợp AI YOLOv8, IoT và Trạm năng lượng xanh — đặt tại các trường học và khu vực công cộng vì một Việt Nam xanh hơn.
+          </p>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <button class="btn-eco" style="background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.4);backdrop-filter:blur(6px);" onclick="navigate('dashboard')">
+              <i class="fas fa-chart-pie" style="margin-right:7px;"></i>Xem Dashboard
+            </button>
+            <button class="btn-eco" onclick="navigate('map')" style="background:linear-gradient(135deg,#22c55e,#16a34a);">
+              <i class="fas fa-map-marked-alt" style="margin-right:7px;"></i>Tìm Trạm Gần Đây
+            </button>
+          </div>
+        </div>
+        <!-- Floating stats -->
+        <div style="position:absolute;right:32px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:1;">
+          <div style="background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);border-radius:14px;padding:12px 18px;border:1px solid rgba(255,255,255,0.2);text-align:center;min-width:120px;">
+            <div style="font-size:1.5rem;font-weight:800;color:#fff;">147</div>
+            <div style="font-size:0.7rem;color:#bbf7d0;font-weight:600;">Trạm hoạt động</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);border-radius:14px;padding:12px 18px;border:1px solid rgba(255,255,255,0.2);text-align:center;">
+            <div style="font-size:1.5rem;font-weight:800;color:#fbbf24;">2.8T</div>
+            <div style="font-size:0.7rem;color:#bbf7d0;font-weight:600;">Rác đã xử lý</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);border-radius:14px;padding:12px 18px;border:1px solid rgba(255,255,255,0.2);text-align:center;">
+            <div style="font-size:1.5rem;font-weight:800;color:#86efac;">98%</div>
+            <div style="font-size:0.7rem;color:#bbf7d0;font-weight:600;">Độ chính xác AI</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Technology Cards -->
+      <div style="margin-bottom:28px;">
+        <div style="margin-bottom:18px;">
+          <h2 style="font-family:'Space Grotesk',sans-serif;font-size:1.25rem;font-weight:700;color:#14532d;">⚙️ Công Nghệ Lõi</h2>
+          <p class="page-sub">Bốn công nghệ tiên tiến được tích hợp tạo nên hệ thống khép kín, tự chủ năng lượng</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;">
+
+          <div class="tech-card">
+            <div class="tech-icon" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe);">
+              <i class="fas fa-brain" style="color:#1d4ed8;"></i>
+            </div>
+            <div style="font-weight:800;color:#14532d;margin-bottom:6px;font-family:'Space Grotesk',sans-serif;">AI YOLOv8</div>
+            <div style="font-size:0.8rem;color:#6b7280;line-height:1.6;">Nhận diện và phân loại rác thải real-time: chai nhựa, lon nhôm, giấy, hữu cơ với độ chính xác 98.4%.</div>
+            <div style="margin-top:10px;"><span class="badge badge-blue">Computer Vision</span></div>
+          </div>
+
+          <div class="tech-card">
+            <div class="tech-icon" style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);">
+              <i class="fas fa-compress-arrows-alt" style="color:#15803d;"></i>
+            </div>
+            <div style="font-weight:800;color:#14532d;margin-bottom:6px;font-family:'Space Grotesk',sans-serif;">Trục Vít Nén T8</div>
+            <div style="font-size:0.8rem;color:#6b7280;line-height:1.6;">Hệ thống trục vít nén T8 tự động giảm thể tích rác 85%, tăng dung lượng trạm lên 6.5 lần.</div>
+            <div style="margin-top:10px;"><span class="badge badge-green">Cơ điện tử</span></div>
+          </div>
+
+          <div class="tech-card">
+            <div class="tech-icon" style="background:linear-gradient(135deg,#fef9c3,#fef08a);">
+              <i class="fas fa-wind" style="color:#a16207;"></i>
+            </div>
+            <div style="font-weight:800;color:#14532d;margin-bottom:6px;font-family:'Space Grotesk',sans-serif;">Tuabin Archimedes</div>
+            <div style="font-size:0.8rem;color:#6b7280;line-height:1.6;">Tuabin gió xoắn ốc Archimedes kết hợp tấm pin mặt trời micro, cấp điện 100% tự chủ cho trạm.</div>
+            <div style="margin-top:10px;"><span class="badge badge-yellow">Năng lượng xanh</span></div>
+          </div>
+
+          <div class="tech-card">
+            <div class="tech-icon" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe);">
+              <i class="fas fa-id-card" style="color:#7c3aed;"></i>
+            </div>
+            <div style="font-weight:800;color:#14532d;margin-bottom:6px;font-family:'Space Grotesk',sans-serif;">Định Danh RFID</div>
+            <div style="font-size:0.8rem;color:#6b7280;line-height:1.6;">Thẻ RFID và mã QR định danh người dùng, tự động ghi nhận và tích điểm vào tài khoản cá nhân.</div>
+            <div style="margin-top:10px;"><span class="badge" style="background:#ede9fe;color:#7c3aed;">IoT</span></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- How it works -->
+      <div class="eco-card" style="padding:28px;margin-bottom:28px;">
+        <h2 style="font-family:'Space Grotesk',sans-serif;font-size:1.15rem;font-weight:700;color:#14532d;margin-bottom:20px;">🔄 Quy Trình Hoạt Động</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0;position:relative;">
+          <!-- Steps -->
+          <div id="steps-wrapper" style="display:flex;flex-wrap:wrap;gap:0;width:100%;">
+
+            <div style="flex:1;min-width:120px;text-align:center;padding:12px 8px;">
+              <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#16a34a);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;box-shadow:0 4px 14px rgba(22,163,74,0.3);">
+                <i class="fas fa-trash" style="color:#fff;font-size:1.1rem;"></i>
+              </div>
+              <div style="font-weight:700;font-size:0.8rem;color:#14532d;margin-bottom:4px;">Bỏ rác vào</div>
+              <div style="font-size:0.72rem;color:#6b7280;line-height:1.5;">Người dùng quét thẻ RFID và bỏ rác</div>
+            </div>
+
+            <div style="display:flex;align-items:center;color:#86efac;font-size:1.2rem;padding-top:4px;"><i class="fas fa-chevron-right"></i></div>
+
+            <div style="flex:1;min-width:120px;text-align:center;padding:12px 8px;">
+              <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#2563eb);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;box-shadow:0 4px 14px rgba(37,99,235,0.3);">
+                <i class="fas fa-brain" style="color:#fff;font-size:1.1rem;"></i>
+              </div>
+              <div style="font-weight:700;font-size:0.8rem;color:#14532d;margin-bottom:4px;">AI phân loại</div>
+              <div style="font-size:0.72rem;color:#6b7280;line-height:1.5;">Camera AI nhận dạng loại rác</div>
+            </div>
+
+            <div style="display:flex;align-items:center;color:#86efac;font-size:1.2rem;padding-top:4px;"><i class="fas fa-chevron-right"></i></div>
+
+            <div style="flex:1;min-width:120px;text-align:center;padding:12px 8px;">
+              <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#d97706);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;box-shadow:0 4px 14px rgba(245,158,11,0.3);">
+                <i class="fas fa-compress-arrows-alt" style="color:#fff;font-size:1.1rem;"></i>
+              </div>
+              <div style="font-weight:700;font-size:0.8rem;color:#14532d;margin-bottom:4px;">Trục vít nén</div>
+              <div style="font-size:0.72rem;color:#6b7280;line-height:1.5;">Nén rác tối đa, tối ưu không gian</div>
+            </div>
+
+            <div style="display:flex;align-items:center;color:#86efac;font-size:1.2rem;padding-top:4px;"><i class="fas fa-chevron-right"></i></div>
+
+            <div style="flex:1;min-width:120px;text-align:center;padding:12px 8px;">
+              <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#8b5cf6,#7c3aed);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;box-shadow:0 4px 14px rgba(139,92,246,0.3);">
+                <i class="fas fa-star" style="color:#fff;font-size:1.1rem;"></i>
+              </div>
+              <div style="font-weight:700;font-size:0.8rem;color:#14532d;margin-bottom:4px;">Tích điểm</div>
+              <div style="font-size:0.72rem;color:#6b7280;line-height:1.5;">Điểm Xanh được cộng tự động</div>
+            </div>
+
+            <div style="display:flex;align-items:center;color:#86efac;font-size:1.2rem;padding-top:4px;"><i class="fas fa-chevron-right"></i></div>
+
+            <div style="flex:1;min-width:120px;text-align:center;padding:12px 8px;">
+              <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#ef4444,#dc2626);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;box-shadow:0 4px 14px rgba(239,68,68,0.3);">
+                <i class="fas fa-gift" style="color:#fff;font-size:1.1rem;"></i>
+              </div>
+              <div style="font-weight:700;font-size:0.8rem;color:#14532d;margin-bottom:4px;">Đổi quà</div>
+              <div style="font-size:0.72rem;color:#6b7280;line-height:1.5;">Dùng điểm đổi phần thưởng xanh</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Impact stats -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:28px;">
+        <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-radius:18px;padding:20px;text-align:center;border:1.5px solid #bbf7d0;">
+          <div style="font-size:2rem;margin-bottom:4px;">🌱</div>
+          <div style="font-size:1.5rem;font-weight:800;color:#15803d;font-family:'Space Grotesk',sans-serif;">4,218</div>
+          <div style="font-size:0.78rem;color:#6b7280;font-weight:600;margin-top:4px;">Học sinh tham gia</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border-radius:18px;padding:20px;text-align:center;border:1.5px solid #bfdbfe;">
+          <div style="font-size:2rem;margin-bottom:4px;">♻️</div>
+          <div style="font-size:1.5rem;font-weight:800;color:#1d4ed8;font-family:'Space Grotesk',sans-serif;">156,430</div>
+          <div style="font-size:0.78rem;color:#6b7280;font-weight:600;margin-top:4px;">Chai/lon đã phân loại</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#fffbeb,#fef9c3);border-radius:18px;padding:20px;text-align:center;border:1.5px solid #fde68a;">
+          <div style="font-size:2rem;margin-bottom:4px;">⚡</div>
+          <div style="font-size:1.5rem;font-weight:800;color:#d97706;font-family:'Space Grotesk',sans-serif;">2,847</div>
+          <div style="font-size:0.78rem;color:#6b7280;font-weight:600;margin-top:4px;">kWh điện tự sản xuất</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#fdf4ff,#fae8ff);border-radius:18px;padding:20px;text-align:center;border:1.5px solid #e9d5ff;">
+          <div style="font-size:2rem;margin-bottom:4px;">🌍</div>
+          <div style="font-size:1.5rem;font-weight:800;color:#7c3aed;font-family:'Space Grotesk',sans-serif;">3.2T</div>
+          <div style="font-size:0.78rem;color:#6b7280;font-weight:600;margin-top:4px;">CO₂ giảm tải (kg)</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════
+       PAGE 2: LOGIN
+  ════════════════════════════════ -->
+  <div class="page" id="page-login">
+    <div style="max-width:860px;">
+      <div style="margin-bottom:22px;">
+        <div class="page-title">Đăng Nhập Hệ Thống</div>
+        <div class="page-sub">Chọn phương thức phù hợp với bạn để truy cập tài khoản AI Recycle</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;">
+
+        <!-- Password login -->
+        <div class="login-card">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px;">
+            <div style="width:40px;height:40px;border-radius:12px;background:#f0fdf4;display:flex;align-items:center;justify-content:center;">
+              <i class="fas fa-user-lock" style="color:#15803d;font-size:1.05rem;"></i>
+            </div>
+            <div>
+              <div style="font-weight:800;color:#14532d;font-family:'Space Grotesk',sans-serif;">Đăng nhập bằng tài khoản</div>
+              <div style="font-size:0.72rem;color:#6b7280;">Dành cho học sinh & giáo viên</div>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div>
+              <label style="font-size:0.8rem;font-weight:700;color:#374151;display:block;margin-bottom:6px;">Mã học sinh / Email</label>
+              <div style="position:relative;">
+                <i class="fas fa-id-badge" style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#86efac;font-size:0.9rem;"></i>
+                <input class="login-input" style="padding-left:40px;" placeholder="VD: HS2024001 hoặc email" id="login-user" />
+              </div>
+            </div>
+            <div>
+              <label style="font-size:0.8rem;font-weight:700;color:#374151;display:block;margin-bottom:6px;">Mật khẩu</label>
+              <div style="position:relative;">
+                <i class="fas fa-lock" style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#86efac;font-size:0.9rem;"></i>
+                <input class="login-input" style="padding-left:40px;" type="password" placeholder="••••••••" id="login-pass" />
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.78rem;">
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;color:#374151;">
+                <input type="checkbox" style="accent-color:#22c55e;" /> Ghi nhớ đăng nhập
+              </label>
+              <span style="color:#15803d;font-weight:700;cursor:pointer;">Quên mật khẩu?</span>
+            </div>
+            <button class="btn-eco" style="width:100%;padding:13px;" onclick="doLogin()">
+              <i class="fas fa-sign-in-alt" style="margin-right:8px;"></i>Đăng Nhập
+            </button>
+          </div>
+        </div>
+
+        <!-- QR / RFID login -->
+        <div class="login-card" style="text-align:center;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px;justify-content:center;">
+            <div style="width:40px;height:40px;border-radius:12px;background:#f0fdf4;display:flex;align-items:center;justify-content:center;">
+              <i class="fas fa-qrcode" style="color:#15803d;font-size:1.05rem;"></i>
+            </div>
+            <div style="text-align:left;">
+              <div style="font-weight:800;color:#14532d;font-family:'Space Grotesk',sans-serif;">QR Code / RFID</div>
+              <div style="font-size:0.72rem;color:#6b7280;">Nhanh chóng, không cần gõ</div>
+            </div>
+          </div>
+
+          <!-- QR Box -->
+          <div style="margin-bottom:16px;">
+            <div class="qr-box" id="qr-box">
+              <i class="fas fa-qrcode" style="font-size:3rem;color:#15803d;opacity:0.4;"></i>
+            </div>
+            <div style="margin-top:10px;font-size:0.8rem;color:#6b7280;" id="qr-status">Đưa mã QR vào khung để quét</div>
+          </div>
+
+          <div style="display:flex;gap:10px;justify-content:center;margin-bottom:16px;">
+            <button class="btn-eco" onclick="simulateQR()" style="font-size:0.82rem;padding:10px 18px;">
+              <i class="fas fa-camera" style="margin-right:6px;"></i>Mô phỏng Quét QR
+            </button>
+          </div>
+
+          <div style="border-top:1.5px solid #dcfce7;padding-top:16px;">
+            <div style="font-size:0.8rem;color:#6b7280;margin-bottom:10px;font-weight:600;">Hoặc chạm thẻ RFID</div>
+            <div style="width:100%;border:2px dashed #86efac;border-radius:14px;padding:16px;background:#f0fdf4;cursor:pointer;transition:all 0.2s;" onmouseenter="this.style.background='#dcfce7'" onmouseleave="this.style.background='#f0fdf4'" onclick="simulateRFID()">
+              <i class="fas fa-wifi" style="color:#22c55e;font-size:1.5rem;display:block;margin-bottom:6px;"></i>
+              <div style="font-size:0.8rem;font-weight:700;color:#15803d;">Chạm thẻ RFID vào đây</div>
+              <div style="font-size:0.72rem;color:#6b7280;margin-top:3px;">Dành cho người cao tuổi và học sinh nhỏ tuổi</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Info note -->
+      <div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:14px;padding:16px 20px;margin-top:20px;display:flex;align-items:flex-start;gap:12px;">
+        <i class="fas fa-info-circle" style="color:#15803d;margin-top:2px;flex-shrink:0;"></i>
+        <div style="font-size:0.82rem;color:#374151;line-height:1.6;">
+          <strong style="color:#14532d;">Lưu ý:</strong> Mã tài khoản được nhà trường cấp khi đăng ký chương trình. Người cao tuổi vui lòng liên hệ tổ dân phố để được hỗ trợ đăng ký thẻ RFID miễn phí.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════
+       PAGE 3: DASHBOARD (Tích điểm)
+  ════════════════════════════════ -->
+  <div class="page" id="page-dashboard">
+    <div style="max-width:1100px;">
+      <!-- Header -->
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
+        <div>
+          <div class="page-title">Dashboard Cá Nhân</div>
+          <div class="page-sub">Nguyễn Văn An · HS · Trường THPT Chu Văn An, Hà Nội</div>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <button class="btn-outline" style="font-size:0.8rem;" onclick="showToast('Đang xuất báo cáo...','info')">
+            <i class="fas fa-download" style="margin-right:5px;"></i>Xuất báo cáo
+          </button>
+          <button class="btn-eco" style="font-size:0.8rem;" onclick="navigate('store')">
+            <i class="fas fa-gift" style="margin-right:5px;"></i>Đổi quà ngay
+          </button>
+        </div>
+      </div>
+
+      <!-- Points + Stats row -->
+      <div style="display:grid;grid-template-columns:280px 1fr;gap:18px;margin-bottom:22px;" id="dash-grid">
+
+        <!-- Big Points Badge -->
+        <div class="points-badge">
+          <div style="position:relative;z-index:1;">
+            <div style="font-size:0.8rem;font-weight:700;color:rgba(255,255,255,0.7);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px;">
+              <i class="fas fa-leaf" style="margin-right:5px;"></i>Tổng Điểm Xanh
+            </div>
+            <div id="dash-points" style="font-size:3rem;font-weight:900;line-height:1;font-family:'Space Grotesk',sans-serif;" class="count-anim">1.240</div>
+            <div style="font-size:0.8rem;color:rgba(255,255,255,0.7);margin-top:4px;">điểm tích lũy</div>
+            <div style="margin-top:18px;background:rgba(255,255,255,0.15);border-radius:12px;padding:10px 14px;">
+              <div style="font-size:0.72rem;color:rgba(255,255,255,0.7);margin-bottom:3px;">Cấp độ hiện tại</div>
+              <div style="font-weight:800;color:#bbf7d0;font-size:0.9rem;">🌿 Người Xanh Cấp II</div>
+              <div style="margin-top:6px;height:6px;border-radius:99px;background:rgba(255,255,255,0.2);overflow:hidden;">
+                <div style="height:100%;width:62%;background:#bbf7d0;border-radius:99px;"></div>
+              </div>
+              <div style="font-size:0.68rem;color:rgba(255,255,255,0.7);margin-top:4px;">620/1000 đến Cấp III</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stat cards grid -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;align-content:start;">
+          <div class="stat-card">
+            <div style="font-size:1.6rem;margin-bottom:6px;">🍾</div>
+            <div style="font-size:1.55rem;font-weight:800;color:#15803d;font-family:'Space Grotesk',sans-serif;" id="stat-plastic">312</div>
+            <div style="font-size:0.75rem;color:#6b7280;font-weight:600;margin-top:2px;">Chai nhựa</div>
+          </div>
+          <div class="stat-card">
+            <div style="font-size:1.6rem;margin-bottom:6px;">🥫</div>
+            <div style="font-size:1.55rem;font-weight:800;color:#2563eb;font-family:'Space Grotesk',sans-serif;" id="stat-cans">89</div>
+            <div style="font-size:0.75rem;color:#6b7280;font-weight:600;margin-top:2px;">Lon nhôm</div>
+          </div>
+          <div class="stat-card">
+            <div style="font-size:1.6rem;margin-bottom:6px;">📄</div>
+            <div style="font-size:1.55rem;font-weight:800;color:#d97706;font-family:'Space Grotesk',sans-serif;" id="stat-paper">47</div>
+            <div style="font-size:0.75rem;color:#6b7280;font-weight:600;margin-top:2px;">Giấy/bìa</div>
+          </div>
+          <div class="stat-card">
+            <div style="font-size:1.6rem;margin-bottom:6px;">🌍</div>
+            <div style="font-size:1.55rem;font-weight:800;color:#7c3aed;font-family:'Space Grotesk',sans-serif;" id="stat-co2">14.8</div>
+            <div style="font-size:0.75rem;color:#6b7280;font-weight:600;margin-top:2px;">kg CO₂ giảm</div>
+          </div>
+          <div class="stat-card" style="grid-column:span 2;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+              <div>
+                <div style="font-size:0.75rem;color:#6b7280;font-weight:600;">Điểm tuần này</div>
+                <div style="font-size:1.3rem;font-weight:800;color:#15803d;font-family:'Space Grotesk',sans-serif;">+86 điểm</div>
+              </div>
+              <div style="background:#f0fdf4;border-radius:10px;padding:6px 10px;font-size:0.75rem;font-weight:700;color:#15803d;">
+                <i class="fas fa-arrow-up" style="margin-right:3px;"></i>+12%
+              </div>
+            </div>
+            <!-- Mini chart placeholder -->
+            <div style="display:flex;align-items:flex-end;gap:5px;height:40px;">
+              <div style="flex:1;background:#dcfce7;border-radius:4px;height:55%;"></div>
+              <div style="flex:1;background:#dcfce7;border-radius:4px;height:70%;"></div>
+              <div style="flex:1;background:#86efac;border-radius:4px;height:45%;"></div>
+              <div style="flex:1;background:#86efac;border-radius:4px;height:80%;"></div>
+              <div style="flex:1;background:#22c55e;border-radius:4px;height:60%;"></div>
+              <div style="flex:1;background:#22c55e;border-radius:4px;height:90%;"></div>
+              <div style="flex:1;background:#16a34a;border-radius:4px;height:100%;"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:0.65rem;color:#9ca3af;">
+              <span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span>CN</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- History table -->
+      <div class="eco-card" style="overflow:hidden;">
+        <div style="padding:18px 22px;border-bottom:1.5px solid #f0fdf4;display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <div style="font-weight:800;color:#14532d;font-family:'Space Grotesk',sans-serif;">📋 Lịch Sử Tích Điểm</div>
+            <div style="font-size:0.75rem;color:#6b7280;margin-top:2px;">30 giao dịch gần đây</div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <select style="border:1.5px solid #dcfce7;border-radius:10px;padding:6px 12px;font-size:0.78rem;color:#374151;outline:none;cursor:pointer;background:#f8fffe;font-family:'Nunito',sans-serif;" onchange="filterHistory(this.value)">
+              <option value="all">Tất cả loại</option>
+              <option value="Chai nhựa">Chai nhựa</option>
+              <option value="Lon nhôm">Lon nhôm</option>
+              <option value="Giấy/bìa">Giấy/bìa</option>
+            </select>
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="eco-table" id="history-table">
+            <thead>
+              <tr>
+                <th>Thời gian</th>
+                <th>Vị trí trạm</th>
+                <th>Loại rác</th>
+                <th>Số lượng</th>
+                <th style="text-align:right;">Điểm cộng</th>
+              </tr>
+            </thead>
+            <tbody id="history-tbody">
+              <!-- Filled by JS -->
+            </tbody>
+          </table>
+        </div>
+        <div style="padding:12px 22px;background:#f8fffe;display:flex;align-items:center;justify-content:space-between;border-top:1px solid #f0fdf4;">
+          <span style="font-size:0.78rem;color:#6b7280;">Hiển thị 1–10 / 30 giao dịch</span>
+          <div style="display:flex;gap:6px;">
+            <button class="btn-outline" style="padding:6px 12px;font-size:0.75rem;">← Trước</button>
+            <button class="btn-eco" style="padding:6px 12px;font-size:0.75rem;">Sau →</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════
+       PAGE 4: ECO-STORE (Đổi thưởng)
+  ════════════════════════════════ -->
+  <div class="page" id="page-store">
+    <div style="max-width:1100px;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
+        <div>
+          <div class="page-title">🛍️ Eco-Store — Đổi Thưởng Xanh</div>
+          <div class="page-sub">Dùng Điểm Xanh để đổi lấy những phần thưởng ý nghĩa</div>
+        </div>
+        <div style="background:#f0fdf4;border:1.5px solid #dcfce7;border-radius:14px;padding:12px 20px;display:flex;align-items:center;gap:10px;">
+          <i class="fas fa-leaf" style="color:#22c55e;font-size:1.1rem;"></i>
+          <div>
+            <div style="font-size:0.72rem;color:#6b7280;font-weight:600;">Điểm hiện có</div>
+            <div style="font-size:1.4rem;font-weight:800;color:#15803d;font-family:'Space Grotesk',sans-serif;" id="store-points-display">1.240</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter tabs -->
+      <div style="display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap;" id="store-filters">
+        <button class="btn-eco" style="font-size:0.8rem;padding:8px 18px;" onclick="filterStore('all',this)">Tất cả</button>
+        <button class="btn-outline" style="font-size:0.8rem;padding:8px 18px;" onclick="filterStore('school',this)">📚 Đồ dùng học tập</button>
+        <button class="btn-outline" style="font-size:0.8rem;padding:8px 18px;" onclick="filterStore('food',this)">🥛 Thực phẩm</button>
+        <button class="btn-outline" style="font-size:0.8rem;padding:8px 18px;" onclick="filterStore('voucher',this)">🎫 Voucher</button>
+        <button class="btn-outline" style="font-size:0.8rem;padding:8px 18px;" onclick="filterStore('eco',this)">🌿 Đồ eco</button>
+      </div>
+
+      <!-- Store Grid -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:18px;" id="store-grid">
+        <!-- Filled by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════
+       PAGE 5: MAP (Bản đồ trạm)
+  ════════════════════════════════ -->
+  <div class="page" id="page-map">
+    <div style="max-width:1100px;">
+      <div style="margin-bottom:22px;">
+        <div class="page-title">📍 Bản Đồ Trạm Tái Chế</div>
+        <div class="page-sub">Tìm trạm thùng rác thông minh gần bạn nhất · Cập nhật real-time</div>
+      </div>
+
+      <!-- Map placeholder + list side by side -->
+      <div style="display:grid;grid-template-columns:1fr 360px;gap:20px;" id="map-layout">
+
+        <!-- Fake map visual -->
+        <div style="background:linear-gradient(135deg,#e8f5e9 0%,#c8e6c9 30%,#a5d6a7 60%,#e8f5e9 100%);border-radius:20px;min-height:420px;position:relative;overflow:hidden;border:2px solid #bbf7d0;">
+          <!-- Grid lines -->
+          <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:0.3;" xmlns="http://www.w3.org/2000/svg">
+            <defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#15803d" stroke-width="0.5"/></pattern></defs>
+            <rect width="100%" height="100%" fill="url(#grid)"/>
+          </svg>
+          <!-- Roads -->
+          <svg style="position:absolute;inset:0;width:100%;height:100%;" xmlns="http://www.w3.org/2000/svg">
+            <line x1="0" y1="50%" x2="100%" y2="50%" stroke="#fff" stroke-width="6" opacity="0.6"/>
+            <line x1="35%" y1="0" x2="35%" y2="100%" stroke="#fff" stroke-width="4" opacity="0.5"/>
+            <line x1="70%" y1="0" x2="70%" y2="100%" stroke="#fff" stroke-width="3" opacity="0.4"/>
+            <line x1="0" y1="25%" x2="100%" y2="25%" stroke="#fff" stroke-width="3" opacity="0.4"/>
+            <line x1="0" y1="75%" x2="100%" y2="75%" stroke="#fff" stroke-width="3" opacity="0.4"/>
+          </svg>
+          <!-- Map pins -->
+          <div id="map-pins"></div>
+          <!-- Map controls -->
+          <div style="position:absolute;top:12px;right:12px;display:flex;flex-direction:column;gap:6px;">
+            <button style="width:34px;height:34px;background:#fff;border:none;border-radius:8px;cursor:pointer;font-size:1rem;box-shadow:0 2px 8px rgba(0,0,0,0.1);color:#15803d;" onclick="showToast('Phóng to bản đồ','info')">+</button>
+            <button style="width:34px;height:34px;background:#fff;border:none;border-radius:8px;cursor:pointer;font-size:1rem;box-shadow:0 2px 8px rgba(0,0,0,0.1);color:#15803d;" onclick="showToast('Thu nhỏ bản đồ','info')">−</button>
+          </div>
+          <!-- Legend -->
+          <div style="position:absolute;bottom:12px;left:12px;background:rgba(255,255,255,0.9);backdrop-filter:blur(4px);border-radius:10px;padding:10px 14px;font-size:0.75rem;border:1px solid #dcfce7;">
+            <div style="font-weight:700;color:#14532d;margin-bottom:6px;">Chú thích</div>
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;"><div style="width:10px;height:10px;border-radius:50%;background:#22c55e;"></div><span style="color:#374151;">Còn trống</span></div>
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;"><div style="width:10px;height:10px;border-radius:50%;background:#f59e0b;"></div><span style="color:#374151;">Gần đầy</span></div>
+            <div style="display:flex;align-items:center;gap:6px;"><div style="width:10px;height:10px;border-radius:50%;background:#ef4444;"></div><span style="color:#374151;">Đã đầy</span></div>
+          </div>
+          <!-- Your location dot -->
+          <div style="position:absolute;left:34%;top:50%;transform:translate(-50%,-50%);">
+            <div style="width:20px;height:20px;border-radius:50%;background:#3b82f6;border:3px solid #fff;box-shadow:0 0 0 6px rgba(59,130,246,0.2);"></div>
+          </div>
+          <div style="position:absolute;left:34%;top:50%;transform:translate(-50%,-85%);background:#3b82f6;color:#fff;font-size:0.65rem;font-weight:700;padding:3px 8px;border-radius:6px;white-space:nowrap;">Vị trí của bạn</div>
+        </div>
+
+        <!-- Station list -->
+        <div style="display:flex;flex-direction:column;gap:12px;max-height:520px;overflow-y:auto;" id="station-list">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+
+      <!-- Stats bar -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-top:20px;">
+        <div style="background:#fff;border-radius:14px;padding:14px 16px;border:1.5px solid #dcfce7;text-align:center;">
+          <div style="font-size:1.3rem;font-weight:800;color:#15803d;font-family:'Space Grotesk',sans-serif;">147</div>
+          <div style="font-size:0.72rem;color:#6b7280;font-weight:600;margin-top:2px;">Tổng trạm</div>
+        </div>
+        <div style="background:#fff;border-radius:14px;padding:14px 16px;border:1.5px solid #dcfce7;text-align:center;">
+          <div style="font-size:1.3rem;font-weight:800;color:#22c55e;font-family:'Space Grotesk',sans-serif;">112</div>
+          <div style="font-size:0.72rem;color:#6b7280;font-weight:600;margin-top:2px;">Còn trống</div>
+        </div>
+        <div style="background:#fff;border-radius:14px;padding:14px 16px;border:1.5px solid #dcfce7;text-align:center;">
+          <div style="font-size:1.3rem;font-weight:800;color:#f59e0b;font-family:'Space Grotesk',sans-serif;">24</div>
+          <div style="font-size:0.72rem;color:#6b7280;font-weight:600;margin-top:2px;">Gần đầy</div>
+        </div>
+        <div style="background:#fff;border-radius:14px;padding:14px 16px;border:1.5px solid #dcfce7;text-align:center;">
+          <div style="font-size:1.3rem;font-weight:800;color:#ef4444;font-family:'Space Grotesk',sans-serif;">11</div>
+          <div style="font-size:0.72rem;color:#6b7280;font-weight:600;margin-top:2px;">Đã đầy (đang thu)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════
+       PAGE 6: LEADERBOARD
+  ════════════════════════════════ -->
+  <div class="page" id="page-leaderboard">
+    <div style="max-width:860px;">
+      <div style="margin-bottom:24px;">
+        <div class="page-title">🏆 Bảng Xếp Hạng Điểm Xanh</div>
+        <div class="page-sub">Cộng đồng AI Recycle — Tháng 06/2025 · Cập nhật mỗi giờ</div>
+      </div>
+
+      <!-- Filter -->
+      <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;">
+        <button class="btn-eco" style="font-size:0.8rem;padding:8px 18px;" onclick="filterLB('month',this)">Tháng này</button>
+        <button class="btn-outline" style="font-size:0.8rem;padding:8px 18px;" onclick="filterLB('week',this)">Tuần này</button>
+        <button class="btn-outline" style="font-size:0.8rem;padding:8px 18px;" onclick="filterLB('all',this)">Tất cả thời gian</button>
+      </div>
+
+      <!-- Top 3 podium -->
+      <div style="display:flex;align-items:flex-end;justify-content:center;gap:16px;margin-bottom:24px;padding:24px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-radius:20px;border:1.5px solid #bbf7d0;" id="podium">
+        <!-- Filled by JS -->
+      </div>
+
+      <!-- Full list -->
+      <div class="eco-card" style="overflow:hidden;">
+        <div style="padding:16px 20px;border-bottom:1.5px solid #f0fdf4;">
+          <div style="font-weight:800;color:#14532d;font-family:'Space Grotesk',sans-serif;font-size:0.95rem;">Bảng xếp hạng đầy đủ</div>
+        </div>
+        <div id="lb-list" style="padding:8px;">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+
+      <!-- Your rank -->
+      <div style="background:linear-gradient(135deg,#22c55e,#16a34a);border-radius:16px;padding:16px 22px;margin-top:16px;display:flex;align-items:center;gap:14px;">
+        <div style="background:rgba(255,255,255,0.2);border-radius:12px;padding:8px 14px;font-weight:800;color:#fff;font-family:'Space Grotesk',sans-serif;font-size:1.1rem;">#23</div>
+        <div style="flex:1;">
+          <div style="font-weight:800;color:#fff;font-size:0.9rem;">Vị trí của bạn — Nguyễn Văn An</div>
+          <div style="font-size:0.78rem;color:rgba(255,255,255,0.75);margin-top:2px;">1.240 điểm · Còn 86 điểm để vươn lên #20</div>
+        </div>
+        <button class="btn-eco" style="background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.4);font-size:0.8rem;" onclick="navigate('dashboard')">
+          Tích thêm điểm
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end #main -->
+
+<!-- ═══════════════════════════════════════════════════
+     JAVASCRIPT — MOCK DATA & LOGIC
+═══════════════════════════════════════════════════ -->
+<script>
+/* ========================================
+   MOCK DATA
+======================================== */
+
+// Current user state
+let userState = {
+  points: 1240,
+  name: 'Nguyễn Văn An',
+};
+
+// History data
+const historyData = [
+  { time: '08:14 — 07/06', station: 'THPT Chu Văn An (A1)', type: 'Chai nhựa', qty: 3, pts: 15 },
+  { time: '15:30 — 06/06', station: 'Công viên Thống Nhất', type: 'Lon nhôm',  qty: 2, pts: 14 },
+  { time: '12:05 — 06/06', station: 'THPT Chu Văn An (A1)', type: 'Giấy/bìa', qty: 5, pts: 10 },
+  { time: '09:20 — 05/06', station: 'Trường TH Đống Đa',   type: 'Chai nhựa', qty: 4, pts: 20 },
+  { time: '16:45 — 05/06', station: 'Siêu thị BigC Hà Đông',type:'Lon nhôm', qty: 3, pts: 21 },
+  { time: '11:00 — 04/06', station: 'THPT Chu Văn An (A1)', type: 'Chai nhựa', qty: 6, pts: 30 },
+  { time: '14:20 — 03/06', station: 'Công viên Thống Nhất', type: 'Giấy/bìa', qty: 8, pts: 16 },
+  { time: '08:50 — 03/06', station: 'Trường THCS Nguyễn Du', type:'Lon nhôm', qty: 1, pts: 7 },
+  { time: '17:10 — 02/06', station: 'THPT Chu Văn An (A1)', type: 'Chai nhựa', qty: 5, pts: 25 },
+  { time: '13:35 — 01/06', station: 'Bệnh viện Bạch Mai',  type: 'Chai nhựa', qty: 2, pts: 10 },
+];
+
+// Store items
+const storeItems = [
+  { id:1, cat:'school', emoji:'📓', name:'Vở 200 trang Hồng Hà', pts:80,  stock:45, hot:true  },
+  { id:2, cat:'school', emoji:'✏️', name:'Bộ bút chì màu 24 màu', pts:120, stock:22, hot:false },
+  { id:3, cat:'school', emoji:'🎒', name:'Balo học sinh eco',      pts:500, stock:8,  hot:true  },
+  { id:4, cat:'school', emoji:'📐', name:'Bộ dụng cụ hình học',    pts:95,  stock:30, hot:false },
+  { id:5, cat:'food',   emoji:'🥛', name:'Sữa Vinamilk hộp 220ml', pts:60,  stock:100,hot:false },
+  { id:6, cat:'food',   emoji:'🍫', name:'Bánh quy dinh dưỡng',    pts:75,  stock:60, hot:false },
+  { id:7, cat:'voucher',emoji:'🎫', name:'Voucher Circle K 20k',   pts:180, stock:50, hot:true  },
+  { id:8, cat:'voucher',emoji:'🎟️', name:'Vé xe buýt điện 1 lượt', pts:100, stock:200,hot:false },
+  { id:9, cat:'voucher',emoji:'☕', name:'Trà sữa Gong Cha vừa',    pts:250, stock:20, hot:true  },
+  { id:10,cat:'eco',    emoji:'🌱', name:'Hạt giống rau sạch',      pts:70,  stock:80, hot:false },
+  { id:11,cat:'eco',    emoji:'🌿', name:'Túi vải canvas tái chế',  pts:150, stock:35, hot:false },
+  { id:12,cat:'eco',    emoji:'🪴', name:'Chậu cây mini văn phòng', pts:200, stock:15, hot:false },
+];
+
+// Stations / Map
+const stations = [
+  { name:'THPT Chu Văn An (Cổng chính)',  area:'Đống Đa, Hà Nội',   cap:62, dist:'0.2km', x:42, y:47, status:'ok'  },
+  { name:'THPT Chu Văn An (Sân thể thao)',area:'Đống Đa, Hà Nội',   cap:38, dist:'0.3km', x:36, y:55, status:'ok'  },
+  { name:'Công viên Thống Nhất (Cổng 1)', area:'Hai Bà Trưng, HN',  cap:87, dist:'1.1km', x:60, y:38, status:'warn'},
+  { name:'Siêu thị BigC Hà Đông',         area:'Hà Đông, Hà Nội',   cap:95, dist:'3.4km', x:20, y:70, status:'full'},
+  { name:'Trường TH Đống Đa',             area:'Đống Đa, Hà Nội',   cap:44, dist:'0.8km', x:50, y:28, status:'ok'  },
+  { name:'Bệnh viện Bạch Mai (Cổng phụ)', area:'Đống Đa, Hà Nội',   cap:71, dist:'1.6km', x:72, y:60, status:'warn'},
+  { name:'Chợ Ngã Tư Sở',                 area:'Đống Đa, Hà Nội',   cap:20, dist:'2.0km', x:28, y:82, status:'ok'  },
+  { name:'Trường THCS Nguyễn Du',          area:'Hoàn Kiếm, HN',     cap:55, dist:'2.8km', x:80, y:22, status:'ok'  },
+];
+
+// Leaderboard
+const lbData = [
+  { name:'Trần Thị Minh Anh', school:'THPT Lê Quý Đôn',      pts:3420, streak:14 },
+  { name:'Nguyễn Phúc Khang',  school:'THPT Chu Văn An',       pts:3180, streak:22 },
+  { name:'Lê Thị Bảo Ngọc',    school:'THPT Nguyễn Thị Minh Khai', pts:2940, streak:9 },
+  { name:'Phạm Minh Tuấn',     school:'Trường ĐH Bách Khoa',  pts:2755, streak:7  },
+  { name:'Đỗ Thanh Hương',     school:'THPT Lê Lợi',           pts:2610, streak:11 },
+  { name:'Võ Ngọc Tú Uyên',   school:'THPT Chu Văn An',       pts:2480, streak:5  },
+  { name:'Bùi Duy Mạnh',      school:'THCS Nguyễn Du',        pts:2310, streak:18 },
+  { name:'Hoàng Thị Lan',      school:'Cụm dân cư P.Thịnh Quang', pts:2150, streak:3 },
+  { name:'Nguyễn Đức Hải',    school:'THPT Đống Đa',          pts:1980, streak:6  },
+  { name:'Trịnh Khánh Linh',  school:'THCS Nguyễn Trãi',     pts:1840, streak:8  },
+];
+
+/* ========================================
+   NAVIGATION
+======================================== */
+const pageMap = {
+  home:        { el:'page-home',        title:'Trang Chủ',           icon:'fa-home' },
+  login:       { el:'page-login',       title:'Đăng Nhập',           icon:'fa-sign-in-alt' },
+  dashboard:   { el:'page-dashboard',   title:'Dashboard Tích Điểm', icon:'fa-chart-pie' },
+  store:       { el:'page-store',       title:'Eco-Store Đổi Thưởng',icon:'fa-store' },
+  map:         { el:'page-map',         title:'Bản Đồ Trạm',         icon:'fa-map-marker-alt' },
+  leaderboard: { el:'page-leaderboard', title:'Bảng Xếp Hạng',       icon:'fa-trophy' },
+};
+
+function navigate(page) {
+  // Hide all pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  // Show target
+  const target = pageMap[page];
+  document.getElementById(target.el).classList.add('active');
+  // Update topbar title
+  document.getElementById('topbar-title').textContent = target.title;
+  // Update sidebar active state
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const navItem = document.querySelector(`.nav-item[data-page="${page}"]`);
+  if (navItem) navItem.classList.add('active');
+  // Close sidebar on mobile
+  if (window.innerWidth < 768) closeSidebar();
+  // Lazy render
+  if (page === 'dashboard')   renderHistory(historyData);
+  if (page === 'store')       renderStore(storeItems);
+  if (page === 'map')         renderMap();
+  if (page === 'leaderboard') renderLeaderboard();
+}
+
+/* ========================================
+   SIDEBAR TOGGLE
+======================================== */
+function toggleSidebar() {
+  const sb  = document.getElementById('sidebar');
+  const ov  = document.getElementById('sidebar-overlay');
+  if (window.innerWidth < 768) {
+    sb.classList.toggle('open');
+    ov.classList.toggle('show');
+  }
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('show');
+}
+
+/* ========================================
+   TOAST NOTIFICATION
+======================================== */
+function showToast(msg, type = 'success') {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  const icons = { success:'fa-check-circle', error:'fa-times-circle', info:'fa-info-circle', warn:'fa-exclamation-triangle' };
+  const colors = { success:'#22c55e', error:'#ef4444', info:'#3b82f6', warn:'#f59e0b' };
+  toast.className = `toast ${type === 'error' ? 'error' : type === 'warn' ? 'warn' : ''}`;
+  toast.style.borderLeftColor = colors[type] || colors.success;
+  toast.innerHTML = `
+    <i class="fas ${icons[type]||icons.success}" style="color:${colors[type]||colors.success};font-size:1.1rem;flex-shrink:0;"></i>
+    <span style="color:#374151;flex:1;">${msg}</span>
+    <i class="fas fa-times" style="color:#9ca3af;cursor:pointer;font-size:0.8rem;" onclick="this.parentElement.remove()"></i>
+  `;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.animation = 'slideOut 0.3s ease forwards';
+    setTimeout(() => toast.remove(), 300);
+  }, 3500);
+}
+
+/* ========================================
+   LOGIN SIMULATION
+======================================== */
+function doLogin() {
+  const u = document.getElementById('login-user').value.trim();
+  const p = document.getElementById('login-pass').value.trim();
+  if (!u || !p) { showToast('Vui lòng nhập đầy đủ thông tin!','warn'); return; }
+  showToast('Đăng nhập thành công! Xin chào ' + (u.includes('@') ? u.split('@')[0] : u) + ' 👋','success');
+  setTimeout(() => navigate('dashboard'), 800);
+}
+
+function simulateQR() {
+  const qr = document.getElementById('qr-box');
+  const st = document.getElementById('qr-status');
+  qr.style.background = 'linear-gradient(135deg,#dcfce7,#bbf7d0)';
+  qr.innerHTML = '<i class="fas fa-check-circle" style="font-size:3rem;color:#22c55e;"></i>';
+  st.textContent = '✅ Nhận diện QR thành công!';
+  st.style.color = '#15803d';
+  st.style.fontWeight = '700';
+  showToast('Xác thực QR thành công! Đang đăng nhập...','success');
+  setTimeout(() => navigate('dashboard'), 1000);
+}
+
+function simulateRFID() {
+  showToast('📡 Đang đọc thẻ RFID...','info');
+  setTimeout(() => {
+    showToast('✅ Thẻ RFID hợp lệ! Xin chào Nguyễn Văn An 👋','success');
+    setTimeout(() => navigate('dashboard'), 600);
+  }, 1200);
+}
+
+/* ========================================
+   DASHBOARD — HISTORY TABLE
+======================================== */
+function renderHistory(data) {
+  const tbody = document.getElementById('history-tbody');
+  const typeColors = {
+    'Chai nhựa': 'badge-blue',
+    'Lon nhôm':  'badge-yellow',
+    'Giấy/bìa':  'badge-green',
+  };
+  tbody.innerHTML = data.map(r => `
+    <tr>
+      <td style="color:#6b7280;font-size:0.82rem;white-space:nowrap;">${r.time}</td>
+      <td style="font-weight:600;color:#374151;font-size:0.83rem;">${r.station}</td>
+      <td><span class="badge ${typeColors[r.type]||'badge-green'}">${r.type}</span></td>
+      <td style="text-align:center;font-weight:700;color:#374151;">${r.qty}</td>
+      <td style="text-align:right;">
+        <span style="background:#f0fdf4;color:#15803d;border:1px solid #dcfce7;border-radius:10px;padding:4px 11px;font-weight:800;font-size:0.82rem;">+${r.pts} pts</span>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function filterHistory(type) {
+  const filtered = type === 'all' ? historyData : historyData.filter(r => r.type === type);
+  renderHistory(filtered);
+}
+
+/* ========================================
+   STORE
+======================================== */
+let currentStoreFilter = 'all';
+
+function renderStore(items) {
+  const grid = document.getElementById('store-grid');
+  document.getElementById('store-points-display').textContent = userState.points.toLocaleString('vi');
+  grid.innerHTML = items.map(item => {
+    const canAfford = userState.points >= item.pts;
+    return `
+      <div class="store-card" id="store-item-${item.id}">
+        <div class="store-img">
+          <span style="font-size:3.5rem;position:relative;z-index:1;">${item.emoji}</span>
+          ${item.hot ? '<span style="position:absolute;top:10px;right:10px;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;font-size:0.65rem;font-weight:800;padding:3px 9px;border-radius:10px;letter-spacing:0.04em;">HOT</span>' : ''}
+        </div>
+        <div style="padding:14px 16px;flex:1;display:flex;flex-direction:column;">
+          <div style="font-weight:700;color:#14532d;font-size:0.85rem;line-height:1.3;flex:1;margin-bottom:8px;">${item.name}</div>
+          <div style="font-size:0.72rem;color:#9ca3af;margin-bottom:10px;">Còn ${item.stock} phần</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+            <div style="display:flex;align-items:center;gap:4px;">
+              <i class="fas fa-leaf" style="color:#22c55e;font-size:0.8rem;"></i>
+              <span style="font-weight:800;color:#15803d;font-size:1rem;font-family:'Space Grotesk',sans-serif;">${item.pts}</span>
+              <span style="font-size:0.7rem;color:#6b7280;">pts</span>
+            </div>
+            <button class="btn-eco" style="font-size:0.75rem;padding:7px 14px;" 
+              ${canAfford ? '' : 'disabled'} 
+              onclick="redeemItem(${item.id}, ${item.pts}, '${item.name.replace(/'/g,"\\'")}')">
+              ${canAfford ? 'Đổi quà' : 'Không đủ pts'}
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function redeemItem(id, pts, name) {
+  if (userState.points < pts) {
+    showToast(`Không đủ điểm! Cần thêm ${pts - userState.points} điểm.`, 'error');
+    return;
+  }
+  userState.points -= pts;
+  // Update UI
+  document.getElementById('topbar-pts-val').textContent = userState.points.toLocaleString('vi');
+  document.getElementById('store-points-display').textContent = userState.points.toLocaleString('vi');
+  if (document.getElementById('dash-points')) {
+    document.getElementById('dash-points').textContent = userState.points.toLocaleString('vi');
+  }
+  showToast(`🎉 Đổi thành công: ${name}! Trừ ${pts} điểm.`, 'success');
+  // Re-render store buttons
+  renderStore(storeItems);
+}
+
+function filterStore(cat, btn) {
+  currentStoreFilter = cat;
+  // Update button styles
+  document.querySelectorAll('#store-filters button').forEach(b => {
+    b.classList.remove('btn-eco'); b.classList.add('btn-outline');
+  });
+  btn.classList.add('btn-eco'); btn.classList.remove('btn-outline');
+  // Filter
+  const filtered = cat === 'all' ? storeItems : storeItems.filter(i => i.cat === cat);
+  renderStore(filtered);
+}
+
+/* ========================================
+   MAP
+======================================== */
+function renderMap() {
+  renderStationList();
+  renderMapPins();
+}
+
+function renderStationList() {
+  const list = document.getElementById('station-list');
+  const statusConfig = {
+    ok:   { color:'#22c55e', label:'Còn trống',  badgeClass:'badge-green' },
+    warn: { color:'#f59e0b', label:'Gần đầy',    badgeClass:'badge-yellow' },
+    full: { color:'#ef4444', label:'Đã đầy',     badgeClass:'badge-red' },
+  };
+  list.innerHTML = stations.map((s,i) => {
+    const sc = statusConfig[s.status];
+    const fillColor = s.status === 'ok' ? '#22c55e' : s.status === 'warn' ? '#f59e0b' : '#ef4444';
+    return `
+      <div class="map-item" onclick="showToast('Đang dẫn đường đến ${s.name.split('(')[0].trim()}','info')">
+        <div class="map-dot" style="background:${sc.color};box-shadow:none;"></div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-weight:700;color:#14532d;font-size:0.83rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.name}</div>
+          <div style="font-size:0.72rem;color:#9ca3af;margin-top:2px;">${s.area} · ${s.dist}</div>
+          <div style="margin-top:6px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
+              <span style="font-size:0.68rem;color:#6b7280;">Dung lượng</span>
+              <span style="font-size:0.68rem;font-weight:700;color:${fillColor};">${s.cap}%</span>
+            </div>
+            <div class="capacity-bar">
+              <div class="capacity-fill" style="width:${s.cap}%;background:${fillColor};"></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <span class="badge ${sc.badgeClass}" style="white-space:nowrap;">${sc.label}</span>
+          <div style="text-align:center;margin-top:6px;">
+            <i class="fas fa-directions" style="color:#15803d;font-size:1rem;cursor:pointer;" onclick="event.stopPropagation();showToast('Mở bản đồ dẫn đường','info')"></i>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderMapPins() {
+  const pinsDiv = document.getElementById('map-pins');
+  const statusColor = { ok:'#22c55e', warn:'#f59e0b', full:'#ef4444' };
+  pinsDiv.innerHTML = stations.map((s,i) => `
+    <div title="${s.name}" onclick="showToast('${s.name.split('(')[0].trim()} · ${s.cap}% đầy','info')" 
+         style="position:absolute;left:${s.x}%;top:${s.y}%;transform:translate(-50%,-100%);cursor:pointer;z-index:2;">
+      <div style="width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);
+                  background:${statusColor[s.status]};border:2px solid #fff;
+                  box-shadow:0 3px 10px rgba(0,0,0,0.2);">
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ========================================
+   LEADERBOARD
+======================================== */
+function renderLeaderboard() {
+  renderPodium();
+  renderLBList(lbData);
+}
+
+function renderPodium() {
+  const top3 = lbData.slice(0,3);
+  const podium = document.getElementById('podium');
+  const rankEmoji = ['🥇','🥈','🥉'];
+  const heights = ['160px','130px','110px'];
+  const order = [1, 0, 2]; // Silver, Gold, Bronze order visually
+  podium.innerHTML = order.map(i => {
+    const p = top3[i];
+    const initials = p.name.split(' ').slice(-2).map(w=>w[0]).join('');
+    const avatarClass = ['rank-1','rank-2','rank-3'][i];
+    const pedestal = ['140px','120px','100px'][i];
+    return `
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;flex:1;max-width:160px;">
+        <div style="font-size:1.8rem;">${rankEmoji[i]}</div>
+        <div class="lb-avatar ${avatarClass}" style="width:52px;height:52px;font-size:1rem;">${initials}</div>
+        <div style="text-align:center;">
+          <div style="font-weight:800;color:#14532d;font-size:0.8rem;line-height:1.3;">${p.name.split(' ').slice(-2).join(' ')}</div>
+          <div style="font-size:0.68rem;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px;">${p.school}</div>
+          <div style="font-weight:900;color:#15803d;font-size:1.1rem;font-family:'Space Grotesk',sans-serif;margin-top:4px;">${p.pts.toLocaleString('vi')}</div>
+          <div style="font-size:0.68rem;color:#86efac;font-weight:600;">🔥 ${p.streak} ngày</div>
+        </div>
+        <div style="width:100%;height:${pedestal};background:linear-gradient(180deg,${i===0?'#fbbf24':'#d1d5db'} 0%,${i===0?'#f59e0b':'#9ca3af'} 100%);
+                    border-radius:10px 10px 4px 4px;display:flex;align-items:center;justify-content:center;
+                    font-weight:800;color:#fff;font-size:1.2rem;font-family:'Space Grotesk',sans-serif;">
+          #${i+1}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderLBList(data) {
+  const list = document.getElementById('lb-list');
+  const rankStyles = [
+    'rank-1','rank-2','rank-3'
+  ];
+  list.innerHTML = data.map((p,i) => {
+    const initials = p.name.split(' ').slice(-2).map(w=>w[0]).join('');
+    const avatarClass = i < 3 ? rankStyles[i] : 'rank-n';
+    const isMe = p.name === 'Nguyễn Văn An';
+    return `
+      <div class="lb-row" style="${isMe ? 'background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:14px;' : ''}">
+        <div style="width:28px;text-align:center;font-weight:800;color:${i<3?'#15803d':'#9ca3af'};font-family:'Space Grotesk',sans-serif;font-size:${i<3?'1rem':'0.85rem'};">
+          ${i<3?['🥇','🥈','🥉'][i]:'#'+(i+1)}
+        </div>
+        <div class="lb-avatar ${avatarClass}" style="${i>=3?'background:#f0fdf4;color:#15803d;':''}">${initials}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-weight:700;color:#14532d;font-size:0.85rem;">${p.name}${isMe?' <span style="background:#dcfce7;color:#15803d;font-size:0.65rem;padding:2px 7px;border-radius:8px;font-weight:700;">Bạn</span>':''}</div>
+          <div style="font-size:0.72rem;color:#9ca3af;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.school}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0;">
+          <div style="font-weight:800;color:#15803d;font-size:0.95rem;font-family:'Space Grotesk',sans-serif;">${p.pts.toLocaleString('vi')}</div>
+          <div style="font-size:0.68rem;color:#f59e0b;font-weight:700;">🔥 ${p.streak} ngày</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function filterLB(period, btn) {
+  document.querySelectorAll('#page-leaderboard button').forEach(b => {
+    if (['Tháng này','Tuần này','Tất cả thời gian'].includes(b.textContent.trim())) {
+      b.classList.remove('btn-eco'); b.classList.add('btn-outline');
+    }
+  });
+  btn.classList.add('btn-eco'); btn.classList.remove('btn-outline');
+
+  // Shuffle points slightly for demo
+  const shuffled = [...lbData].map(p => ({...p, pts: p.pts + Math.floor((Math.random()-0.5)*300)}))
+                               .sort((a,b) => b.pts - a.pts);
+  renderLBList(shuffled);
+  showToast(`Đã lọc: ${period==='month'?'Tháng này':period==='week'?'Tuần này':'Tất cả thời gian'}`, 'info');
+}
+
+/* ========================================
+   RESPONSIVE: Sidebar on desktop
+======================================== */
+function handleResize() {
+  const sidebar = document.getElementById('sidebar');
+  if (window.innerWidth >= 768) {
+    sidebar.classList.remove('open');
+    document.getElementById('sidebar-overlay').classList.remove('show');
+    sidebar.style.transform = '';
+  }
+}
+window.addEventListener('resize', handleResize);
+
+/* ========================================
+   INIT
+======================================== */
+document.addEventListener('DOMContentLoaded', () => {
+  // Already on home page; render on navigate
+  // Just ensure topbar points is correct
+  document.getElementById('topbar-pts-val').textContent = userState.points.toLocaleString('vi');
+});
+</script>
+
+</body>
+</html>
