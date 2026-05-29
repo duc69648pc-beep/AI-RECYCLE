@@ -1129,16 +1129,18 @@ async function loginUser(uid, userData) {
 
 window.doLogout = async function() {
   if (!currentUser) return;
-  // Xóa session trên Firebase
   await set(ref(db, 'sessions/active_user'), null);
   if (unsubscribeUser) { unsubscribeUser(); unsubscribeUser = null; }
   if (unsubscribeHistory) { unsubscribeHistory(); unsubscribeHistory = null; }
   currentUser = null;
+
+  // Reset topbar về 0
+  document.getElementById('topbar-pts-val').textContent = '0';
+
   showToast('Đã đăng xuất!', 'info');
   navigate('home');
   updateSidebarUser(null);
 };
-
 /* ========================================
    REALTIME LISTENER — User data
 ======================================== */
