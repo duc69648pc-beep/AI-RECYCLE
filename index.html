@@ -383,17 +383,23 @@
       <span style="margin-left:auto;background:#22c55e;color:#fff;font-size:0.65rem;padding:2px 7px;border-radius:10px;font-weight:700;">HOT</span>
     </div>
 
+    <div class="nav-item" onclick="navigate('aichat')" data-page="aichat">
+      <i class="fas fa-robot nav-icon"></i>
+      <span>Tư Vấn AI</span>
+      <span style="margin-left:auto;background:#3b82f6;color:#fff;font-size:0.65rem;padding:2px 7px;border-radius:10px;font-weight:700;">AI</span>
+    </div>
+
     <div class="divider" style="margin:12px 14px;"></div>
   </nav>
 
   <!-- User avatar bottom -->
   <div style="padding:14px 18px;border-top:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;gap:10px;">
-    <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#4ade80);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;color:#14532d;flex-shrink:0;">NV</div>
+    <div id="sidebar-avatar" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#4ade80);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;color:#14532d;flex-shrink:0;">NV</div>
     <div style="flex:1;min-width:0;">
-      <div style="color:#fff;font-weight:700;font-size:0.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Nguyễn Văn An</div>
-      <div style="color:#86efac;font-size:0.7rem;">HS - Trường THPT Chu Văn An</div>
+      <div id="sidebar-username" style="color:#fff;font-weight:700;font-size:0.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Nguyễn Văn An</div>
+      <div id="sidebar-role" style="color:#86efac;font-size:0.7rem;">HS - Trường THPT Chu Văn An</div>
     </div>
-    <i class="fas fa-ellipsis-v" style="color:#86efac;cursor:pointer;font-size:0.8rem;"></i>
+    <i class="fas fa-sign-out-alt" style="color:#86efac;cursor:pointer;font-size:0.8rem;" onclick="doLogout()" title="Đăng xuất"></i>
   </div>
 </aside>
 
@@ -715,7 +721,7 @@
       <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
         <div>
           <div class="page-title">Dashboard Cá Nhân</div>
-          <div class="page-sub">Nguyễn Văn An · HS · Trường THPT Chu Văn An, Hà Nội</div>
+          <div class="page-sub" id="dash-username">Nguyễn Văn An · HS · Trường THPT Chu Văn An, Hà Nội</div>
         </div>
         <div style="display:flex;gap:10px;">
           <button class="btn-outline" style="font-size:0.8rem;" onclick="showToast('Đang xuất báo cáo...','info')">
@@ -740,11 +746,11 @@
             <div style="font-size:0.8rem;color:rgba(255,255,255,0.7);margin-top:4px;">điểm tích lũy</div>
             <div style="margin-top:18px;background:rgba(255,255,255,0.15);border-radius:12px;padding:10px 14px;">
               <div style="font-size:0.72rem;color:rgba(255,255,255,0.7);margin-bottom:3px;">Cấp độ hiện tại</div>
-              <div style="font-weight:800;color:#bbf7d0;font-size:0.9rem;">🌿 Người Xanh Cấp II</div>
+              <div id="dash-level" style="font-weight:800;color:#bbf7d0;font-size:0.9rem;">🌿 Người Xanh Cấp II</div>
               <div style="margin-top:6px;height:6px;border-radius:99px;background:rgba(255,255,255,0.2);overflow:hidden;">
-                <div style="height:100%;width:62%;background:#bbf7d0;border-radius:99px;"></div>
+                <div id="dash-level-pct" style="height:100%;width:62%;background:#bbf7d0;border-radius:99px;"></div>
               </div>
-              <div style="font-size:0.68rem;color:rgba(255,255,255,0.7);margin-top:4px;">620/1000 đến Cấp III</div>
+              <div id="dash-level-next" style="font-size:0.68rem;color:rgba(255,255,255,0.7);margin-top:4px;">620/1000 đến Cấp III</div>
             </div>
           </div>
         </div>
@@ -890,40 +896,9 @@
       <!-- Map placeholder + list side by side -->
       <div style="display:grid;grid-template-columns:1fr 360px;gap:20px;" id="map-layout">
 
-        <!-- Fake map visual -->
-        <div style="background:linear-gradient(135deg,#e8f5e9 0%,#c8e6c9 30%,#a5d6a7 60%,#e8f5e9 100%);border-radius:20px;min-height:420px;position:relative;overflow:hidden;border:2px solid #bbf7d0;">
-          <!-- Grid lines -->
-          <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:0.3;" xmlns="http://www.w3.org/2000/svg">
-            <defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#15803d" stroke-width="0.5"/></pattern></defs>
-            <rect width="100%" height="100%" fill="url(#grid)"/>
-          </svg>
-          <!-- Roads -->
-          <svg style="position:absolute;inset:0;width:100%;height:100%;" xmlns="http://www.w3.org/2000/svg">
-            <line x1="0" y1="50%" x2="100%" y2="50%" stroke="#fff" stroke-width="6" opacity="0.6"/>
-            <line x1="35%" y1="0" x2="35%" y2="100%" stroke="#fff" stroke-width="4" opacity="0.5"/>
-            <line x1="70%" y1="0" x2="70%" y2="100%" stroke="#fff" stroke-width="3" opacity="0.4"/>
-            <line x1="0" y1="25%" x2="100%" y2="25%" stroke="#fff" stroke-width="3" opacity="0.4"/>
-            <line x1="0" y1="75%" x2="100%" y2="75%" stroke="#fff" stroke-width="3" opacity="0.4"/>
-          </svg>
-          <!-- Map pins -->
-          <div id="map-pins"></div>
-          <!-- Map controls -->
-          <div style="position:absolute;top:12px;right:12px;display:flex;flex-direction:column;gap:6px;">
-            <button style="width:34px;height:34px;background:#fff;border:none;border-radius:8px;cursor:pointer;font-size:1rem;box-shadow:0 2px 8px rgba(0,0,0,0.1);color:#15803d;" onclick="showToast('Phóng to bản đồ','info')">+</button>
-            <button style="width:34px;height:34px;background:#fff;border:none;border-radius:8px;cursor:pointer;font-size:1rem;box-shadow:0 2px 8px rgba(0,0,0,0.1);color:#15803d;" onclick="showToast('Thu nhỏ bản đồ','info')">−</button>
-          </div>
-          <!-- Legend -->
-          <div style="position:absolute;bottom:12px;left:12px;background:rgba(255,255,255,0.9);backdrop-filter:blur(4px);border-radius:10px;padding:10px 14px;font-size:0.75rem;border:1px solid #dcfce7;">
-            <div style="font-weight:700;color:#14532d;margin-bottom:6px;">Chú thích</div>
-            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;"><div style="width:10px;height:10px;border-radius:50%;background:#22c55e;"></div><span style="color:#374151;">Còn trống</span></div>
-            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;"><div style="width:10px;height:10px;border-radius:50%;background:#f59e0b;"></div><span style="color:#374151;">Gần đầy</span></div>
-            <div style="display:flex;align-items:center;gap:6px;"><div style="width:10px;height:10px;border-radius:50%;background:#ef4444;"></div><span style="color:#374151;">Đã đầy</span></div>
-          </div>
-          <!-- Your location dot -->
-          <div style="position:absolute;left:34%;top:50%;transform:translate(-50%,-50%);">
-            <div style="width:20px;height:20px;border-radius:50%;background:#3b82f6;border:3px solid #fff;box-shadow:0 0 0 6px rgba(59,130,246,0.2);"></div>
-          </div>
-          <div style="position:absolute;left:34%;top:50%;transform:translate(-50%,-85%);background:#3b82f6;color:#fff;font-size:0.65rem;font-weight:700;padding:3px 8px;border-radius:6px;white-space:nowrap;">Vị trí của bạn</div>
+        <!-- Bản đồ Việt Nam SVG -->
+        <div style="background:#dbeafe;border-radius:20px;min-height:460px;position:relative;overflow:hidden;border:2px solid #bbf7d0;display:flex;align-items:center;justify-content:center;">
+          <div id="vietnam-map-svg" style="width:100%;height:460px;"></div>
         </div>
 
         <!-- Station list -->
@@ -935,20 +910,12 @@
       <!-- Stats bar -->
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-top:20px;">
         <div style="background:#fff;border-radius:14px;padding:14px 16px;border:1.5px solid #dcfce7;text-align:center;">
-          <div style="font-size:1.3rem;font-weight:800;color:#15803d;font-family:'Space Grotesk',sans-serif;">147</div>
+          <div style="font-size:1.3rem;font-weight:800;color:#15803d;font-family:'Space Grotesk',sans-serif;">1</div>
           <div style="font-size:0.72rem;color:#6b7280;font-weight:600;margin-top:2px;">Tổng trạm</div>
         </div>
         <div style="background:#fff;border-radius:14px;padding:14px 16px;border:1.5px solid #dcfce7;text-align:center;">
-          <div style="font-size:1.3rem;font-weight:800;color:#22c55e;font-family:'Space Grotesk',sans-serif;">112</div>
-          <div style="font-size:0.72rem;color:#6b7280;font-weight:600;margin-top:2px;">Còn trống</div>
-        </div>
-        <div style="background:#fff;border-radius:14px;padding:14px 16px;border:1.5px solid #dcfce7;text-align:center;">
-          <div style="font-size:1.3rem;font-weight:800;color:#f59e0b;font-family:'Space Grotesk',sans-serif;">24</div>
-          <div style="font-size:0.72rem;color:#6b7280;font-weight:600;margin-top:2px;">Gần đầy</div>
-        </div>
-        <div style="background:#fff;border-radius:14px;padding:14px 16px;border:1.5px solid #dcfce7;text-align:center;">
-          <div style="font-size:1.3rem;font-weight:800;color:#ef4444;font-family:'Space Grotesk',sans-serif;">11</div>
-          <div style="font-size:0.72rem;color:#6b7280;font-weight:600;margin-top:2px;">Đã đầy (đang thu)</div>
+          <div style="font-size:1.3rem;font-weight:800;color:#22c55e;font-family:'Space Grotesk',sans-serif;">Gia Lai</div>
+          <div style="font-size:0.72rem;color:#6b7280;font-weight:600;margin-top:2px;">Tỉnh hoạt động</div>
         </div>
       </div>
     </div>
@@ -1003,434 +970,773 @@
 </div><!-- end #main -->
 
 <!-- ═══════════════════════════════════════════════════
-     JAVASCRIPT — MOCK DATA & LOGIC
-═══════════════════════════════════════════════════ -->
-<script>
-/* ========================================
-   MOCK DATA
-======================================== */
 
-// Current user state
-let userState = {
-  points: 1240,
-  name: 'Nguyễn Văn An',
+  <!-- ════════════════════════════════
+       PAGE 7: AI CHAT TƯ VẤN
+  ════════════════════════════════ -->
+  <div class="page" id="page-aichat">
+    <div style="max-width:860px;">
+      <div style="margin-bottom:22px;">
+        <div class="page-title">🤖 Tư Vấn AI Tái Chế</div>
+        <div class="page-sub">Hỏi bất cứ điều gì về phân loại rác, tái chế, và môi trường</div>
+      </div>
+
+      <!-- Chat box -->
+      <div class="eco-card" style="display:flex;flex-direction:column;height:560px;">
+        <!-- Messages area -->
+        <div id="chat-messages" style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px;">
+          <!-- Tin nhắn chào -->
+          <div style="display:flex;gap:10px;align-items:flex-start;">
+            <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#16a34a);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <i class="fas fa-robot" style="color:#fff;font-size:0.85rem;"></i>
+            </div>
+            <div style="background:#f0fdf4;border:1.5px solid #dcfce7;border-radius:4px 16px 16px 16px;padding:12px 16px;max-width:80%;font-size:0.875rem;color:#374151;line-height:1.6;">
+              Xin chào! Mình là AI tư vấn tái chế của AI Recycle 🌱<br/>Bạn có thể hỏi mình về:<br/>
+              • Cách phân loại rác đúng cách<br/>
+              • Vật liệu nào có thể tái chế<br/>
+              • Tác động môi trường của rác thải<br/>
+              • Cách tiết kiệm điểm và đổi quà
+            </div>
+          </div>
+        </div>
+
+        <!-- Input area -->
+        <div style="padding:16px 20px;border-top:1.5px solid #f0fdf4;display:flex;gap:10px;align-items:flex-end;">
+          <!-- Quick suggestions -->
+          <div style="flex:1;">
+            <div id="chat-suggestions" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
+              <button onclick="sendChatMsg('Chai nhựa phân loại vào thùng nào?')" style="background:#f0fdf4;border:1.5px solid #dcfce7;border-radius:20px;padding:5px 12px;font-size:0.75rem;color:#15803d;font-weight:600;cursor:pointer;font-family:Nunito,sans-serif;">🍾 Chai nhựa</button>
+              <button onclick="sendChatMsg('Pin cũ bỏ ở đâu?')" style="background:#f0fdf4;border:1.5px solid #dcfce7;border-radius:20px;padding:5px 12px;font-size:0.75rem;color:#15803d;font-weight:600;cursor:pointer;font-family:Nunito,sans-serif;">🔋 Pin cũ</button>
+              <button onclick="sendChatMsg('Hữu cơ và vô cơ khác nhau thế nào?')" style="background:#f0fdf4;border:1.5px solid #dcfce7;border-radius:20px;padding:5px 12px;font-size:0.75rem;color:#15803d;font-weight:600;cursor:pointer;font-family:Nunito,sans-serif;">♻️ Hữu cơ vs Vô cơ</button>
+            </div>
+            <textarea id="chat-input" placeholder="Nhập câu hỏi về tái chế..." 
+              style="width:100%;border:2px solid #dcfce7;border-radius:12px;padding:11px 14px;font-family:Nunito,sans-serif;font-size:0.875rem;outline:none;resize:none;height:44px;transition:border-color 0.2s;line-height:1.4;overflow:hidden;"
+              onfocus="this.style.borderColor='#22c55e'"
+              onblur="this.style.borderColor='#dcfce7'"
+              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"
+              oninput="this.style.height='44px';this.style.height=Math.min(this.scrollHeight,120)+'px'"></textarea>
+          </div>
+          <button onclick="sendChat()" id="chat-send-btn" class="btn-eco" style="padding:11px 18px;flex-shrink:0;height:44px;">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- ═══════════════════════════════════════════════════
+<!-- ═══════════════════════════════════════════════════
+     FIREBASE SDK
+═══════════════════════════════════════════════════ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+import { getDatabase, ref, set, get, onValue, push, update } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAkYuYN8nPI02eJvIZnnPwN6fTL7E9ID-Y",
+  authDomain: "ai-recycle-4b608.firebaseapp.com",
+  databaseURL: "https://ai-recycle-4b608-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "ai-recycle-4b608",
+  storageBucket: "ai-recycle-4b608.firebasestorage.app",
+  messagingSenderId: "268162349916",
+  appId: "1:268162349916:web:cb5a42f2c9418b5ae81f99",
+  measurementId: "G-528YQ0RQ09"
 };
 
-// History data
-const historyData = [
-  { time: '08:14 — 07/06', station: 'THPT Chu Văn An (A1)', type: 'Chai nhựa', qty: 3, pts: 15 },
-  { time: '15:30 — 06/06', station: 'Công viên Thống Nhất', type: 'Lon nhôm',  qty: 2, pts: 14 },
-  { time: '12:05 — 06/06', station: 'THPT Chu Văn An (A1)', type: 'Giấy/bìa', qty: 5, pts: 10 },
-  { time: '09:20 — 05/06', station: 'Trường TH Đống Đa',   type: 'Chai nhựa', qty: 4, pts: 20 },
-  { time: '16:45 — 05/06', station: 'Siêu thị BigC Hà Đông',type:'Lon nhôm', qty: 3, pts: 21 },
-  { time: '11:00 — 04/06', station: 'THPT Chu Văn An (A1)', type: 'Chai nhựa', qty: 6, pts: 30 },
-  { time: '14:20 — 03/06', station: 'Công viên Thống Nhất', type: 'Giấy/bìa', qty: 8, pts: 16 },
-  { time: '08:50 — 03/06', station: 'Trường THCS Nguyễn Du', type:'Lon nhôm', qty: 1, pts: 7 },
-  { time: '17:10 — 02/06', station: 'THPT Chu Văn An (A1)', type: 'Chai nhựa', qty: 5, pts: 25 },
-  { time: '13:35 — 01/06', station: 'Bệnh viện Bạch Mai',  type: 'Chai nhựa', qty: 2, pts: 10 },
-];
+const app = initializeApp(firebaseConfig);
+const db  = getDatabase(app);
 
-// Store items
+/* ========================================
+   STATE
+======================================== */
+let currentUser = null;  // 'guest1' | 'guest2' | null
+let unsubscribeUser = null;
+let unsubscribeHistory = null;
+
+/* ========================================
+   NAVIGATION — bảo vệ trang
+======================================== */
+const PROTECTED = ['dashboard','store','map','leaderboard','aichat'];
+
+window.navigate = function(page) {
+  if (PROTECTED.includes(page) && !currentUser) {
+    showToast('Vui lòng đăng nhập để sử dụng tính năng này!', 'warn');
+    page = 'login';
+  }
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const pageMap2 = {
+    home:'page-home', login:'page-login', dashboard:'page-dashboard',
+    store:'page-store', map:'page-map', leaderboard:'page-leaderboard', aichat:'page-aichat'
+  };
+  const titles = {
+    home:'Trang Chủ', login:'Đăng Nhập', dashboard:'Dashboard Tích Điểm',
+    store:'Eco-Store Đổi Thưởng', map:'Bản Đồ Trạm', leaderboard:'Bảng Xếp Hạng', aichat:'Tư Vấn AI'
+  };
+  document.getElementById(pageMap2[page]).classList.add('active');
+  document.getElementById('topbar-title').textContent = titles[page];
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const navItem = document.querySelector(`.nav-item[data-page="${page}"]`);
+  if (navItem) navItem.classList.add('active');
+  if (window.innerWidth < 768) closeSidebar();
+  if (page === 'map') renderMap();
+  if (page === 'leaderboard') renderLeaderboard();
+};
+
+/* ========================================
+   LOGIN — Firebase Realtime
+======================================== */
+window.doLogin = async function() {
+  const u = document.getElementById('login-user').value.trim().toLowerCase();
+  const p = document.getElementById('login-pass').value.trim();
+  if (!u || !p) { showToast('Vui lòng nhập đầy đủ!', 'warn'); return; }
+
+  const snap = await get(ref(db, `users/${u}`));
+  if (!snap.exists()) { showToast('Tài khoản không tồn tại!', 'error'); return; }
+  const userData = snap.val();
+  if (userData.password !== p) { showToast('Sai mật khẩu!', 'error'); return; }
+
+  await loginUser(u, userData);
+};
+
+window.simulateQR = async function() {
+  // QR mô phỏng → luôn đăng nhập guest1
+  const snap = await get(ref(db, 'users/guest1'));
+  if (snap.exists()) {
+    document.getElementById('qr-box').innerHTML = '<i class="fas fa-check-circle" style="font-size:3rem;color:#22c55e;"></i>';
+    document.getElementById('qr-status').textContent = '✅ Nhận diện QR thành công!';
+    await loginUser('guest1', snap.val());
+  }
+};
+
+window.simulateRFID = async function() {
+  showToast('📡 Đang đọc thẻ RFID...', 'info');
+  const snap = await get(ref(db, 'users/guest2'));
+  if (snap.exists()) {
+    setTimeout(async () => { await loginUser('guest2', snap.val()); }, 1200);
+  }
+};
+
+async function loginUser(uid, userData) {
+  currentUser = uid;
+  // Ghi session lên Firebase để Python biết ai đang dùng
+  await set(ref(db, 'sessions/active_user'), uid);
+  showToast(`Đăng nhập thành công! Xin chào ${userData.name} 👋`, 'success');
+  updateSidebarUser(userData);
+  listenUserData(uid);
+  listenHistory(uid);
+  setTimeout(() => navigate('dashboard'), 800);
+}
+
+window.doLogout = async function() {
+  if (!currentUser) return;
+  // Xóa session trên Firebase
+  await set(ref(db, 'sessions/active_user'), null);
+  if (unsubscribeUser) { unsubscribeUser(); unsubscribeUser = null; }
+  if (unsubscribeHistory) { unsubscribeHistory(); unsubscribeHistory = null; }
+  currentUser = null;
+  showToast('Đã đăng xuất!', 'info');
+  navigate('home');
+  updateSidebarUser(null);
+};
+
+/* ========================================
+   REALTIME LISTENER — User data
+======================================== */
+function listenUserData(uid) {
+  if (unsubscribeUser) unsubscribeUser();
+  const userRef = ref(db, `users/${uid}`);
+  unsubscribeUser = onValue(userRef, (snap) => {
+    if (!snap.exists()) return;
+    const d = snap.val();
+    renderDashboard(d);
+    document.getElementById('topbar-pts-val').textContent = (d.points||0).toLocaleString('vi');
+  });
+}
+
+/* ========================================
+   REALTIME LISTENER — History
+======================================== */
+function listenHistory(uid) {
+  if (unsubscribeHistory) unsubscribeHistory();
+  const histRef = ref(db, `history/${uid}`);
+  unsubscribeHistory = onValue(histRef, (snap) => {
+    const data = snap.val() || {};
+    const rows = Object.values(data).filter(r => r && r.time).reverse();
+    renderHistory(rows);
+  });
+}
+
+/* ========================================
+   DASHBOARD RENDER
+======================================== */
+function getLevelInfo(pts) {
+  if (pts < 500)  return { label:'🌱 Người Xanh Cấp I',   next:500,  pct: pts/500*100 };
+  if (pts < 1500) return { label:'🌿 Người Xanh Cấp II',  next:1500, pct: pts/1500*100 };
+  if (pts < 3000) return { label:'🌳 Người Xanh Cấp III', next:3000, pct: pts/3000*100 };
+  return { label:'🏆 Đại Sứ Xanh', next:pts, pct:100 };
+}
+
+function renderDashboard(d) {
+  const pts = d.points || 0;
+  const el = id => document.getElementById(id);
+  if (el('dash-points'))   el('dash-points').textContent   = pts.toLocaleString('vi');
+  if (el('stat-plastic'))  el('stat-plastic').textContent  = d.plastic || 0;
+  if (el('stat-cans'))     el('stat-cans').textContent     = d.cans    || 0;
+  if (el('stat-paper'))    el('stat-paper').textContent    = d.paper   || 0;
+  if (el('stat-co2'))      el('stat-co2').textContent      = (d.co2||0).toFixed(1);
+  if (el('dash-username')) el('dash-username').textContent = `${d.name} · ${currentUser}`;
+  const lv = getLevelInfo(pts);
+  if (el('dash-level'))      el('dash-level').textContent      = lv.label;
+  if (el('dash-level-pct'))  el('dash-level-pct').style.width  = Math.min(100,lv.pct).toFixed(0)+'%';
+  if (el('dash-level-next')) el('dash-level-next').textContent = `${pts.toLocaleString('vi')}/${lv.next.toLocaleString('vi')} đến cấp tiếp`;
+}
+
+function updateSidebarUser(d) {
+  const nameEl = document.getElementById('sidebar-username');
+  const roleEl = document.getElementById('sidebar-role');
+  const avEl   = document.getElementById('sidebar-avatar');
+  if (!d) {
+    if (nameEl) nameEl.textContent = 'Chưa đăng nhập';
+    if (roleEl) roleEl.textContent = 'Vui lòng đăng nhập';
+    if (avEl)   avEl.textContent   = '?';
+    return;
+  }
+  if (nameEl) nameEl.textContent = d.name;
+  if (roleEl) roleEl.textContent = currentUser;
+  if (avEl)   avEl.textContent   = d.name.split(' ').slice(-2).map(w=>w[0]).join('').toUpperCase();
+}
+
+/* ========================================
+   HISTORY RENDER
+======================================== */
+function renderHistory(rows) {
+  const tbody = document.getElementById('history-tbody');
+  if (!tbody) return;
+  const typeColors = { 'Chai nhựa':'badge-blue','Lon nhôm':'badge-yellow','Giấy/bìa':'badge-green','Đổi quà':'badge-red' };
+  tbody.innerHTML = rows.length ? rows.map(r => `
+    <tr>
+      <td style="color:#6b7280;font-size:0.82rem;white-space:nowrap;">${r.time}</td>
+      <td style="font-weight:600;color:#374151;font-size:0.83rem;">${r.station}</td>
+      <td><span class="badge ${typeColors[r.type]||'badge-green'}">${r.type}</span></td>
+      <td style="text-align:center;font-weight:700;">${r.qty}</td>
+      <td style="text-align:right;">
+        <span style="background:#f0fdf4;color:#15803d;border:1px solid #dcfce7;border-radius:10px;padding:4px 11px;font-weight:800;font-size:0.82rem;">
+          ${r.pts > 0 ? '+' : ''}${r.pts} pts
+        </span>
+      </td>
+    </tr>`).join('') :
+    '<tr><td colspan="5" style="text-align:center;color:#9ca3af;padding:24px;">Chưa có giao dịch nào</td></tr>';
+}
+
+window.filterHistory = function(type) {
+  // Lắng nghe lại với filter
+  if (!currentUser) return;
+  get(ref(db, `history/${currentUser}`)).then(snap => {
+    const data = snap.val() || {};
+    let rows = Object.values(data).filter(r => r && r.time).reverse();
+    if (type !== 'all') rows = rows.filter(r => r.type === type);
+    renderHistory(rows);
+  });
+};
+
+/* ========================================
+   STORE — Đổi quà trừ điểm Firebase
+======================================== */
 const storeItems = [
-  { id:1, cat:'school', emoji:'📓', name:'Vở 200 trang Hồng Hà', pts:80,  stock:45, hot:true  },
+  { id:1, cat:'school', emoji:'📓', name:'Vở 200 trang Hồng Hà',   pts:80,  stock:45, hot:true  },
   { id:2, cat:'school', emoji:'✏️', name:'Bộ bút chì màu 24 màu', pts:120, stock:22, hot:false },
-  { id:3, cat:'school', emoji:'🎒', name:'Balo học sinh eco',      pts:500, stock:8,  hot:true  },
-  { id:4, cat:'school', emoji:'📐', name:'Bộ dụng cụ hình học',    pts:95,  stock:30, hot:false },
-  { id:5, cat:'food',   emoji:'🥛', name:'Sữa Vinamilk hộp 220ml', pts:60,  stock:100,hot:false },
-  { id:6, cat:'food',   emoji:'🍫', name:'Bánh quy dinh dưỡng',    pts:75,  stock:60, hot:false },
-  { id:7, cat:'voucher',emoji:'🎫', name:'Voucher Circle K 20k',   pts:180, stock:50, hot:true  },
-  { id:8, cat:'voucher',emoji:'🎟️', name:'Vé xe buýt điện 1 lượt', pts:100, stock:200,hot:false },
+  { id:3, cat:'school', emoji:'🎒', name:'Balo học sinh eco',        pts:500, stock:8,  hot:true  },
+  { id:4, cat:'school', emoji:'📐', name:'Bộ dụng cụ hình học',     pts:95,  stock:30, hot:false },
+  { id:5, cat:'food',   emoji:'🥛', name:'Sữa Vinamilk 220ml',      pts:60,  stock:100,hot:false },
+  { id:6, cat:'food',   emoji:'🍫', name:'Bánh quy dinh dưỡng',     pts:75,  stock:60, hot:false },
+  { id:7, cat:'voucher',emoji:'🎫', name:'Voucher Circle K 20k',    pts:180, stock:50, hot:true  },
+  { id:8, cat:'voucher',emoji:'🎟️', name:'Vé xe buýt điện 1 lượt',pts:100, stock:200,hot:false },
   { id:9, cat:'voucher',emoji:'☕', name:'Trà sữa Gong Cha vừa',    pts:250, stock:20, hot:true  },
   { id:10,cat:'eco',    emoji:'🌱', name:'Hạt giống rau sạch',      pts:70,  stock:80, hot:false },
   { id:11,cat:'eco',    emoji:'🌿', name:'Túi vải canvas tái chế',  pts:150, stock:35, hot:false },
   { id:12,cat:'eco',    emoji:'🪴', name:'Chậu cây mini văn phòng', pts:200, stock:15, hot:false },
 ];
 
-// Stations / Map
-const stations = [
-  { name:'THPT Chu Văn An (Cổng chính)',  area:'Đống Đa, Hà Nội',   cap:62, dist:'0.2km', x:42, y:47, status:'ok'  },
-  { name:'THPT Chu Văn An (Sân thể thao)',area:'Đống Đa, Hà Nội',   cap:38, dist:'0.3km', x:36, y:55, status:'ok'  },
-  { name:'Công viên Thống Nhất (Cổng 1)', area:'Hai Bà Trưng, HN',  cap:87, dist:'1.1km', x:60, y:38, status:'warn'},
-  { name:'Siêu thị BigC Hà Đông',         area:'Hà Đông, Hà Nội',   cap:95, dist:'3.4km', x:20, y:70, status:'full'},
-  { name:'Trường TH Đống Đa',             area:'Đống Đa, Hà Nội',   cap:44, dist:'0.8km', x:50, y:28, status:'ok'  },
-  { name:'Bệnh viện Bạch Mai (Cổng phụ)', area:'Đống Đa, Hà Nội',   cap:71, dist:'1.6km', x:72, y:60, status:'warn'},
-  { name:'Chợ Ngã Tư Sở',                 area:'Đống Đa, Hà Nội',   cap:20, dist:'2.0km', x:28, y:82, status:'ok'  },
-  { name:'Trường THCS Nguyễn Du',          area:'Hoàn Kiếm, HN',     cap:55, dist:'2.8km', x:80, y:22, status:'ok'  },
-];
-
-// Leaderboard
-const lbData = [
-  { name:'Trần Thị Minh Anh', school:'THPT Lê Quý Đôn',      pts:3420, streak:14 },
-  { name:'Nguyễn Phúc Khang',  school:'THPT Chu Văn An',       pts:3180, streak:22 },
-  { name:'Lê Thị Bảo Ngọc',    school:'THPT Nguyễn Thị Minh Khai', pts:2940, streak:9 },
-  { name:'Phạm Minh Tuấn',     school:'Trường ĐH Bách Khoa',  pts:2755, streak:7  },
-  { name:'Đỗ Thanh Hương',     school:'THPT Lê Lợi',           pts:2610, streak:11 },
-  { name:'Võ Ngọc Tú Uyên',   school:'THPT Chu Văn An',       pts:2480, streak:5  },
-  { name:'Bùi Duy Mạnh',      school:'THCS Nguyễn Du',        pts:2310, streak:18 },
-  { name:'Hoàng Thị Lan',      school:'Cụm dân cư P.Thịnh Quang', pts:2150, streak:3 },
-  { name:'Nguyễn Đức Hải',    school:'THPT Đống Đa',          pts:1980, streak:6  },
-  { name:'Trịnh Khánh Linh',  school:'THCS Nguyễn Trãi',     pts:1840, streak:8  },
-];
-
-/* ========================================
-   NAVIGATION
-======================================== */
-const pageMap = {
-  home:        { el:'page-home',        title:'Trang Chủ',           icon:'fa-home' },
-  login:       { el:'page-login',       title:'Đăng Nhập',           icon:'fa-sign-in-alt' },
-  dashboard:   { el:'page-dashboard',   title:'Dashboard Tích Điểm', icon:'fa-chart-pie' },
-  store:       { el:'page-store',       title:'Eco-Store Đổi Thưởng',icon:'fa-store' },
-  map:         { el:'page-map',         title:'Bản Đồ Trạm',         icon:'fa-map-marker-alt' },
-  leaderboard: { el:'page-leaderboard', title:'Bảng Xếp Hạng',       icon:'fa-trophy' },
+window.renderStore = function(items) {
+  const grid = document.getElementById('store-grid');
+  if (!grid) return;
+  get(ref(db, `users/${currentUser}`)).then(snap => {
+    const userData = snap.exists() ? snap.val() : {};
+    const pts = userData.points || 0;
+    document.getElementById('store-points-display').textContent = pts.toLocaleString('vi');
+    grid.innerHTML = items.map(item => {
+      const canAfford = pts >= item.pts;
+      return `
+        <div class="store-card">
+          <div class="store-img">
+            <span style="font-size:3.5rem;position:relative;z-index:1;">${item.emoji}</span>
+            ${item.hot ? '<span style="position:absolute;top:10px;right:10px;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;font-size:0.65rem;font-weight:800;padding:3px 9px;border-radius:10px;">HOT</span>' : ''}
+          </div>
+          <div style="padding:14px 16px;flex:1;display:flex;flex-direction:column;">
+            <div style="font-weight:700;color:#14532d;font-size:0.85rem;line-height:1.3;flex:1;margin-bottom:8px;">${item.name}</div>
+            <div style="font-size:0.72rem;color:#9ca3af;margin-bottom:10px;">Còn ${item.stock} phần</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+              <div style="display:flex;align-items:center;gap:4px;">
+                <i class="fas fa-leaf" style="color:#22c55e;font-size:0.8rem;"></i>
+                <span style="font-weight:800;color:#15803d;font-size:1rem;font-family:'Space Grotesk',sans-serif;">${item.pts}</span>
+                <span style="font-size:0.7rem;color:#6b7280;">pts</span>
+              </div>
+              <button class="btn-eco" style="font-size:0.75rem;padding:7px 14px;"
+                ${canAfford ? '' : 'disabled'}
+                onclick="redeemItem(${item.id},${item.pts},'${item.name.replace(/'/g,"\\'")}')">
+                ${canAfford ? 'Đổi quà' : 'Không đủ pts'}
+              </button>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+  });
 };
 
-function navigate(page) {
-  // Hide all pages
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  // Show target
-  const target = pageMap[page];
-  document.getElementById(target.el).classList.add('active');
-  // Update topbar title
-  document.getElementById('topbar-title').textContent = target.title;
-  // Update sidebar active state
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const navItem = document.querySelector(`.nav-item[data-page="${page}"]`);
-  if (navItem) navItem.classList.add('active');
-  // Close sidebar on mobile
-  if (window.innerWidth < 768) closeSidebar();
-  // Lazy render
-  if (page === 'dashboard')   renderHistory(historyData);
-  if (page === 'store')       renderStore(storeItems);
-  if (page === 'map')         renderMap();
-  if (page === 'leaderboard') renderLeaderboard();
+window.redeemItem = async function(id, pts, name) {
+  if (!currentUser) return;
+  const snap = await get(ref(db, `users/${currentUser}`));
+  const userData = snap.val();
+  if ((userData.points||0) < pts) { showToast(`Không đủ điểm!`, 'error'); return; }
+
+  const newPts = (userData.points||0) - pts;
+  await update(ref(db, `users/${currentUser}`), { points: newPts });
+
+  // Ghi lịch sử
+  const now = new Date();
+  const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')} — ${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}`;
+  await push(ref(db, `history/${currentUser}`), { time:timeStr, station:'🎁 Eco-Store', type:'Đổi quà', qty:1, pts:-pts });
+
+  showToast(`🎉 Đổi thành công: ${name}!`, 'success');
+  renderStore(storeItems);
+};
+
+window.filterStore = function(cat, btn) {
+  document.querySelectorAll('#store-filters button').forEach(b => { b.classList.remove('btn-eco'); b.classList.add('btn-outline'); });
+  btn.classList.add('btn-eco'); btn.classList.remove('btn-outline');
+  const filtered = cat === 'all' ? storeItems : storeItems.filter(i => i.cat === cat);
+  renderStore(filtered);
+};
+
+/* ========================================
+   MAP — Bản đồ Việt Nam + 1 trạm Gia Lai
+======================================== */
+window.renderMap = function() {
+  renderVietnamMap();
+  renderStationList();
+};
+
+function renderVietnamMap() {
+  const mapEl = document.getElementById('vietnam-map-svg');
+  if (!mapEl) return;
+  // Điểm trạm Gia Lai (tọa độ tương đối trên bản đồ VN SVG)
+  // Gia Lai nằm khoảng 55% từ trái, 52% từ trên
+  mapEl.innerHTML = `
+    <svg viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
+      <!-- Nền biển -->
+      <rect width="400" height="600" fill="#dbeafe"/>
+      <!-- Hình dạng Việt Nam đơn giản hóa -->
+      <path d="
+        M 200 20
+        C 220 20 240 25 255 35
+        C 270 45 280 60 285 75
+        C 290 90 285 105 280 115
+        C 275 125 270 130 265 140
+        C 260 150 255 155 252 165
+        C 249 175 248 185 245 195
+        C 242 205 238 212 235 220
+        C 232 228 230 235 228 245
+        C 226 255 225 265 224 275
+        C 223 285 222 295 220 305
+        C 218 315 215 322 213 330
+        C 211 338 210 345 209 355
+        C 208 365 208 375 207 385
+        C 206 395 204 402 202 410
+        C 200 418 198 425 196 432
+        C 194 439 192 445 190 452
+        C 188 459 185 465 182 472
+        C 179 479 175 484 172 490
+        C 169 496 165 500 162 505
+        C 159 510 155 514 151 517
+        C 147 520 143 521 140 520
+        C 137 519 134 516 132 512
+        C 130 508 129 503 130 498
+        C 131 493 133 489 135 485
+        C 137 481 138 477 138 473
+        C 138 469 137 465 135 462
+        C 133 459 130 457 127 456
+        C 124 455 121 455 118 456
+        C 115 457 112 459 110 461
+        C 108 463 107 465 108 467
+        C 109 469 111 470 113 470
+        C 115 470 117 469 118 467
+        L 130 460
+        C 135 458 140 460 143 465
+        C 146 470 145 477 142 482
+        C 139 487 134 490 130 492
+        C 126 494 122 494 119 492
+        C 116 490 114 487 113 484
+        C 112 481 112 478 114 476
+        L 120 468
+        C 122 465 125 463 128 462
+        C 131 461 134 462 136 464
+        C 138 466 139 469 138 472
+        C 137 475 135 477 133 478
+        C 131 479 129 479 128 477
+        L 125 472
+        C 124 470 124 468 126 467
+        C 128 466 130 467 131 469
+        L 132 471
+        L 160 530
+        C 165 540 170 545 175 548
+        C 180 551 185 551 190 549
+        C 195 547 199 543 202 539
+        C 205 535 207 531 208 527
+        C 209 523 209 519 208 516
+        C 207 513 205 511 203 510
+        C 201 509 199 510 198 512
+        C 197 514 197 517 199 519
+        C 201 521 203 521 205 519
+        L 210 510
+        C 212 505 215 500 218 496
+        C 221 492 225 489 229 487
+        C 233 485 237 484 241 484
+        C 245 484 249 485 252 487
+        C 255 489 258 492 260 496
+        C 262 500 263 505 263 510
+        C 263 515 262 520 260 524
+        C 258 528 256 531 253 533
+        L 230 555
+        C 225 559 220 561 215 561
+        C 210 561 205 559 202 556
+        L 180 570
+        C 175 573 170 574 165 574
+        C 160 574 156 572 153 569
+        L 148 563
+        C 145 559 143 554 143 549
+        C 143 544 144 540 147 537
+        L 155 528
+        C 158 524 162 522 166 522
+        C 170 522 174 524 176 528
+        C 178 532 177 537 174 540
+        C 171 543 167 544 164 542
+        C 161 540 160 537 161 534
+        C 162 531 164 529 167 528
+        L 178 525
+        L 200 540
+        C 205 544 210 546 215 546
+        C 220 546 225 544 229 540
+        C 233 536 235 531 235 526
+        C 235 521 234 517 231 514
+        C 228 511 225 510 222 511
+        C 219 512 217 514 217 517
+        C 217 520 219 522 222 522
+        L 230 520
+        L 270 530
+        C 275 532 279 535 282 539
+        C 285 543 286 548 285 553
+        C 284 558 281 562 278 565
+        C 275 568 271 569 268 568
+        C 265 567 263 564 263 561
+        L 265 545
+        L 270 510
+        L 268 495
+        L 265 480
+        L 262 468
+        C 260 460 258 452 258 444
+        C 258 436 260 428 262 420
+        L 265 408
+        L 268 395
+        L 270 382
+        L 272 368
+        L 273 354
+        L 274 340
+        L 273 326
+        L 272 312
+        L 270 298
+        L 267 284
+        L 263 270
+        L 259 256
+        L 254 242
+        L 249 228
+        L 244 214
+        L 240 200
+        L 237 186
+        L 235 172
+        L 234 158
+        L 234 144
+        L 235 130
+        L 237 116
+        L 238 102
+        L 237 88
+        L 234 74
+        L 229 61
+        L 222 50
+        L 214 41
+        L 207 35
+        L 200 32 Z
+      " fill="#86efac" stroke="#15803d" stroke-width="1.5" opacity="0.85"/>
+
+      <!-- Label tỉnh Gia Lai -->
+      <text x="215" y="305" font-size="10" fill="#14532d" font-weight="bold" font-family="Nunito,sans-serif" text-anchor="middle">Gia Lai</text>
+
+      <!-- Pin trạm tại Gia Lai (55% x, 52% y → ~220, 312) -->
+      <g transform="translate(218, 295)" style="cursor:pointer;" onclick="showToast('Trạm 55 Nguyễn Chí Thanh · Gia Lai · Còn trống','info')">
+        <!-- Pin shape -->
+        <path d="M 0 -22 C -10 -22 -16 -14 -16 -8 C -16 2 0 18 0 18 C 0 18 16 2 16 -8 C 16 -14 10 -22 0 -22 Z" 
+              fill="#22c55e" stroke="#fff" stroke-width="2"/>
+        <!-- Pin inner circle -->
+        <circle cx="0" cy="-8" r="5" fill="#fff"/>
+        <!-- Pulse animation -->
+        <circle cx="0" cy="-8" r="14" fill="none" stroke="#22c55e" stroke-width="1.5" opacity="0.4">
+          <animate attributeName="r" from="8" to="20" dur="2s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" from="0.6" to="0" dur="2s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+
+      <!-- Tooltip label -->
+      <rect x="135" y="316" width="166" height="22" rx="6" fill="white" opacity="0.9" stroke="#dcfce7" stroke-width="1"/>
+      <text x="218" y="331" font-size="9" fill="#15803d" font-weight="700" font-family="Nunito,sans-serif" text-anchor="middle">📍 55 Nguyễn Chí Thanh, Phù Cát</text>
+
+      <!-- Tiêu đề -->
+      <rect x="8" y="8" width="140" height="24" rx="8" fill="white" opacity="0.85"/>
+      <text x="78" y="24" font-size="11" fill="#14532d" font-weight="800" font-family="Nunito,sans-serif" text-anchor="middle">🇻🇳 Bản Đồ Trạm VN</text>
+    </svg>
+  `;
+}
+
+function renderStationList() {
+  const list = document.getElementById('station-list');
+  if (!list) return;
+  // Lắng nghe realtime từ Firebase
+  onValue(ref(db, 'stations/tram1'), (snap) => {
+    const s = snap.val() || {};
+    const cap = s.capacity || 0;
+    const status = cap >= 90 ? 'full' : cap >= 70 ? 'warn' : 'ok';
+    const statusConfig = {
+      ok:   { color:'#22c55e', label:'Còn trống',  badgeClass:'badge-green'  },
+      warn: { color:'#f59e0b', label:'Gần đầy',    badgeClass:'badge-yellow' },
+      full: { color:'#ef4444', label:'Đã đầy',     badgeClass:'badge-red'    },
+    };
+    const sc = statusConfig[status];
+    list.innerHTML = `
+      <div class="map-item">
+        <div class="map-dot" style="background:${sc.color};"></div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-weight:700;color:#14532d;font-size:0.83rem;">55 Nguyễn Chí Thanh</div>
+          <div style="font-size:0.72rem;color:#9ca3af;margin-top:2px;">Xã Phù Cát, Tỉnh Gia Lai</div>
+          <div style="margin-top:6px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
+              <span style="font-size:0.68rem;color:#6b7280;">Dung lượng</span>
+              <span style="font-size:0.68rem;font-weight:700;color:${sc.color};">${cap}%</span>
+            </div>
+            <div class="capacity-bar"><div class="capacity-fill" style="width:${cap}%;background:${sc.color};transition:width 0.5s;"></div></div>
+          </div>
+        </div>
+        <span class="badge ${sc.badgeClass}">${sc.label}</span>
+      </div>
+      <!-- Stats -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
+        <div style="background:#fff;border-radius:12px;padding:12px;border:1.5px solid #dcfce7;text-align:center;">
+          <div style="font-size:1.2rem;font-weight:800;color:#15803d;font-family:'Space Grotesk',sans-serif;">1</div>
+          <div style="font-size:0.7rem;color:#6b7280;">Tổng trạm</div>
+        </div>
+        <div style="background:#fff;border-radius:12px;padding:12px;border:1.5px solid #dcfce7;text-align:center;">
+          <div style="font-size:1.2rem;font-weight:800;color:${sc.color};font-family:'Space Grotesk',sans-serif;">${cap}%</div>
+          <div style="font-size:0.7rem;color:#6b7280;">Mức đầy</div>
+        </div>
+      </div>
+    `;
+  });
 }
 
 /* ========================================
-   SIDEBAR TOGGLE
+   LEADERBOARD — từ Firebase
 ======================================== */
-function toggleSidebar() {
-  const sb  = document.getElementById('sidebar');
-  const ov  = document.getElementById('sidebar-overlay');
-  if (window.innerWidth < 768) {
-    sb.classList.toggle('open');
-    ov.classList.toggle('show');
-  }
+window.renderLeaderboard = function() {
+  get(ref(db, 'users')).then(snap => {
+    if (!snap.exists()) return;
+    const users = snap.val();
+    const lbData = Object.entries(users).map(([uid, u]) => ({
+      name: u.name || uid,
+      uid,
+      pts: u.points || 0,
+      plastic: u.plastic || 0,
+    })).sort((a,b) => b.pts - a.pts);
+    renderPodium(lbData);
+    renderLBList(lbData);
+  });
+};
+
+function renderPodium(data) {
+  const podium = document.getElementById('podium');
+  if (!podium || data.length === 0) return;
+  const top = data.slice(0,3);
+  while (top.length < 3) top.push({ name:'---', pts:0, uid:'' });
+  const order = [1,0,2];
+  const rankEmoji = ['🥇','🥈','🥉'];
+  const pedestal = ['140px','120px','100px'];
+  podium.innerHTML = order.map(i => {
+    const p = top[i] || { name:'---', pts:0 };
+    const initials = p.name.split(' ').slice(-2).map(w=>w[0]||'').join('').toUpperCase();
+    const avatarClass = ['rank-1','rank-2','rank-3'][i];
+    return `
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;flex:1;max-width:160px;">
+        <div style="font-size:1.8rem;">${rankEmoji[i]}</div>
+        <div class="lb-avatar ${avatarClass}" style="width:52px;height:52px;font-size:1rem;">${initials}</div>
+        <div style="text-align:center;">
+          <div style="font-weight:800;color:#14532d;font-size:0.8rem;">${p.name}</div>
+          <div style="font-weight:900;color:#15803d;font-size:1.1rem;font-family:'Space Grotesk',sans-serif;margin-top:4px;">${(p.pts||0).toLocaleString('vi')}</div>
+        </div>
+        <div style="width:100%;height:${pedestal[i]};background:linear-gradient(180deg,${i===0?'#fbbf24':'#d1d5db'} 0%,${i===0?'#f59e0b':'#9ca3af'} 100%);
+                    border-radius:10px 10px 4px 4px;display:flex;align-items:center;justify-content:center;
+                    font-weight:800;color:#fff;font-size:1.2rem;">#${i+1}</div>
+      </div>`;
+  }).join('');
 }
-function closeSidebar() {
+
+function renderLBList(data) {
+  const list = document.getElementById('lb-list');
+  if (!list) return;
+  const rankStyles = ['rank-1','rank-2','rank-3'];
+  list.innerHTML = data.map((p,i) => {
+    const initials = p.name.split(' ').slice(-2).map(w=>w[0]||'').join('').toUpperCase();
+    const avatarClass = i < 3 ? rankStyles[i] : 'rank-n';
+    const isMe = p.uid === currentUser;
+    return `
+      <div class="lb-row" style="${isMe?'background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:14px;':''}">
+        <div style="width:28px;text-align:center;font-weight:800;color:${i<3?'#15803d':'#9ca3af'};font-family:'Space Grotesk',sans-serif;font-size:${i<3?'1rem':'0.85rem'};">
+          ${i<3?['🥇','🥈','🥉'][i]:'#'+(i+1)}
+        </div>
+        <div class="lb-avatar ${avatarClass}" style="${i>=3?'background:#f0fdf4;color:#15803d;':''}">${initials}</div>
+        <div style="flex:1;">
+          <div style="font-weight:700;color:#14532d;font-size:0.85rem;">${p.name}${isMe?' <span style="background:#dcfce7;color:#15803d;font-size:0.65rem;padding:2px 7px;border-radius:8px;font-weight:700;">Bạn</span>':''}</div>
+        </div>
+        <div style="font-weight:800;color:#15803d;font-size:0.95rem;font-family:'Space Grotesk',sans-serif;">${(p.pts||0).toLocaleString('vi')} pts</div>
+      </div>`;
+  }).join('');
+}
+
+/* ========================================
+   AI CHAT
+======================================== */
+let chatHistory = [];
+
+window.sendChat = async function() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  input.style.height = '44px';
+  await sendChatMsg(msg);
+};
+
+window.sendChatMsg = async function(msg) {
+  appendMsg('user', msg.replace(/</g,'&lt;'));
+  document.getElementById('chat-send-btn').disabled = true;
+  const loadingDiv = appendMsg('bot', '<span style="color:#9ca3af;">💬 Đang suy nghĩ...</span>', true);
+  chatHistory.push({ role:'user', content:msg });
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:800,
+        system:`Bạn là trợ lý AI tư vấn tái chế của hệ thống AI Recycle tại Việt Nam.
+Trả lời bằng tiếng Việt, thân thiện, ngắn gọn (tối đa 120 từ), dùng emoji phù hợp.
+Chuyên môn: phân loại rác (hữu cơ/vô cơ/tái chế/nguy hại), hướng dẫn tích điểm AI Recycle.
+Khi nói về phân loại: xanh lá=hữu cơ, xanh dương=tái chế, đỏ=nguy hại.`,
+        messages: chatHistory.slice(-8),
+      }),
+    });
+    const data = await res.json();
+    const reply = data.content?.[0]?.text || 'Xin lỗi, thử lại nhé!';
+    chatHistory.push({ role:'assistant', content:reply });
+    loadingDiv.remove();
+    appendMsg('bot', reply.replace(/\n/g,'<br/>'));
+  } catch(e) {
+    loadingDiv.remove();
+    appendMsg('bot','⚠️ Không kết nối được AI. Vui lòng thử lại.');
+  }
+  document.getElementById('chat-send-btn').disabled = false;
+};
+
+function appendMsg(role, html, isLoading=false) {
+  const area = document.getElementById('chat-messages');
+  const isBot = role === 'bot';
+  const div = document.createElement('div');
+  if (isLoading) div.id = 'chat-loading';
+  div.style.cssText = 'display:flex;gap:10px;align-items:flex-start;';
+  div.innerHTML = isBot ? `
+    <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#16a34a);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <i class="fas fa-robot" style="color:#fff;font-size:0.85rem;"></i>
+    </div>
+    <div style="background:#f0fdf4;border:1.5px solid #dcfce7;border-radius:4px 16px 16px 16px;padding:12px 16px;max-width:80%;font-size:0.875rem;color:#374151;line-height:1.65;">${html}</div>
+  ` : `
+    <div style="flex:1;"></div>
+    <div style="background:linear-gradient(135deg,#22c55e,#16a34a);border-radius:16px 4px 16px 16px;padding:12px 16px;max-width:80%;font-size:0.875rem;color:#fff;line-height:1.6;">${html}</div>
+  `;
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+  return div;
+}
+
+/* ========================================
+   SIDEBAR + TOAST + RESPONSIVE
+======================================== */
+window.toggleSidebar = function() {
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('sidebar-overlay');
+  if (window.innerWidth < 768) { sb.classList.toggle('open'); ov.classList.toggle('show'); }
+};
+window.closeSidebar = function() {
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('sidebar-overlay').classList.remove('show');
-}
+};
 
-/* ========================================
-   TOAST NOTIFICATION
-======================================== */
-function showToast(msg, type = 'success') {
+window.showToast = function(msg, type='success') {
   const container = document.getElementById('toast-container');
   const toast = document.createElement('div');
-  const icons = { success:'fa-check-circle', error:'fa-times-circle', info:'fa-info-circle', warn:'fa-exclamation-triangle' };
+  const icons  = { success:'fa-check-circle', error:'fa-times-circle', info:'fa-info-circle', warn:'fa-exclamation-triangle' };
   const colors = { success:'#22c55e', error:'#ef4444', info:'#3b82f6', warn:'#f59e0b' };
-  toast.className = `toast ${type === 'error' ? 'error' : type === 'warn' ? 'warn' : ''}`;
-  toast.style.borderLeftColor = colors[type] || colors.success;
+  toast.className = `toast ${type==='error'?'error':type==='warn'?'warn':''}`;
+  toast.style.borderLeftColor = colors[type]||colors.success;
   toast.innerHTML = `
     <i class="fas ${icons[type]||icons.success}" style="color:${colors[type]||colors.success};font-size:1.1rem;flex-shrink:0;"></i>
     <span style="color:#374151;flex:1;">${msg}</span>
     <i class="fas fa-times" style="color:#9ca3af;cursor:pointer;font-size:0.8rem;" onclick="this.parentElement.remove()"></i>
   `;
   container.appendChild(toast);
-  setTimeout(() => {
-    toast.style.animation = 'slideOut 0.3s ease forwards';
-    setTimeout(() => toast.remove(), 300);
-  }, 3500);
-}
+  setTimeout(() => { toast.style.animation='slideOut 0.3s ease forwards'; setTimeout(()=>toast.remove(),300); }, 3500);
+};
 
-/* ========================================
-   LOGIN SIMULATION
-======================================== */
-function doLogin() {
-  const u = document.getElementById('login-user').value.trim();
-  const p = document.getElementById('login-pass').value.trim();
-  if (!u || !p) { showToast('Vui lòng nhập đầy đủ thông tin!','warn'); return; }
-  showToast('Đăng nhập thành công! Xin chào ' + (u.includes('@') ? u.split('@')[0] : u) + ' 👋','success');
-  setTimeout(() => navigate('dashboard'), 800);
-}
-
-function simulateQR() {
-  const qr = document.getElementById('qr-box');
-  const st = document.getElementById('qr-status');
-  qr.style.background = 'linear-gradient(135deg,#dcfce7,#bbf7d0)';
-  qr.innerHTML = '<i class="fas fa-check-circle" style="font-size:3rem;color:#22c55e;"></i>';
-  st.textContent = '✅ Nhận diện QR thành công!';
-  st.style.color = '#15803d';
-  st.style.fontWeight = '700';
-  showToast('Xác thực QR thành công! Đang đăng nhập...','success');
-  setTimeout(() => navigate('dashboard'), 1000);
-}
-
-function simulateRFID() {
-  showToast('📡 Đang đọc thẻ RFID...','info');
-  setTimeout(() => {
-    showToast('✅ Thẻ RFID hợp lệ! Xin chào Nguyễn Văn An 👋','success');
-    setTimeout(() => navigate('dashboard'), 600);
-  }, 1200);
-}
-
-/* ========================================
-   DASHBOARD — HISTORY TABLE
-======================================== */
-function renderHistory(data) {
-  const tbody = document.getElementById('history-tbody');
-  const typeColors = {
-    'Chai nhựa': 'badge-blue',
-    'Lon nhôm':  'badge-yellow',
-    'Giấy/bìa':  'badge-green',
-  };
-  tbody.innerHTML = data.map(r => `
-    <tr>
-      <td style="color:#6b7280;font-size:0.82rem;white-space:nowrap;">${r.time}</td>
-      <td style="font-weight:600;color:#374151;font-size:0.83rem;">${r.station}</td>
-      <td><span class="badge ${typeColors[r.type]||'badge-green'}">${r.type}</span></td>
-      <td style="text-align:center;font-weight:700;color:#374151;">${r.qty}</td>
-      <td style="text-align:right;">
-        <span style="background:#f0fdf4;color:#15803d;border:1px solid #dcfce7;border-radius:10px;padding:4px 11px;font-weight:800;font-size:0.82rem;">+${r.pts} pts</span>
-      </td>
-    </tr>
-  `).join('');
-}
-
-function filterHistory(type) {
-  const filtered = type === 'all' ? historyData : historyData.filter(r => r.type === type);
-  renderHistory(filtered);
-}
-
-/* ========================================
-   STORE
-======================================== */
-let currentStoreFilter = 'all';
-
-function renderStore(items) {
-  const grid = document.getElementById('store-grid');
-  document.getElementById('store-points-display').textContent = userState.points.toLocaleString('vi');
-  grid.innerHTML = items.map(item => {
-    const canAfford = userState.points >= item.pts;
-    return `
-      <div class="store-card" id="store-item-${item.id}">
-        <div class="store-img">
-          <span style="font-size:3.5rem;position:relative;z-index:1;">${item.emoji}</span>
-          ${item.hot ? '<span style="position:absolute;top:10px;right:10px;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;font-size:0.65rem;font-weight:800;padding:3px 9px;border-radius:10px;letter-spacing:0.04em;">HOT</span>' : ''}
-        </div>
-        <div style="padding:14px 16px;flex:1;display:flex;flex-direction:column;">
-          <div style="font-weight:700;color:#14532d;font-size:0.85rem;line-height:1.3;flex:1;margin-bottom:8px;">${item.name}</div>
-          <div style="font-size:0.72rem;color:#9ca3af;margin-bottom:10px;">Còn ${item.stock} phần</div>
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
-            <div style="display:flex;align-items:center;gap:4px;">
-              <i class="fas fa-leaf" style="color:#22c55e;font-size:0.8rem;"></i>
-              <span style="font-weight:800;color:#15803d;font-size:1rem;font-family:'Space Grotesk',sans-serif;">${item.pts}</span>
-              <span style="font-size:0.7rem;color:#6b7280;">pts</span>
-            </div>
-            <button class="btn-eco" style="font-size:0.75rem;padding:7px 14px;" 
-              ${canAfford ? '' : 'disabled'} 
-              onclick="redeemItem(${item.id}, ${item.pts}, '${item.name.replace(/'/g,"\\'")}')">
-              ${canAfford ? 'Đổi quà' : 'Không đủ pts'}
-            </button>
-          </div>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-function redeemItem(id, pts, name) {
-  if (userState.points < pts) {
-    showToast(`Không đủ điểm! Cần thêm ${pts - userState.points} điểm.`, 'error');
-    return;
-  }
-  userState.points -= pts;
-  // Update UI
-  document.getElementById('topbar-pts-val').textContent = userState.points.toLocaleString('vi');
-  document.getElementById('store-points-display').textContent = userState.points.toLocaleString('vi');
-  if (document.getElementById('dash-points')) {
-    document.getElementById('dash-points').textContent = userState.points.toLocaleString('vi');
-  }
-  showToast(`🎉 Đổi thành công: ${name}! Trừ ${pts} điểm.`, 'success');
-  // Re-render store buttons
-  renderStore(storeItems);
-}
-
-function filterStore(cat, btn) {
-  currentStoreFilter = cat;
-  // Update button styles
-  document.querySelectorAll('#store-filters button').forEach(b => {
-    b.classList.remove('btn-eco'); b.classList.add('btn-outline');
-  });
-  btn.classList.add('btn-eco'); btn.classList.remove('btn-outline');
-  // Filter
-  const filtered = cat === 'all' ? storeItems : storeItems.filter(i => i.cat === cat);
-  renderStore(filtered);
-}
-
-/* ========================================
-   MAP
-======================================== */
-function renderMap() {
-  renderStationList();
-  renderMapPins();
-}
-
-function renderStationList() {
-  const list = document.getElementById('station-list');
-  const statusConfig = {
-    ok:   { color:'#22c55e', label:'Còn trống',  badgeClass:'badge-green' },
-    warn: { color:'#f59e0b', label:'Gần đầy',    badgeClass:'badge-yellow' },
-    full: { color:'#ef4444', label:'Đã đầy',     badgeClass:'badge-red' },
-  };
-  list.innerHTML = stations.map((s,i) => {
-    const sc = statusConfig[s.status];
-    const fillColor = s.status === 'ok' ? '#22c55e' : s.status === 'warn' ? '#f59e0b' : '#ef4444';
-    return `
-      <div class="map-item" onclick="showToast('Đang dẫn đường đến ${s.name.split('(')[0].trim()}','info')">
-        <div class="map-dot" style="background:${sc.color};box-shadow:none;"></div>
-        <div style="flex:1;min-width:0;">
-          <div style="font-weight:700;color:#14532d;font-size:0.83rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.name}</div>
-          <div style="font-size:0.72rem;color:#9ca3af;margin-top:2px;">${s.area} · ${s.dist}</div>
-          <div style="margin-top:6px;">
-            <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
-              <span style="font-size:0.68rem;color:#6b7280;">Dung lượng</span>
-              <span style="font-size:0.68rem;font-weight:700;color:${fillColor};">${s.cap}%</span>
-            </div>
-            <div class="capacity-bar">
-              <div class="capacity-fill" style="width:${s.cap}%;background:${fillColor};"></div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <span class="badge ${sc.badgeClass}" style="white-space:nowrap;">${sc.label}</span>
-          <div style="text-align:center;margin-top:6px;">
-            <i class="fas fa-directions" style="color:#15803d;font-size:1rem;cursor:pointer;" onclick="event.stopPropagation();showToast('Mở bản đồ dẫn đường','info')"></i>
-          </div>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-function renderMapPins() {
-  const pinsDiv = document.getElementById('map-pins');
-  const statusColor = { ok:'#22c55e', warn:'#f59e0b', full:'#ef4444' };
-  pinsDiv.innerHTML = stations.map((s,i) => `
-    <div title="${s.name}" onclick="showToast('${s.name.split('(')[0].trim()} · ${s.cap}% đầy','info')" 
-         style="position:absolute;left:${s.x}%;top:${s.y}%;transform:translate(-50%,-100%);cursor:pointer;z-index:2;">
-      <div style="width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);
-                  background:${statusColor[s.status]};border:2px solid #fff;
-                  box-shadow:0 3px 10px rgba(0,0,0,0.2);">
-      </div>
-    </div>
-  `).join('');
-}
-
-/* ========================================
-   LEADERBOARD
-======================================== */
-function renderLeaderboard() {
-  renderPodium();
-  renderLBList(lbData);
-}
-
-function renderPodium() {
-  const top3 = lbData.slice(0,3);
-  const podium = document.getElementById('podium');
-  const rankEmoji = ['🥇','🥈','🥉'];
-  const heights = ['160px','130px','110px'];
-  const order = [1, 0, 2]; // Silver, Gold, Bronze order visually
-  podium.innerHTML = order.map(i => {
-    const p = top3[i];
-    const initials = p.name.split(' ').slice(-2).map(w=>w[0]).join('');
-    const avatarClass = ['rank-1','rank-2','rank-3'][i];
-    const pedestal = ['140px','120px','100px'][i];
-    return `
-      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;flex:1;max-width:160px;">
-        <div style="font-size:1.8rem;">${rankEmoji[i]}</div>
-        <div class="lb-avatar ${avatarClass}" style="width:52px;height:52px;font-size:1rem;">${initials}</div>
-        <div style="text-align:center;">
-          <div style="font-weight:800;color:#14532d;font-size:0.8rem;line-height:1.3;">${p.name.split(' ').slice(-2).join(' ')}</div>
-          <div style="font-size:0.68rem;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px;">${p.school}</div>
-          <div style="font-weight:900;color:#15803d;font-size:1.1rem;font-family:'Space Grotesk',sans-serif;margin-top:4px;">${p.pts.toLocaleString('vi')}</div>
-          <div style="font-size:0.68rem;color:#86efac;font-weight:600;">🔥 ${p.streak} ngày</div>
-        </div>
-        <div style="width:100%;height:${pedestal};background:linear-gradient(180deg,${i===0?'#fbbf24':'#d1d5db'} 0%,${i===0?'#f59e0b':'#9ca3af'} 100%);
-                    border-radius:10px 10px 4px 4px;display:flex;align-items:center;justify-content:center;
-                    font-weight:800;color:#fff;font-size:1.2rem;font-family:'Space Grotesk',sans-serif;">
-          #${i+1}
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-function renderLBList(data) {
-  const list = document.getElementById('lb-list');
-  const rankStyles = [
-    'rank-1','rank-2','rank-3'
-  ];
-  list.innerHTML = data.map((p,i) => {
-    const initials = p.name.split(' ').slice(-2).map(w=>w[0]).join('');
-    const avatarClass = i < 3 ? rankStyles[i] : 'rank-n';
-    const isMe = p.name === 'Nguyễn Văn An';
-    return `
-      <div class="lb-row" style="${isMe ? 'background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:14px;' : ''}">
-        <div style="width:28px;text-align:center;font-weight:800;color:${i<3?'#15803d':'#9ca3af'};font-family:'Space Grotesk',sans-serif;font-size:${i<3?'1rem':'0.85rem'};">
-          ${i<3?['🥇','🥈','🥉'][i]:'#'+(i+1)}
-        </div>
-        <div class="lb-avatar ${avatarClass}" style="${i>=3?'background:#f0fdf4;color:#15803d;':''}">${initials}</div>
-        <div style="flex:1;min-width:0;">
-          <div style="font-weight:700;color:#14532d;font-size:0.85rem;">${p.name}${isMe?' <span style="background:#dcfce7;color:#15803d;font-size:0.65rem;padding:2px 7px;border-radius:8px;font-weight:700;">Bạn</span>':''}</div>
-          <div style="font-size:0.72rem;color:#9ca3af;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.school}</div>
-        </div>
-        <div style="text-align:right;flex-shrink:0;">
-          <div style="font-weight:800;color:#15803d;font-size:0.95rem;font-family:'Space Grotesk',sans-serif;">${p.pts.toLocaleString('vi')}</div>
-          <div style="font-size:0.68rem;color:#f59e0b;font-weight:700;">🔥 ${p.streak} ngày</div>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-function filterLB(period, btn) {
+window.filterLB = function(period, btn) {
   document.querySelectorAll('#page-leaderboard button').forEach(b => {
     if (['Tháng này','Tuần này','Tất cả thời gian'].includes(b.textContent.trim())) {
       b.classList.remove('btn-eco'); b.classList.add('btn-outline');
     }
   });
   btn.classList.add('btn-eco'); btn.classList.remove('btn-outline');
+  renderLeaderboard();
+};
 
-  // Shuffle points slightly for demo
-  const shuffled = [...lbData].map(p => ({...p, pts: p.pts + Math.floor((Math.random()-0.5)*300)}))
-                               .sort((a,b) => b.pts - a.pts);
-  renderLBList(shuffled);
-  showToast(`Đã lọc: ${period==='month'?'Tháng này':period==='week'?'Tuần này':'Tất cả thời gian'}`, 'info');
-}
-
-/* ========================================
-   RESPONSIVE: Sidebar on desktop
-======================================== */
-function handleResize() {
+window.addEventListener('resize', () => {
   const sidebar = document.getElementById('sidebar');
   if (window.innerWidth >= 768) {
     sidebar.classList.remove('open');
     document.getElementById('sidebar-overlay').classList.remove('show');
-    sidebar.style.transform = '';
   }
-}
-window.addEventListener('resize', handleResize);
+});
 
 /* ========================================
    INIT
 ======================================== */
 document.addEventListener('DOMContentLoaded', () => {
-  // Already on home page; render on navigate
-  // Just ensure topbar points is correct
-  document.getElementById('topbar-pts-val').textContent = userState.points.toLocaleString('vi');
+  updateSidebarUser(null);
+  document.getElementById('topbar-pts-val').textContent = '0';
 });
-</script>
 
+</script>
 </body>
 </html>
