@@ -361,6 +361,10 @@
       <i class="fas fa-sign-in-alt nav-icon"></i>
       <span>Đăng Nhập</span>
     </div>
+    <div class="nav-item" onclick="navigate('register')" data-page="register">
+      <i class="fas fa-user-plus nav-icon"></i>
+      <span>Đăng Ký</span>
+    </div>
 
     <div class="section-label" style="margin-top:8px;">Cá Nhân</div>
     <div class="nav-item" onclick="navigate('dashboard')" data-page="dashboard">
@@ -706,7 +710,61 @@
       <div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:14px;padding:16px 20px;margin-top:20px;display:flex;align-items:flex-start;gap:12px;">
         <i class="fas fa-info-circle" style="color:#15803d;margin-top:2px;flex-shrink:0;"></i>
         <div style="font-size:0.82rem;color:#374151;line-height:1.6;">
-          <strong style="color:#14532d;">Lưu ý:</strong> Mã tài khoản được nhà trường cấp khi đăng ký chương trình. Người cao tuổi vui lòng liên hệ tổ dân phố để được hỗ trợ đăng ký thẻ RFID miễn phí.
+          <strong style="color:#14532d;">Chưa có tài khoản?</strong>
+          <span style="color:#15803d;font-weight:700;cursor:pointer;" onclick="navigate('register')"> Đăng ký ngay tại đây →</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════
+       PAGE 2b: REGISTER (Đăng ký)
+  ════════════════════════════════ -->
+  <div class="page" id="page-register">
+    <div style="max-width:520px;margin:0 auto;">
+      <div style="margin-bottom:22px;">
+        <div class="page-title">🌱 Tạo Tài Khoản Mới</div>
+        <div class="page-sub">Tham gia cộng đồng AI Recycle và bắt đầu hành trình tái chế của bạn</div>
+      </div>
+      <div class="login-card">
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div>
+            <label style="font-size:0.8rem;font-weight:700;color:#374151;display:block;margin-bottom:6px;">Họ và tên</label>
+            <div style="position:relative;">
+              <i class="fas fa-user" style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#86efac;font-size:0.9rem;"></i>
+              <input class="login-input" style="padding-left:40px;" placeholder="VD: Nguyễn Văn An" id="reg-name" />
+            </div>
+          </div>
+          <div>
+            <label style="font-size:0.8rem;font-weight:700;color:#374151;display:block;margin-bottom:6px;">Tên đăng nhập</label>
+            <div style="position:relative;">
+              <i class="fas fa-id-badge" style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#86efac;font-size:0.9rem;"></i>
+              <input class="login-input" style="padding-left:40px;" placeholder="Chỉ dùng chữ thường và số, không dấu" id="reg-user" />
+            </div>
+            <div style="font-size:0.72rem;color:#9ca3af;margin-top:4px;">VD: nguyenvanan2024</div>
+          </div>
+          <div>
+            <label style="font-size:0.8rem;font-weight:700;color:#374151;display:block;margin-bottom:6px;">Mật khẩu</label>
+            <div style="position:relative;">
+              <i class="fas fa-lock" style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#86efac;font-size:0.9rem;"></i>
+              <input class="login-input" style="padding-left:40px;" type="password" placeholder="Tối thiểu 6 ký tự" id="reg-pass" />
+            </div>
+          </div>
+          <div>
+            <label style="font-size:0.8rem;font-weight:700;color:#374151;display:block;margin-bottom:6px;">Xác nhận mật khẩu</label>
+            <div style="position:relative;">
+              <i class="fas fa-lock" style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#86efac;font-size:0.9rem;"></i>
+              <input class="login-input" style="padding-left:40px;" type="password" placeholder="Nhập lại mật khẩu" id="reg-pass2" />
+            </div>
+          </div>
+          <button class="btn-eco" style="width:100%;padding:13px;margin-top:4px;" onclick="doRegister()">
+            <i class="fas fa-user-plus" style="margin-right:8px;"></i>Tạo Tài Khoản
+          </button>
+          <div style="text-align:center;font-size:0.8rem;color:#6b7280;">
+            Đã có tài khoản?
+            <span style="color:#15803d;font-weight:700;cursor:pointer;" onclick="navigate('login')"> Đăng nhập →</span>
+          </div>
         </div>
       </div>
     </div>
@@ -967,9 +1025,6 @@
     </div>
   </div>
 
-</div><!-- end #main -->
-
-<!-- ═══════════════════════════════════════════════════
 
   <!-- ════════════════════════════════
        PAGE 7: AI CHAT TƯ VẤN
@@ -1002,14 +1057,13 @@
 
         <!-- Input area -->
         <div style="padding:16px 20px;border-top:1.5px solid #f0fdf4;display:flex;gap:10px;align-items:flex-end;">
-          <!-- Quick suggestions -->
           <div style="flex:1;">
             <div id="chat-suggestions" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
               <button onclick="sendChatMsg('Chai nhựa phân loại vào thùng nào?')" style="background:#f0fdf4;border:1.5px solid #dcfce7;border-radius:20px;padding:5px 12px;font-size:0.75rem;color:#15803d;font-weight:600;cursor:pointer;font-family:Nunito,sans-serif;">🍾 Chai nhựa</button>
               <button onclick="sendChatMsg('Pin cũ bỏ ở đâu?')" style="background:#f0fdf4;border:1.5px solid #dcfce7;border-radius:20px;padding:5px 12px;font-size:0.75rem;color:#15803d;font-weight:600;cursor:pointer;font-family:Nunito,sans-serif;">🔋 Pin cũ</button>
               <button onclick="sendChatMsg('Hữu cơ và vô cơ khác nhau thế nào?')" style="background:#f0fdf4;border:1.5px solid #dcfce7;border-radius:20px;padding:5px 12px;font-size:0.75rem;color:#15803d;font-weight:600;cursor:pointer;font-family:Nunito,sans-serif;">♻️ Hữu cơ vs Vô cơ</button>
             </div>
-            <textarea id="chat-input" placeholder="Nhập câu hỏi về tái chế..." 
+            <textarea id="chat-input" placeholder="Nhập câu hỏi về tái chế..."
               style="width:100%;border:2px solid #dcfce7;border-radius:12px;padding:11px 14px;font-family:Nunito,sans-serif;font-size:0.875rem;outline:none;resize:none;height:44px;transition:border-color 0.2s;line-height:1.4;overflow:hidden;"
               onfocus="this.style.borderColor='#22c55e'"
               onblur="this.style.borderColor='#dcfce7'"
@@ -1024,7 +1078,8 @@
     </div>
   </div>
 
-<!-- ═══════════════════════════════════════════════════
+</div><!-- end #main -->
+
 <!-- ═══════════════════════════════════════════════════
      FIREBASE SDK
 ═══════════════════════════════════════════════════ -->
@@ -1065,11 +1120,11 @@ window.navigate = function(page) {
   }
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const pageMap2 = {
-    home:'page-home', login:'page-login', dashboard:'page-dashboard',
+    home:'page-home', login:'page-login', register:'page-register', dashboard:'page-dashboard',
     store:'page-store', map:'page-map', leaderboard:'page-leaderboard', aichat:'page-aichat'
   };
   const titles = {
-    home:'Trang Chủ', login:'Đăng Nhập', dashboard:'Dashboard Tích Điểm',
+    home:'Trang Chủ', login:'Đăng Nhập', register:'Đăng Ký Tài Khoản', dashboard:'Dashboard Tích Điểm',
     store:'Eco-Store Đổi Thưởng', map:'Bản Đồ Trạm', leaderboard:'Bảng Xếp Hạng', aichat:'Tư Vấn AI'
   };
   document.getElementById(pageMap2[page]).classList.add('active');
@@ -1085,6 +1140,41 @@ window.navigate = function(page) {
 /* ========================================
    LOGIN — Firebase Realtime
 ======================================== */
+
+window.doRegister = async function() {
+  const name  = document.getElementById('reg-name').value.trim();
+  const uid   = document.getElementById('reg-user').value.trim().toLowerCase();
+  const pass  = document.getElementById('reg-pass').value.trim();
+  const pass2 = document.getElementById('reg-pass2').value.trim();
+
+  if (!name || !uid || !pass || !pass2) { showToast('Vui lòng điền đầy đủ thông tin!', 'warn'); return; }
+  if (!/^[a-z0-9]+$/.test(uid)) { showToast('Tên đăng nhập chỉ dùng chữ thường và số, không dấu!', 'warn'); return; }
+  if (pass.length < 6) { showToast('Mật khẩu phải tối thiểu 6 ký tự!', 'warn'); return; }
+  if (pass !== pass2) { showToast('Mật khẩu xác nhận không khớp!', 'error'); return; }
+
+  // Kiểm tra tên đăng nhập đã tồn tại chưa
+  const snap = await get(ref(db, 'users/' + uid));
+  if (snap.exists()) { showToast('Tên đăng nhập đã được sử dụng! Hãy chọn tên khác.', 'error'); return; }
+
+  // Tạo tài khoản mới trong Firebase
+  await set(ref(db, 'users/' + uid), {
+    name: name,
+    password: pass,
+    points: 0,
+    plastic: 0,
+    cans: 0,
+    paper: 0,
+    co2: 0
+  });
+  await set(ref(db, 'history/' + uid + '/init'), true);
+
+  showToast('Tạo tài khoản thành công! Đang đăng nhập...', 'success');
+
+  // Tự động đăng nhập sau khi đăng ký
+  const newSnap = await get(ref(db, 'users/' + uid));
+  await loginUser(uid, newSnap.val());
+};
+
 window.doLogin = async function() {
   const u = document.getElementById('login-user').value.trim().toLowerCase();
   const p = document.getElementById('login-pass').value.trim();
