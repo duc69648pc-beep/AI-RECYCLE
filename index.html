@@ -86,12 +86,18 @@
     position: sticky; top: 0; z-index: 30;
     background: rgba(248,255,254,0.9); backdrop-filter: blur(12px);
     border-bottom: 1.5px solid #dcfce7;
-    padding: 0 24px; height: 64px;
+    padding: 0 12px; height: 56px;
     display: flex; align-items: center; justify-content: space-between;
+    gap: 8px;
+  }
+  @media (max-width: 480px) {
+    #topbar-points span.pts-label { display: none; }
+    #topbar { padding: 0 10px; }
   }
 
   /* ===== PAGES ===== */
-  .page { display: none; padding: 28px 24px; animation: fadeUp 0.35s ease; }
+  .page { display: none; padding: 20px 16px; animation: fadeUp 0.35s ease; }
+  @media (max-width: 768px) { .page { padding: 16px 12px; } }
   .page.active { display: block; }
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(16px); }
@@ -324,6 +330,32 @@
   /* Page title */
   .page-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.55rem; font-weight: 700; color: #14532d; }
   .page-sub { font-size: 0.875rem; color: #6b7280; margin-top: 2px; }
+
+  /* ===== MOBILE RESPONSIVE ===== */
+  /* Hero floating stats */
+  .hero-stats-float {
+    position: absolute; right: 32px; top: 50%; transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 10px; z-index: 1;
+  }
+  .hero-stats-mobile { display: none; }
+  @media (max-width: 640px) {
+    .hero-stats-float  { display: none; }
+    .hero-stats-mobile { display: flex; gap: 8px; margin-top: 16px; }
+    .hero-bg { padding: 24px 18px !important; }
+  }
+  /* Dashboard grid stack on mobile */
+  .dash-grid-wrap { grid-template-columns: 280px 1fr; }
+  @media (max-width: 640px) {
+    .dash-grid-wrap { grid-template-columns: 1fr !important; }
+  }
+  /* History table — ẩn cột ít quan trọng trên mobile */
+  @media (max-width: 560px) {
+    .eco-table th:nth-child(4),
+    .eco-table td:nth-child(4) { display: none; }
+    .eco-table th:nth-child(2),
+    .eco-table td:nth-child(2) { max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .page { padding: 12px 8px !important; }
+  }
 </style>
 </head>
 
@@ -391,8 +423,9 @@
 
     <div class="section-label" style="margin-top:8px;">Cộng Đồng</div>
     <div class="nav-item" onclick="navigate('map')" data-page="map">
-      <i class="fas fa-map-marker-alt nav-icon"></i>
-      <span>Bản Đồ Trạm</span>
+      <i class="fas fa-rocket nav-icon"></i>
+      <span>Tính Năng Mới</span>
+      <span style="margin-left:auto;background:#f59e0b;color:#fff;font-size:0.65rem;padding:2px 7px;border-radius:10px;font-weight:700;">MỚI</span>
     </div>
     <div class="nav-item" onclick="navigate('leaderboard')" data-page="leaderboard">
       <i class="fas fa-trophy nav-icon"></i>
@@ -477,12 +510,12 @@
               <i class="fas fa-chart-pie" style="margin-right:7px;"></i>Xem Dashboard
             </button>
             <button class="btn-eco" onclick="navigate('map')" style="background:linear-gradient(135deg,#22c55e,#16a34a);">
-              <i class="fas fa-map-marked-alt" style="margin-right:7px;"></i>Tìm Trạm Gần Đây
+              <i class="fas fa-rocket" style="margin-right:7px;"></i>Tính Năng Sắp Ra Mắt
             </button>
           </div>
         </div>
-        <!-- Floating stats -->
-        <div style="position:absolute;right:32px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:1;">
+        <!-- Floating stats — ẩn trên mobile, hiện dạng grid bên dưới -->
+        <div class="hero-stats-float">
           <div style="background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);border-radius:14px;padding:12px 18px;border:1px solid rgba(255,255,255,0.2);text-align:center;min-width:120px;">
             <div style="font-size:1.5rem;font-weight:800;color:#fff;">147</div>
             <div style="font-size:0.7rem;color:#bbf7d0;font-weight:600;">Trạm hoạt động</div>
@@ -494,6 +527,21 @@
           <div style="background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);border-radius:14px;padding:12px 18px;border:1px solid rgba(255,255,255,0.2);text-align:center;">
             <div style="font-size:1.5rem;font-weight:800;color:#86efac;">98%</div>
             <div style="font-size:0.7rem;color:#bbf7d0;font-weight:600;">Độ chính xác AI</div>
+          </div>
+        </div>
+        <!-- Stats mobile: hiện dạng hàng ngang bên dưới nút -->
+        <div class="hero-stats-mobile">
+          <div style="background:rgba(255,255,255,0.15);border-radius:12px;padding:10px 14px;text-align:center;flex:1;">
+            <div style="font-size:1.2rem;font-weight:800;color:#fff;">147</div>
+            <div style="font-size:0.65rem;color:#bbf7d0;">Trạm</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.15);border-radius:12px;padding:10px 14px;text-align:center;flex:1;">
+            <div style="font-size:1.2rem;font-weight:800;color:#fbbf24;">2.8T</div>
+            <div style="font-size:0.65rem;color:#bbf7d0;">Rác xử lý</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.15);border-radius:12px;padding:10px 14px;text-align:center;flex:1;">
+            <div style="font-size:1.2rem;font-weight:800;color:#86efac;">98%</div>
+            <div style="font-size:0.65rem;color:#bbf7d0;">Chính xác AI</div>
           </div>
         </div>
       </div>
@@ -805,7 +853,7 @@
       </div>
 
       <!-- Points + Stats row -->
-      <div style="display:grid;grid-template-columns:280px 1fr;gap:18px;margin-bottom:22px;" id="dash-grid">
+      <div style="display:grid;grid-template-columns:280px 1fr;gap:18px;margin-bottom:22px;" id="dash-grid" class="dash-grid-wrap">
 
         <!-- Big Points Badge -->
         <div class="points-badge">
@@ -885,9 +933,8 @@
           <div style="display:flex;gap:8px;">
             <select style="border:1.5px solid #dcfce7;border-radius:10px;padding:6px 12px;font-size:0.78rem;color:#374151;outline:none;cursor:pointer;background:#f8fffe;font-family:'Nunito',sans-serif;" onchange="filterHistory(this.value)">
               <option value="all">Tất cả loại</option>
-              <option value="Chai nhựa">Chai nhựa</option>
-              <option value="Lon nhôm">Lon nhôm</option>
-              <option value="Giấy/bìa">Giấy/bìa</option>
+              <option value="vo_co">Rác vô cơ</option>
+              <option value="huu_co">Rác hữu cơ</option>
             </select>
           </div>
         </div>
@@ -955,40 +1002,170 @@
   </div>
 
   <!-- ════════════════════════════════
-       PAGE 5: MAP (Bản đồ trạm)
+       PAGE 5: TÍNH NĂNG TƯƠNG LAI
   ════════════════════════════════ -->
   <div class="page" id="page-map">
-    <div style="max-width:1100px;">
-      <div style="margin-bottom:22px;">
-        <div class="page-title">📍 Bản Đồ Trạm Tái Chế</div>
-        <div class="page-sub">Tìm trạm thùng rác thông minh gần bạn nhất · Cập nhật real-time</div>
+    <div style="max-width:900px;">
+
+      <!-- Header -->
+      <div style="margin-bottom:28px;">
+        <div class="page-title">🚀 Tính Năng Đang Phát Triển</div>
+        <div class="page-sub">Những tính năng sẽ được triển khai trong các giai đoạn tiếp theo của dự án AI Recycle</div>
       </div>
 
-      <!-- Map placeholder + list side by side -->
-      <div style="display:grid;grid-template-columns:1fr 360px;gap:20px;" id="map-layout">
-
-        <!-- Bản đồ Việt Nam SVG -->
-        <div style="background:#dbeafe;border-radius:20px;min-height:460px;position:relative;overflow:hidden;border:2px solid #bbf7d0;display:flex;align-items:center;justify-content:center;">
-          <div id="vietnam-map-svg" style="width:100%;height:460px;"></div>
+      <!-- Banner thông báo -->
+      <div style="background:linear-gradient(135deg,#14532d,#15803d);border-radius:20px;padding:24px 28px;margin-bottom:28px;display:flex;align-items:center;gap:16px;">
+        <div style="width:56px;height:56px;background:rgba(255,255,255,0.15);border-radius:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="fas fa-code-branch" style="color:#86efac;font-size:1.4rem;"></i>
         </div>
-
-        <!-- Station list -->
-        <div style="display:flex;flex-direction:column;gap:12px;max-height:520px;overflow-y:auto;" id="station-list">
-          <!-- Filled by JS -->
+        <div>
+          <div style="font-weight:800;color:#fff;font-size:1rem;margin-bottom:4px;">Dự án đang trong giai đoạn phát triển tích cực</div>
+          <div style="font-size:0.82rem;color:#bbf7d0;line-height:1.5;">Các tính năng bên dưới đã được lên kế hoạch và sẽ được triển khai theo từng giai đoạn. Mỗi tính năng đều hướng đến mục tiêu xây dựng hệ sinh thái tái chế thông minh tại Việt Nam.</div>
         </div>
       </div>
 
-      <!-- Stats bar -->
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-top:20px;">
-        <div style="background:#fff;border-radius:14px;padding:14px 16px;border:1.5px solid #dcfce7;text-align:center;">
-          <div style="font-size:1.3rem;font-weight:800;color:#15803d;font-family:'Space Grotesk',sans-serif;">1</div>
-          <div style="font-size:0.72rem;color:#6b7280;font-weight:600;margin-top:2px;">Tổng trạm</div>
+      <!-- Danh sách tính năng tương lai -->
+      <div style="display:flex;flex-direction:column;gap:16px;">
+
+        <!-- Bản đồ trạm -->
+        <div class="eco-card" style="padding:22px;display:flex;gap:18px;align-items:flex-start;">
+          <div style="width:52px;height:52px;background:linear-gradient(135deg,#dbeafe,#bfdbfe);border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="fas fa-map-marked-alt" style="color:#2563eb;font-size:1.2rem;"></i>
+          </div>
+          <div style="flex:1;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap;">
+              <span style="font-weight:800;color:#14532d;font-size:0.95rem;">📍 Bản Đồ Trạm Tái Chế</span>
+              <span style="background:#dbeafe;color:#1d4ed8;font-size:0.68rem;font-weight:700;padding:3px 10px;border-radius:10px;">Giai đoạn 2</span>
+            </div>
+            <div style="font-size:0.82rem;color:#6b7280;line-height:1.6;">Bản đồ tương tác hiển thị toàn bộ trạm thùng rác thông minh trên khắp Việt Nam. Người dùng có thể tìm trạm gần nhất, xem mức độ đầy, và được chỉ đường đến trạm trực tiếp.</div>
+            <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+              <span style="background:#f0fdf4;color:#15803d;font-size:0.72rem;padding:3px 10px;border-radius:8px;font-weight:600;">Google Maps API</span>
+              <span style="background:#f0fdf4;color:#15803d;font-size:0.72rem;padding:3px 10px;border-radius:8px;font-weight:600;">GPS định vị</span>
+              <span style="background:#f0fdf4;color:#15803d;font-size:0.72rem;padding:3px 10px;border-radius:8px;font-weight:600;">Real-time Firebase</span>
+            </div>
+          </div>
         </div>
-        <div style="background:#fff;border-radius:14px;padding:14px 16px;border:1.5px solid #dcfce7;text-align:center;">
-          <div style="font-size:1.3rem;font-weight:800;color:#22c55e;font-family:'Space Grotesk',sans-serif;">Gia Lai</div>
-          <div style="font-size:0.72rem;color:#6b7280;font-weight:600;margin-top:2px;">Tỉnh hoạt động</div>
+
+        <!-- Thông báo đẩy -->
+        <div class="eco-card" style="padding:22px;display:flex;gap:18px;align-items:flex-start;">
+          <div style="width:52px;height:52px;background:linear-gradient(135deg,#fef9c3,#fef08a);border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="fas fa-bell" style="color:#d97706;font-size:1.2rem;"></i>
+          </div>
+          <div style="flex:1;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap;">
+              <span style="font-weight:800;color:#14532d;font-size:0.95rem;">🔔 Thông Báo Đẩy</span>
+              <span style="background:#fef9c3;color:#a16207;font-size:0.68rem;font-weight:700;padding:3px 10px;border-radius:10px;">Giai đoạn 2</span>
+            </div>
+            <div style="font-size:0.82rem;color:#6b7280;line-height:1.6;">Hệ thống gửi thông báo đến điện thoại khi trạm gần đầy, khi điểm được cộng thành công, hoặc khi có sự kiện đổi quà đặc biệt từ nhà trường.</div>
+            <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+              <span style="background:#fffbeb;color:#d97706;font-size:0.72rem;padding:3px 10px;border-radius:8px;font-weight:600;">Firebase Cloud Messaging</span>
+              <span style="background:#fffbeb;color:#d97706;font-size:0.72rem;padding:3px 10px;border-radius:8px;font-weight:600;">PWA Push API</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cảm biến đầy -->
+        <div class="eco-card" style="padding:22px;display:flex;gap:18px;align-items:flex-start;">
+          <div style="width:52px;height:52px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="fas fa-thermometer-half" style="color:#15803d;font-size:1.2rem;"></i>
+          </div>
+          <div style="flex:1;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap;">
+              <span style="font-weight:800;color:#14532d;font-size:0.95rem;">📊 Cảm Biến Mức Đầy Thùng</span>
+              <span style="background:#dcfce7;color:#15803d;font-size:0.68rem;font-weight:700;padding:3px 10px;border-radius:10px;">Giai đoạn 3</span>
+            </div>
+            <div style="font-size:0.82rem;color:#6b7280;line-height:1.6;">Tích hợp cảm biến siêu âm HC-SR04 đo mức đầy thùng real-time. Khi đạt 80% sẽ tự động gửi cảnh báo đến đội thu gom và hiển thị trên dashboard quản lý.</div>
+            <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+              <span style="background:#f0fdf4;color:#15803d;font-size:0.72rem;padding:3px 10px;border-radius:8px;font-weight:600;">HC-SR04 Ultrasonic</span>
+              <span style="background:#f0fdf4;color:#15803d;font-size:0.72rem;padding:3px 10px;border-radius:8px;font-weight:600;">ESP32 IoT</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cảm biến không khí -->
+        <div class="eco-card" style="padding:22px;display:flex;gap:18px;align-items:flex-start;">
+          <div style="width:52px;height:52px;background:linear-gradient(135deg,#ede9fe,#ddd6fe);border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="fas fa-wind" style="color:#7c3aed;font-size:1.2rem;"></i>
+          </div>
+          <div style="flex:1;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap;">
+              <span style="font-weight:800;color:#14532d;font-size:0.95rem;">🌫️ Quan Trắc Chất Lượng Không Khí</span>
+              <span style="background:#ede9fe;color:#7c3aed;font-size:0.68rem;font-weight:700;padding:3px 10px;border-radius:10px;">Giai đoạn 3</span>
+            </div>
+            <div style="font-size:0.82rem;color:#6b7280;line-height:1.6;">Mỗi trạm tích hợp cảm biến PM2.5 và CO₂, biến toàn bộ mạng lưới thùng rác thành hệ thống quan trắc môi trường phân tán, cung cấp dữ liệu cho Sở Tài nguyên & Môi trường.</div>
+            <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+              <span style="background:#f5f3ff;color:#7c3aed;font-size:0.72rem;padding:3px 10px;border-radius:8px;font-weight:600;">PMS5003 PM2.5</span>
+              <span style="background:#f5f3ff;color:#7c3aed;font-size:0.72rem;padding:3px 10px;border-radius:8px;font-weight:600;">MH-Z19 CO₂</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ứng dụng mobile -->
+        <div class="eco-card" style="padding:22px;display:flex;gap:18px;align-items:flex-start;">
+          <div style="width:52px;height:52px;background:linear-gradient(135deg,#fee2e2,#fecaca);border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="fas fa-mobile-alt" style="color:#dc2626;font-size:1.2rem;"></i>
+          </div>
+          <div style="flex:1;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap;">
+              <span style="font-weight:800;color:#14532d;font-size:0.95rem;">📱 Ứng Dụng Mobile Riêng</span>
+              <span style="background:#fee2e2;color:#dc2626;font-size:0.68rem;font-weight:700;padding:3px 10px;border-radius:10px;">Giai đoạn 4</span>
+            </div>
+            <div style="font-size:0.82rem;color:#6b7280;line-height:1.6;">Ứng dụng iOS và Android chuyên dụng với tính năng quét QR nhanh, xem điểm offline, nhận thông báo và tham gia thử thách xanh cùng bạn bè trong trường.</div>
+            <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+              <span style="background:#fff0f0;color:#dc2626;font-size:0.72rem;padding:3px 10px;border-radius:8px;font-weight:600;">React Native</span>
+              <span style="background:#fff0f0;color:#dc2626;font-size:0.72rem;padding:3px 10px;border-radius:8px;font-weight:600;">iOS & Android</span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end danh sách -->
+
+      <!-- Lộ trình timeline -->
+      <div class="eco-card" style="padding:24px;margin-top:24px;">
+        <div style="font-weight:800;color:#14532d;font-family:'Space Grotesk',sans-serif;margin-bottom:18px;font-size:1rem;">🗓️ Lộ Trình Phát Triển</div>
+        <div style="display:flex;flex-direction:column;gap:0;">
+          <div style="display:flex;gap:16px;align-items:flex-start;">
+            <div style="display:flex;flex-direction:column;align-items:center;">
+              <div style="width:14px;height:14px;border-radius:50%;background:#22c55e;flex-shrink:0;margin-top:3px;box-shadow:0 0 0 4px #dcfce7;"></div>
+              <div style="width:2px;flex:1;background:#dcfce7;margin:4px 0;min-height:40px;"></div>
+            </div>
+            <div style="padding-bottom:18px;">
+              <div style="font-weight:700;color:#14532d;font-size:0.85rem;">Giai đoạn 1 — Hiện tại ✅</div>
+              <div style="font-size:0.78rem;color:#6b7280;margin-top:3px;">AI nhận diện + ESP32 + Firebase + Website tích điểm cơ bản</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:16px;align-items:flex-start;">
+            <div style="display:flex;flex-direction:column;align-items:center;">
+              <div style="width:14px;height:14px;border-radius:50%;background:#3b82f6;flex-shrink:0;margin-top:3px;box-shadow:0 0 0 4px #dbeafe;"></div>
+              <div style="width:2px;flex:1;background:#dcfce7;margin:4px 0;min-height:40px;"></div>
+            </div>
+            <div style="padding-bottom:18px;">
+              <div style="font-weight:700;color:#14532d;font-size:0.85rem;">Giai đoạn 2 — 2025</div>
+              <div style="font-size:0.78rem;color:#6b7280;margin-top:3px;">Bản đồ trạm + thông báo đẩy + mở rộng thêm trường học</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:16px;align-items:flex-start;">
+            <div style="display:flex;flex-direction:column;align-items:center;">
+              <div style="width:14px;height:14px;border-radius:50%;background:#f59e0b;flex-shrink:0;margin-top:3px;box-shadow:0 0 0 4px #fef9c3;"></div>
+              <div style="width:2px;flex:1;background:#dcfce7;margin:4px 0;min-height:40px;"></div>
+            </div>
+            <div style="padding-bottom:18px;">
+              <div style="font-weight:700;color:#14532d;font-size:0.85rem;">Giai đoạn 3 — 2026</div>
+              <div style="font-size:0.78rem;color:#6b7280;margin-top:3px;">Cảm biến đầy + quan trắc không khí + mạng lưới tỉnh Gia Lai</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:16px;align-items:flex-start;">
+            <div style="display:flex;flex-direction:column;align-items:center;">
+              <div style="width:14px;height:14px;border-radius:50%;background:#e5e7eb;flex-shrink:0;margin-top:3px;"></div>
+            </div>
+            <div>
+              <div style="font-weight:700;color:#9ca3af;font-size:0.85rem;">Giai đoạn 4 — 2027</div>
+              <div style="font-size:0.78rem;color:#9ca3af;margin-top:3px;">Ứng dụng mobile + nhân rộng toàn quốc</div>
+            </div>
+          </div>
         </div>
       </div>
+
     </div>
   </div>
 
@@ -1319,12 +1496,13 @@ function updateSidebarUser(d) {
 function renderHistory(rows) {
   const tbody = document.getElementById('history-tbody');
   if (!tbody) return;
-  const typeColors = { 'Chai nhựa':'badge-blue','Lon nhôm':'badge-yellow','Giấy/bìa':'badge-green','Đổi quà':'badge-red' };
+  const TYPE_LABEL = { 'vo_co':'Vô cơ', 'huu_co':'Hữu cơ' };
+  const typeColors = { 'vo_co':'badge-blue','huu_co':'badge-green','Đổi quà':'badge-red','Chai nhựa':'badge-blue','Lon nhôm':'badge-yellow','Giấy/bìa':'badge-green' };
   tbody.innerHTML = rows.length ? rows.map(r => `
     <tr>
       <td style="color:#6b7280;font-size:0.82rem;white-space:nowrap;">${r.time}</td>
       <td style="font-weight:600;color:#374151;font-size:0.83rem;">${r.station}</td>
-      <td><span class="badge ${typeColors[r.type]||'badge-green'}">${r.type}</span></td>
+      <td><span class="badge ${typeColors[r.type]||'badge-green'}">${TYPE_LABEL[r.type]||r.type}</span></td>
       <td style="text-align:center;font-weight:700;">${r.qty}</td>
       <td style="text-align:right;">
         <span style="background:#f0fdf4;color:#15803d;border:1px solid #dcfce7;border-radius:10px;padding:4px 11px;font-weight:800;font-size:0.82rem;">
