@@ -1132,7 +1132,9 @@ window.navigate = function(page) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const navItem = document.querySelector(`.nav-item[data-page="${page}"]`);
   if (navItem) navItem.classList.add('active');
-  if (window.innerWidth < 768) closeSidebar();
+  if (window.innerWidth < 768) {
+    closeSidebar();
+  }
   if (page === 'map') renderMap();
   if (page === 'leaderboard') renderLeaderboard();
 };
@@ -1729,27 +1731,27 @@ window.sendChatMsg = async function(msg) {
   const loadingDiv = appendMsg('bot', '<span style="color:#9ca3af;">💬 Đang suy nghĩ...</span>', true);
   chatHistory.push({ role:'user', content:msg });
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST',
-      headers:{ 'Content-Type':'application/json' },
-      body: JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:800,
-        system:`Bạn là trợ lý AI tư vấn tái chế của hệ thống AI Recycle tại Việt Nam.
-Trả lời bằng tiếng Việt, thân thiện, ngắn gọn (tối đa 120 từ), dùng emoji phù hợp.
-Chuyên môn: phân loại rác (hữu cơ/vô cơ/tái chế/nguy hại), hướng dẫn tích điểm AI Recycle.
-Khi nói về phân loại: xanh lá=hữu cơ, xanh dương=tái chế, đỏ=nguy hại.`,
-        messages: chatHistory.slice(-8),
-      }),
+    // Gọi Vercel Serverless Function /api/chat thay vì gọi Anthropic trực tiếp
+    // → tránh CORS block và giữ bí mật API key
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: chatHistory.slice(-8) }),
     });
+
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    }
+
     const data = await res.json();
-    const reply = data.content?.[0]?.text || 'Xin lỗi, thử lại nhé!';
-    chatHistory.push({ role:'assistant', content:reply });
+    const reply = data.reply || 'Xin lỗi, thử lại nhé!';
+    chatHistory.push({ role: 'assistant', content: reply });
     loadingDiv.remove();
-    appendMsg('bot', reply.replace(/\n/g,'<br/>'));
+    appendMsg('bot', reply.replace(/\n/g, '<br/>'));
   } catch(e) {
     loadingDiv.remove();
-    appendMsg('bot','⚠️ Không kết nối được AI. Vui lòng thử lại.');
+    appendMsg('bot', '⚠️ Không kết nối được AI. Vui lòng thử lại.');
+    console.error('Chat error:', e);
   }
   document.getElementById('chat-send-btn').disabled = false;
 };
@@ -1780,8 +1782,19 @@ function appendMsg(role, html, isLoading=false) {
 window.toggleSidebar = function() {
   const sb = document.getElementById('sidebar');
   const ov = document.getElementById('sidebar-overlay');
-  sb.classList.toggle('open');
-  ov.classList.toggle('show');
+  const isOpen = sb.classList.contains('open');
+  if (isOpen) {
+    sb.classList.remove('open');
+    ov.classList.remove('show');
+  } else {
+    sb.classList.add('open');
+    ov.classList.add('show');
+  }
+};
+
+window.closeSidebar = function() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('show');
 };
 
 window.showToast = function(msg, type='success') {
