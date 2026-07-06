@@ -86,18 +86,12 @@
     position: sticky; top: 0; z-index: 30;
     background: rgba(248,255,254,0.9); backdrop-filter: blur(12px);
     border-bottom: 1.5px solid #dcfce7;
-    padding: 0 12px; height: 56px;
+    padding: 0 24px; height: 64px;
     display: flex; align-items: center; justify-content: space-between;
-    gap: 8px;
-  }
-  @media (max-width: 480px) {
-    #topbar-points span.pts-label { display: none; }
-    #topbar { padding: 0 10px; }
   }
 
   /* ===== PAGES ===== */
-  .page { display: none; padding: 20px 16px; animation: fadeUp 0.35s ease; }
-  @media (max-width: 768px) { .page { padding: 16px 12px; } }
+  .page { display: none; padding: 28px 24px; animation: fadeUp 0.35s ease; }
   .page.active { display: block; }
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(16px); }
@@ -145,10 +139,6 @@
     background: rgba(255,255,255,0.05);
   }
 
-  @media (max-width: 480px) {
-    .points-badge { padding: 20px 18px !important; border-radius: 18px !important; }
-  }
-
   /* ===== BUTTONS ===== */
   .btn-eco {
     background: linear-gradient(135deg, #22c55e, #16a34a);
@@ -168,10 +158,6 @@
     cursor: pointer; transition: all 0.2s; font-family: 'Nunito', sans-serif;
   }
   .btn-outline:hover { background: #f0fdf4; }
-
-  @media (max-width: 480px) {
-    .stat-card { padding: 14px 12px !important; }
-  }
 
   /* ===== TOAST ===== */
   #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
@@ -280,9 +266,6 @@
 
   /* ===== LOGIN CARD ===== */
   .login-card { background: #fff; border-radius: 24px; padding: 36px 32px; border: 1.5px solid #dcfce7; box-shadow: 0 8px 40px rgba(21,128,61,0.1); }
-  @media (max-width: 480px) {
-    .login-card { padding: 22px 16px !important; border-radius: 18px !important; }
-  }
   .login-input {
     width: 100%; padding: 13px 16px; border: 2px solid #dcfce7; border-radius: 12px;
     font-family: 'Nunito', sans-serif; font-size: 0.9rem; outline: none;
@@ -315,12 +298,6 @@
     #sidebar-close-btn { display: flex !important; }
   }
 
-  /* ===== AI CHAT MOBILE ===== */
-  @media (max-width: 640px) {
-    #page-aichat > div { height: calc(100dvh - 72px) !important; }
-    #chat-messages { padding: 12px 10px !important; }
-  }
-
   /* ===== MOBILE OVERLAY ===== */
   #sidebar-overlay {
     display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4);
@@ -347,44 +324,26 @@
   /* Page title */
   .page-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.55rem; font-weight: 700; color: #14532d; }
   .page-sub { font-size: 0.875rem; color: #6b7280; margin-top: 2px; }
-
-  /* ===== MOBILE RESPONSIVE ===== */
-  /* Hero floating stats */
-  .hero-stats-float {
-    position: absolute; right: 32px; top: 50%; transform: translateY(-50%);
-    display: flex; flex-direction: column; gap: 10px; z-index: 1;
-  }
-  .hero-stats-mobile { display: none; }
-  @media (max-width: 640px) {
-    .hero-stats-float  { display: none !important; }
-    .hero-stats-mobile { display: flex !important; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
-    .hero-bg { padding: 22px 16px !important; border-radius: 18px !important; }
-    .hero-bg h1 { font-size: 1.45rem !important; }
-    .hero-bg p  { font-size: 0.82rem !important; margin-bottom: 14px !important; }
-  }
-  /* Dashboard grid stack on mobile */
-  .dash-grid-wrap { grid-template-columns: 280px 1fr; }
-  @media (max-width: 640px) {
-    .dash-grid-wrap { grid-template-columns: 1fr !important; }
-  }
-  /* History table — ẩn cột ít quan trọng trên mobile */
-  @media (max-width: 560px) {
-    .eco-table th:nth-child(4),
-    .eco-table td:nth-child(4) { display: none; }
-    .eco-table th:nth-child(2),
-    .eco-table td:nth-child(2) { max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .page { padding: 12px 8px !important; }
-  }
 </style>
 </head>
 
 <body>
 
+<!-- ═══════════════════════════════════════════════════
+     TOAST CONTAINER
+═══════════════════════════════════════════════════ -->
 <div id="toast-container"></div>
 
+<!-- ═══════════════════════════════════════════════════
+     SIDEBAR OVERLAY (mobile)
+═══════════════════════════════════════════════════ -->
 <div id="sidebar-overlay" onclick="closeSidebar()"></div>
 
+<!-- ═══════════════════════════════════════════════════
+     SIDEBAR
+═══════════════════════════════════════════════════ -->
 <aside id="sidebar">
+  <!-- Logo + nút X đóng sidebar (chỉ hiện trên mobile) -->
   <div style="padding: 22px 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.1);">
     <div style="display:flex; align-items:center; gap:10px;">
       <div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#22c55e,#86efac);display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:0 4px 14px rgba(34,197,94,0.4);">
@@ -394,6 +353,7 @@
         <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:1.05rem;line-height:1.1;">AI Recycle</div>
         <div style="font-size:0.68rem;color:#86efac;letter-spacing:0.05em;">Smart Waste System</div>
       </div>
+      <!-- Nút X: chỉ hiện trên mobile -->
       <button onclick="closeSidebar()" id="sidebar-close-btn"
         style="display:none;background:rgba(255,255,255,0.12);border:none;cursor:pointer;
                width:32px;height:32px;border-radius:8px;color:#fff;font-size:1rem;
@@ -430,9 +390,8 @@
 
     <div class="section-label" style="margin-top:8px;">Cộng Đồng</div>
     <div class="nav-item" onclick="navigate('map')" data-page="map">
-      <i class="fas fa-rocket nav-icon"></i>
-      <span>Tính Năng Mới</span>
-      <span style="margin-left:auto;background:#f59e0b;color:#fff;font-size:0.65rem;padding:2px 7px;border-radius:10px;font-weight:700;">MỚI</span>
+      <i class="fas fa-map-marker-alt nav-icon"></i>
+      <span>Bản Đồ Trạm</span>
     </div>
     <div class="nav-item" onclick="navigate('leaderboard')" data-page="leaderboard">
       <i class="fas fa-trophy nav-icon"></i>
@@ -440,15 +399,17 @@
       <span style="margin-left:auto;background:#22c55e;color:#fff;font-size:0.65rem;padding:2px 7px;border-radius:10px;font-weight:700;">HOT</span>
     </div>
 
-    <div class="nav-item" onclick="navigate('aichat')" data-page="aichat">
-      <i class="fas fa-robot nav-icon"></i>
-      <span>Tư Vấn AI</span>
-      <span style="margin-left:auto;background:#3b82f6;color:#fff;font-size:0.65rem;padding:2px 7px;border-radius:10px;font-weight:700;">AI</span>
+    <div class="section-label" style="margin-top:8px; color: #60a5fa;">Tính Năng Mới</div>
+    <div class="nav-item" onclick="navigate('aichat')" data-page="aichat" style="border: 1px dashed rgba(59, 130, 246, 0.3);">
+      <i class="fas fa-robot nav-icon" style="color: #60a5fa;"></i>
+      <span style="color: #fff;">Tư Vấn AI</span>
+      <span style="margin-left:auto;background:#3b82f6;color:#fff;font-size:0.65rem;padding:2px 7px;border-radius:10px;font-weight:700;">NEW AI</span>
     </div>
 
     <div class="divider" style="margin:12px 14px;"></div>
   </nav>
 
+  <!-- User avatar bottom -->
   <div style="padding:14px 18px;border-top:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;gap:10px;">
     <div id="sidebar-avatar" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#4ade80);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;color:#14532d;flex-shrink:0;">NV</div>
     <div style="flex:1;min-width:0;">
@@ -459,8 +420,12 @@
   </div>
 </aside>
 
+<!-- ═══════════════════════════════════════════════════
+     MAIN CONTENT
+═══════════════════════════════════════════════════ -->
 <div id="main">
 
+  <!-- TOP BAR -->
   <header id="topbar">
     <div style="display:flex;align-items:center;gap:14px;">
       <button onclick="toggleSidebar()" style="background:none;border:none;cursor:pointer;padding:6px;border-radius:8px;color:#15803d;font-size:1.1rem;display:flex;align-items:center;" id="menu-btn">
@@ -474,11 +439,13 @@
       </div>
     </div>
     <div style="display:flex;align-items:center;gap:10px;">
+      <!-- Points indicator -->
       <div id="topbar-points" style="background:#f0fdf4;border:1.5px solid #dcfce7;border-radius:12px;padding:7px 14px;display:flex;align-items:center;gap:7px;cursor:pointer;" onclick="navigate('dashboard')">
         <i class="fas fa-leaf" style="color:#22c55e;font-size:0.85rem;"></i>
         <span id="topbar-pts-val" style="font-weight:800;color:#15803d;font-size:0.9rem;">1.240</span>
         <span style="font-size:0.72rem;color:#6b7280;font-weight:600;">điểm</span>
       </div>
+      <!-- Notification -->
       <button style="background:none;border:none;cursor:pointer;width:38px;height:38px;border-radius:10px;background:#f0fdf4;border:1.5px solid #dcfce7;color:#15803d;font-size:0.95rem;display:flex;align-items:center;justify-content:center;position:relative;" onclick="showToast('Bạn có 3 thông báo mới!','info')">
         <i class="fas fa-bell"></i>
         <span style="position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:#ef4444;border:1.5px solid #fff;"></span>
@@ -486,9 +453,13 @@
     </div>
   </header>
 
+  <!-- ════════════════════════════════
+       PAGE 1: HOME (Trang Chủ)
+  ════════════════════════════════ -->
   <div class="page active" id="page-home">
     <div style="max-width:1100px;">
 
+      <!-- Hero Banner -->
       <div class="hero-bg" style="margin-bottom:28px;">
         <div style="position:relative;z-index:1;">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
@@ -506,11 +477,12 @@
               <i class="fas fa-chart-pie" style="margin-right:7px;"></i>Xem Dashboard
             </button>
             <button class="btn-eco" onclick="navigate('map')" style="background:linear-gradient(135deg,#22c55e,#16a34a);">
-              <i class="fas fa-rocket" style="margin-right:7px;"></i>Tính Năng Sắp Ra Mắt
+              <i class="fas fa-map-marked-alt" style="margin-right:7px;"></i>Tìm Trạm Gần Đây
             </button>
           </div>
         </div>
-        <div class="hero-stats-float">
+        <!-- Floating stats -->
+        <div style="position:absolute;right:32px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:1;">
           <div style="background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);border-radius:14px;padding:12px 18px;border:1px solid rgba(255,255,255,0.2);text-align:center;min-width:120px;">
             <div style="font-size:1.5rem;font-weight:800;color:#fff;">147</div>
             <div style="font-size:0.7rem;color:#bbf7d0;font-weight:600;">Trạm hoạt động</div>
@@ -524,22 +496,9 @@
             <div style="font-size:0.7rem;color:#bbf7d0;font-weight:600;">Độ chính xác AI</div>
           </div>
         </div>
-        <div class="hero-stats-mobile">
-          <div style="background:rgba(255,255,255,0.15);border-radius:12px;padding:10px 14px;text-align:center;flex:1;">
-            <div style="font-size:1.2rem;font-weight:800;color:#fff;">147</div>
-            <div style="font-size:0.65rem;color:#bbf7d0;">Trạm</div>
-          </div>
-          <div style="background:rgba(255,255,255,0.15);border-radius:12px;padding:10px 14px;text-align:center;flex:1;">
-            <div style="font-size:1.2rem;font-weight:800;color:#fbbf24;">2.8T</div>
-            <div style="font-size:0.65rem;color:#bbf7d0;">Rác xử lý</div>
-          </div>
-          <div style="background:rgba(255,255,255,0.15);border-radius:12px;padding:10px 14px;text-align:center;flex:1;">
-            <div style="font-size:1.2rem;font-weight:800;color:#86efac;">98%</div>
-            <div style="font-size:0.65rem;color:#bbf7d0;">Chính xác AI</div>
-          </div>
-        </div>
       </div>
 
+      <!-- Technology Cards -->
       <div style="margin-bottom:28px;">
         <div style="margin-bottom:18px;">
           <h2 style="font-family:'Space Grotesk',sans-serif;font-size:1.25rem;font-weight:700;color:#14532d;">⚙️ Công Nghệ Lõi</h2>
@@ -586,870 +545,1316 @@
         </div>
       </div>
 
+      <!-- How it works -->
       <div class="eco-card" style="padding:28px;margin-bottom:28px;">
         <h2 style="font-family:'Space Grotesk',sans-serif;font-size:1.15rem;font-weight:700;color:#14532d;margin-bottom:20px;">🔄 Quy Trình Hoạt Động</h2>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0;position:relative;">
+          <!-- Steps -->
           <div id="steps-wrapper" style="display:flex;flex-wrap:wrap;gap:0;width:100%;">
+
             <div style="flex:1;min-width:120px;text-align:center;padding:12px 8px;">
               <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#16a34a);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;box-shadow:0 4px 14px rgba(22,163,74,0.3);">
                 <i class="fas fa-trash" style="color:#fff;font-size:1.1rem;"></i>
               </div>
               <div style="font-weight:700;font-size:0.8rem;color:#14532d;margin-bottom:4px;">Bỏ rác vào</div>
-              <div style="font-size:0.72rem;color:#6b7280;line-height:1.4;padding:0 4px;">Cửa sập mở tự động khi nhận diện vật thể</div>
+              <div style="font-size:0.72rem;color:#6b7280;line-height:1.5;">Người dùng quét thẻ RFID và bỏ rác</div>
             </div>
 
+            <div style="display:flex;align-items:center;color:#86efac;font-size:1.2rem;padding-top:4px;"><i class="fas fa-chevron-right"></i></div>
+
             <div style="flex:1;min-width:120px;text-align:center;padding:12px 8px;">
-              <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#1d4ed8);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;box-shadow:0 4px 14px rgba(59,130,246,0.3);">
-                <i class="fas fa-camera" style="color:#fff;font-size:1.1rem;"></i>
+              <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#2563eb);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;box-shadow:0 4px 14px rgba(37,99,235,0.3);">
+                <i class="fas fa-brain" style="color:#fff;font-size:1.1rem;"></i>
               </div>
-              <div style="font-weight:700;font-size:0.8rem;color:#14532d;margin-bottom:4px;">AI Phân Loại</div>
-              <div style="font-size:0.72rem;color:#6b7280;line-height:1.4;padding:0 4px;">Camera YOLOv8 quét hình dáng và chất liệu</div>
+              <div style="font-weight:700;font-size:0.8rem;color:#14532d;margin-bottom:4px;">AI phân loại</div>
+              <div style="font-size:0.72rem;color:#6b7280;line-height:1.5;">Camera AI nhận dạng loại rác</div>
             </div>
+
+            <div style="display:flex;align-items:center;color:#86efac;font-size:1.2rem;padding-top:4px;"><i class="fas fa-chevron-right"></i></div>
 
             <div style="flex:1;min-width:120px;text-align:center;padding:12px 8px;">
               <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#d97706);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;box-shadow:0 4px 14px rgba(245,158,11,0.3);">
-                <i class="fas fa-compress" style="color:#fff;font-size:1.1rem;"></i>
+                <i class="fas fa-compress-arrows-alt" style="color:#fff;font-size:1.1rem;"></i>
               </div>
-              <div style="font-weight:700;font-size:0.8rem;color:#14532d;margin-bottom:4px;">Nén Cơ Học</div>
-              <div style="font-size:0.72rem;color:#6b7280;line-height:1.4;padding:0 4px;">Hệ thống cơ khí nén rác vào đúng ngăn lưu trữ</div>
+              <div style="font-weight:700;font-size:0.8rem;color:#14532d;margin-bottom:4px;">Trục vít nén</div>
+              <div style="font-size:0.72rem;color:#6b7280;line-height:1.5;">Nén rác tối đa, tối ưu không gian</div>
             </div>
+
+            <div style="display:flex;align-items:center;color:#86efac;font-size:1.2rem;padding-top:4px;"><i class="fas fa-chevron-right"></i></div>
 
             <div style="flex:1;min-width:120px;text-align:center;padding:12px 8px;">
-              <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#a855f7,#7c3aed);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;box-shadow:0 4px 14px rgba(168,85,247,0.3);">
+              <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#8b5cf6,#7c3aed);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;box-shadow:0 4px 14px rgba(139,92,246,0.3);">
+                <i class="fas fa-star" style="color:#fff;font-size:1.1rem;"></i>
+              </div>
+              <div style="font-weight:700;font-size:0.8rem;color:#14532d;margin-bottom:4px;">Tích điểm</div>
+              <div style="font-size:0.72rem;color:#6b7280;line-height:1.5;">Điểm Xanh được cộng tự động</div>
+            </div>
+
+            <div style="display:flex;align-items:center;color:#86efac;font-size:1.2rem;padding-top:4px;"><i class="fas fa-chevron-right"></i></div>
+
+            <div style="flex:1;min-width:120px;text-align:center;padding:12px 8px;">
+              <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#ef4444,#dc2626);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;box-shadow:0 4px 14px rgba(239,68,68,0.3);">
                 <i class="fas fa-gift" style="color:#fff;font-size:1.1rem;"></i>
               </div>
-              <div style="font-weight:700;font-size:0.8rem;color:#14532d;margin-bottom:4px;">Tích Điểm</div>
-              <div style="font-size:0.72rem;color:#6b7280;line-height:1.4;padding:0 4px;">Điểm số cộng trực tiếp qua RFID/QR Code</div>
+              <div style="font-weight:700;font-size:0.8rem;color:#14532d;margin-bottom:4px;">Đổi quà</div>
+              <div style="font-size:0.72rem;color:#6b7280;line-height:1.5;">Dùng điểm đổi phần thưởng xanh</div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- Impact stats -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:28px;">
+        <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-radius:18px;padding:20px;text-align:center;border:1.5px solid #bbf7d0;">
+          <div style="font-size:2rem;margin-bottom:4px;">🌱</div>
+          <div style="font-size:1.5rem;font-weight:800;color:#15803d;font-family:'Space Grotesk',sans-serif;">4,218</div>
+          <div style="font-size:0.78rem;color:#6b7280;font-weight:600;margin-top:4px;">Học sinh tham gia</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border-radius:18px;padding:20px;text-align:center;border:1.5px solid #bfdbfe;">
+          <div style="font-size:2rem;margin-bottom:4px;">♻️</div>
+          <div style="font-size:1.5rem;font-weight:800;color:#1d4ed8;font-family:'Space Grotesk',sans-serif;">156,430</div>
+          <div style="font-size:0.78rem;color:#6b7280;font-weight:600;margin-top:4px;">Chai/lon đã phân loại</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#fffbeb,#fef9c3);border-radius:18px;padding:20px;text-align:center;border:1.5px solid #fde68a;">
+          <div style="font-size:2rem;margin-bottom:4px;">⚡</div>
+          <div style="font-size:1.5rem;font-weight:800;color:#d97706;font-family:'Space Grotesk',sans-serif;">2,847</div>
+          <div style="font-size:0.78rem;color:#6b7280;font-weight:600;margin-top:4px;">kWh điện tự sản xuất</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#fdf4ff,#fae8ff);border-radius:18px;padding:20px;text-align:center;border:1.5px solid #e9d5ff;">
+          <div style="font-size:2rem;margin-bottom:4px;">🌍</div>
+          <div style="font-size:1.5rem;font-weight:800;color:#7c3aed;font-family:'Space Grotesk',sans-serif;">3.2T</div>
+          <div style="font-size:0.78rem;color:#6b7280;font-weight:600;margin-top:4px;">CO₂ giảm tải (kg)</div>
         </div>
       </div>
 
     </div>
   </div>
 
+  <!-- ════════════════════════════════
+       PAGE 2: LOGIN
+  ════════════════════════════════ -->
   <div class="page" id="page-login">
-    <div style="max-width:440px; margin: 40px auto 0;">
-      <div class="login-card">
-        <div style="text-align:center;margin-bottom:24px;">
-          <h2 style="font-family:'Space Grotesk',sans-serif;font-size:1.4rem;font-weight:700;color:#14532d;">Chào Mừng Trở Lại!</h2>
-          <p style="font-size:0.85rem;color:#6b7280;margin-top:4px;">Đăng nhập để theo dõi hành trình xanh và đổi quà thưởng</p>
+    <div style="max-width:860px;">
+      <div style="margin-bottom:22px;">
+        <div class="page-title">Đăng Nhập Hệ Thống</div>
+        <div class="page-sub">Chọn phương thức phù hợp với bạn để truy cập tài khoản AI Recycle</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;">
+
+        <!-- Password login -->
+        <div class="login-card">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px;">
+            <div style="width:40px;height:40px;border-radius:12px;background:#f0fdf4;display:flex;align-items:center;justify-content:center;">
+              <i class="fas fa-user-lock" style="color:#15803d;font-size:1.05rem;"></i>
+            </div>
+            <div>
+              <div style="font-weight:800;color:#14532d;font-family:'Space Grotesk',sans-serif;">Đăng nhập bằng tài khoản</div>
+              <div style="font-size:0.72rem;color:#6b7280;">Dành cho học sinh & giáo viên</div>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div>
+              <label style="font-size:0.8rem;font-weight:700;color:#374151;display:block;margin-bottom:6px;">Tên Đăng Nhập</label>
+              <div style="position:relative;">
+                <i class="fas fa-id-badge" style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#86efac;font-size:0.9rem;"></i>
+                <input class="login-input" style="padding-left:40px;" placeholder="VD: HS2024001 hoặc email" id="login-user" />
+              </div>
+            </div>
+            <div>
+              <label style="font-size:0.8rem;font-weight:700;color:#374151;display:block;margin-bottom:6px;">Mật khẩu</label>
+              <div style="position:relative;">
+                <i class="fas fa-lock" style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#86efac;font-size:0.9rem;"></i>
+                <input class="login-input" style="padding-left:40px;" type="password" placeholder="••••••••" id="login-pass" />
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.78rem;">
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;color:#374151;">
+                <input type="checkbox" style="accent-color:#22c55e;" /> Ghi nhớ đăng nhập
+              </label>
+              <span style="color:#15803d;font-weight:700;cursor:pointer;">Quên mật khẩu?</span>
+            </div>
+            <button class="btn-eco" style="width:100%;padding:13px;" onclick="doLogin()">
+              <i class="fas fa-sign-in-alt" style="margin-right:8px;"></i>Đăng Nhập
+            </button>
+          </div>
         </div>
 
-        <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:20px;">
-          <div>
-            <label style="display:block;font-size:0.8rem;font-weight:700;color:#15803d;margin-bottom:6px;">Mã Số Học Sinh / Email</label>
-            <input type="text" placeholder="Ví dụ: CVA-2024-0482" class="login-input" id="login-uid" value="CVA-2024-0482"/>
+        <!-- QR / RFID login -->
+        <div class="login-card" style="text-align:center;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px;justify-content:center;">
+            <div style="width:40px;height:40px;border-radius:12px;background:#f0fdf4;display:flex;align-items:center;justify-content:center;">
+              <i class="fas fa-qrcode" style="color:#15803d;font-size:1.05rem;"></i>
+            </div>
+            <div style="text-align:left;">
+              <div style="font-weight:800;color:#14532d;font-family:'Space Grotesk',sans-serif;">QR Code / RFID</div>
+              <div style="font-size:0.72rem;color:#6b7280;">Nhanh chóng, không cần gõ</div>
+            </div>
           </div>
-          <div>
-            <label style="display:block;font-size:0.8rem;font-weight:700;color:#15803d;margin-bottom:6px;">Mật Khẩu</label>
-            <input type="password" placeholder="••••••••" class="login-input" id="login-pwd" value="123456"/>
+
+          <!-- QR Box -->
+          <div style="margin-bottom:16px;">
+            <div class="qr-box" id="qr-box">
+              <i class="fas fa-qrcode" style="font-size:3rem;color:#15803d;opacity:0.4;"></i>
+            </div>
+            <div style="margin-top:10px;font-size:0.8rem;color:#6b7280;" id="qr-status">Đưa mã QR vào khung để quét</div>
+          </div>
+
+          <div style="display:flex;gap:10px;justify-content:center;margin-bottom:16px;">
+            <button class="btn-eco" onclick="simulateQR()" style="font-size:0.82rem;padding:10px 18px;">
+              <i class="fas fa-camera" style="margin-right:6px;"></i>Mô phỏng Quét QR
+            </button>
+          </div>
+
+          <div style="border-top:1.5px solid #dcfce7;padding-top:16px;">
+            <div style="font-size:0.8rem;color:#6b7280;margin-bottom:10px;font-weight:600;">Hoặc chạm thẻ RFID</div>
+            <div style="width:100%;border:2px dashed #86efac;border-radius:14px;padding:16px;background:#f0fdf4;cursor:pointer;transition:all 0.2s;" onmouseenter="this.style.background='#dcfce7'" onmouseleave="this.style.background='#f0fdf4'" onclick="simulateRFID()">
+              <i class="fas fa-wifi" style="color:#22c55e;font-size:1.5rem;display:block;margin-bottom:6px;"></i>
+              <div style="font-size:0.8rem;font-weight:700;color:#15803d;">Chạm thẻ RFID vào đây</div>
+              <div style="font-size:0.72rem;color:#6b7280;margin-top:3px;">Dành cho người cao tuổi và học sinh nhỏ tuổi</div>
+            </div>
           </div>
         </div>
 
-        <button class="btn-eco" style="width:100%;padding:12px;font-size:0.95rem;margin-bottom:16px;" onclick="doLogin()">
-          <i class="fas fa-sign-in-alt" style="margin-right:8px;"></i>Xác Nhận Đăng Nhập
-        </button>
+      </div>
 
-        <div class="divider" style="margin:16px 0;"></div>
-
-        <div style="text-align:center;">
-          <div style="font-size:0.75rem;color:#6b7280;margin-bottom:12px;font-weight:600;">HOẶC ĐĂNG NHẬP NHANH BẰNG QR THẺ HỌC SINH</div>
-          <div class="qr-box">
-            <i class="fas fa-qrcode"></i>
-          </div>
-          <p style="font-size:0.7rem;color:#9ca3af;margin-top:8px;">Quét mã QR in trên thẻ học sinh trước camera trạm để đồng bộ tức thì</p>
+      <!-- Info note -->
+      <div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:14px;padding:16px 20px;margin-top:20px;display:flex;align-items:flex-start;gap:12px;">
+        <i class="fas fa-info-circle" style="color:#15803d;margin-top:2px;flex-shrink:0;"></i>
+        <div style="font-size:0.82rem;color:#374151;line-height:1.6;">
+          <strong style="color:#14532d;">Chưa có tài khoản?</strong>
+          <span style="color:#15803d;font-weight:700;cursor:pointer;" onclick="navigate('register')"> Đăng ký ngay tại đây →</span>
         </div>
       </div>
     </div>
   </div>
 
+
+  <!-- ════════════════════════════════
+       PAGE 2b: REGISTER (Đăng ký)
+  ════════════════════════════════ -->
   <div class="page" id="page-register">
-    <div style="max-width:460px; margin: 30px auto 0;">
-      <div class="login-card" style="padding:32px 28px;">
-        <div style="text-align:center;margin-bottom:20px;">
-          <h2 style="font-family:'Space Grotesk',sans-serif;font-size:1.35rem;font-weight:700;color:#14532d;">Tạo Tài Khoản Mới</h2>
-          <p style="font-size:0.85rem;color:#6b7280;margin-top:2px;">Tham gia cộng đồng phân loại rác thông minh</p>
-        </div>
-
-        <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-            <div>
-              <label style="display:block;font-size:0.78rem;font-weight:700;color:#15803d;margin-bottom:4px;">Họ và Tên</label>
-              <input type="text" placeholder="Nguyễn Văn A" class="login-input" style="padding:10px 12px;"/>
-            </div>
-            <div>
-              <label style="display:block;font-size:0.78rem;font-weight:700;color:#15803d;margin-bottom:4px;">Mã Học Sinh</label>
-              <input type="text" placeholder="CVA-2024-XXXX" class="login-input" style="padding:10px 12px;"/>
+    <div style="max-width:520px;margin:0 auto;">
+      <div style="margin-bottom:22px;">
+        <div class="page-title">🌱 Tạo Tài Khoản Mới</div>
+        <div class="page-sub">Tham gia cộng đồng AI Recycle và bắt đầu hành trình tái chế của bạn</div>
+      </div>
+      <div class="login-card">
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div>
+            <label style="font-size:0.8rem;font-weight:700;color:#374151;display:block;margin-bottom:6px;">Họ và tên</label>
+            <div style="position:relative;">
+              <i class="fas fa-user" style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#86efac;font-size:0.9rem;"></i>
+              <input class="login-input" style="padding-left:40px;" placeholder="VD: Nguyễn Văn An" id="reg-name" />
             </div>
           </div>
           <div>
-            <label style="display:block;font-size:0.78rem;font-weight:700;color:#15803d;margin-bottom:4px;">Trường Học</label>
-            <input type="text" placeholder="THPT Chu Văn An" class="login-input" style="padding:10px 12px;"/>
+            <label style="font-size:0.8rem;font-weight:700;color:#374151;display:block;margin-bottom:6px;">Tên đăng nhập</label>
+            <div style="position:relative;">
+              <i class="fas fa-id-badge" style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#86efac;font-size:0.9rem;"></i>
+              <input class="login-input" style="padding-left:40px;" placeholder="Chỉ dùng chữ thường và số, không dấu" id="reg-user" />
+            </div>
+            <div style="font-size:0.72rem;color:#9ca3af;margin-top:4px;">VD: nguyenvanan2024</div>
           </div>
           <div>
-            <label style="display:block;font-size:0.78rem;font-weight:700;color:#15803d;margin-bottom:4px;">Mật Khẩu</label>
-            <input type="password" placeholder="Tối thiểu 6 ký tự" class="login-input" style="padding:10px 12px;"/>
+            <label style="font-size:0.8rem;font-weight:700;color:#374151;display:block;margin-bottom:6px;">Mật khẩu</label>
+            <div style="position:relative;">
+              <i class="fas fa-lock" style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#86efac;font-size:0.9rem;"></i>
+              <input class="login-input" style="padding-left:40px;" type="password" placeholder="Tối thiểu 6 ký tự" id="reg-pass" />
+            </div>
+          </div>
+          <div>
+            <label style="font-size:0.8rem;font-weight:700;color:#374151;display:block;margin-bottom:6px;">Xác nhận mật khẩu</label>
+            <div style="position:relative;">
+              <i class="fas fa-lock" style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#86efac;font-size:0.9rem;"></i>
+              <input class="login-input" style="padding-left:40px;" type="password" placeholder="Nhập lại mật khẩu" id="reg-pass2" />
+            </div>
+          </div>
+          <button class="btn-eco" style="width:100%;padding:13px;margin-top:4px;" onclick="doRegister()">
+            <i class="fas fa-user-plus" style="margin-right:8px;"></i>Tạo Tài Khoản
+          </button>
+          <div style="text-align:center;font-size:0.8rem;color:#6b7280;">
+            Đã có tài khoản?
+            <span style="color:#15803d;font-weight:700;cursor:pointer;" onclick="navigate('login')"> Đăng nhập →</span>
           </div>
         </div>
-
-        <button class="btn-eco" style="width:100%;padding:11px;" onclick="showToast('Đăng ký thử nghiệm thành công! Bạn có thể đăng nhập.','success');navigate('login');">
-          <i class="fas fa-user-plus" style="margin-right:8px;"></i>Đăng Ký Tài Khoản
-        </button>
       </div>
     </div>
   </div>
 
+  <!-- ════════════════════════════════
+       PAGE 3: DASHBOARD (Tích điểm)
+  ════════════════════════════════ -->
   <div class="page" id="page-dashboard">
     <div style="max-width:1100px;">
-
-      <div style="margin-bottom:24px;">
-        <h1 class="page-title">📊 Dashboard Tích Điểm</h1>
-        <p class="page-sub">Theo dõi khối lượng rác giải cứu và quản lý quỹ điểm Eco-Points cá nhân</p>
-      </div>
-
-      <div style="display:grid; gap:16px; margin-bottom:24px;" class="dash-grid-wrap" id="dash-grid">
-        <div class="points-badge">
-          <div style="position:relative;z-index:2;display:flex;flex-direction:column;height:100%;justify-content:between;">
-            <div>
-              <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:#bbf7d0;margin-bottom:4px;">Tài Khoản Điểm</div>
-              <div style="font-size:2.4rem;font-weight:900;font-family:'Space Grotesk',sans-serif;line-height:1.1;" id="dash-points-val">1.240</div>
-              <div style="font-size:0.8rem;font-weight:600;color:#dcfce7;margin-top:2px;">Hạng thành viên: <span style="color:#fbbf24;font-weight:800;">Dũng Sĩ Xanh 🌿</span></div>
-            </div>
-            <div style="margin-top:24px;display:flex;gap:10px;">
-              <button class="btn-eco" style="background:#fff;color:#15803d;box-shadow:0 4px 12px rgba(0,0,0,0.06);font-size:0.8rem;padding:8px 16px;" onclick="navigate('store')">
-                <i class="fas fa-shopping-bag" style="margin-right:6px;"></i>Đổi Quà Ngay
-              </button>
-            </div>
-          </div>
+      <!-- Header -->
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
+        <div>
+          <div class="page-title">Dashboard Cá Nhân</div>
+          <div class="page-sub" id="dash-username">Nguyễn Văn An · HS · Trường THPT Chu Văn An, Hà Nội</div>
         </div>
-
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;">
-          <div class="stat-card">
-            <div style="width:36px;height:36px;border-radius:10px;background:#dbeafe;color:#1d4ed8;display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:1rem;">
-              <i class="fas fa-prescription-bottle"></i>
-            </div>
-            <div style="font-size:0.75rem;color:#6b7280;font-weight:700;text-transform:uppercase;">Chai Nhựa Plastic</div>
-            <div style="font-size:1.5rem;font-weight:800;color:#1a2e1a;margin-top:2px;" class="count-anim">42 <span style="font-size:0.8rem;color:#6b7280;font-weight:500;">chai</span></div>
-            <div style="font-size:0.7rem;color:#16a34a;margin-top:4px;font-weight:600;"><i class="fas fa-arrow-up"></i> +12 chai tuần này</div>
-          </div>
-
-          <div class="stat-card">
-            <div style="width:36px;height:36px;border-radius:10px;background:#fef9c3;color:#a16207;display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:1rem;">
-              <i class="fas fa-wine-bottle"></i>
-            </div>
-            <div style="font-size:0.75rem;color:#6b7280;font-weight:700;text-transform:uppercase;">Lon Nhôm / Kim Loại</div>
-            <div style="font-size:1.5rem;font-weight:800;color:#1a2e1a;margin-top:2px;" class="count-anim">28 <span style="font-size:0.8rem;color:#6b7280;font-weight:500;">lon</span></div>
-            <div style="font-size:0.7rem;color:#16a34a;margin-top:4px;font-weight:600;"><i class="fas fa-arrow-up"></i> +5 lon tuần này</div>
-          </div>
-
-          <div class="stat-card">
-            <div style="width:36px;height:36px;border-radius:10px;background:#fee2e2;color:#dc2626;display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:1rem;">
-              <i class="fas fa-weight-hanging"></i>
-            </div>
-            <div style="font-size:0.75rem;color:#6b7280;font-weight:700;text-transform:uppercase;">Tổng Khối Lượng</div>
-            <div style="font-size:1.5rem;font-weight:800;color:#1a2e1a;margin-top:2px;" class="count-anim">4.1 <span style="font-size:0.8rem;color:#6b7280;font-weight:500;">kg</span></div>
-            <div style="font-size:0.7rem;color:#6b7280;margin-top:4px;font-weight:500;">Giảm thiểu ~3.8kg CO2</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="eco-card" style="padding:22px;overflow:hidden;">
-        <div style="display:flex;align-items:center;justify-content:between;margin-bottom:16px;">
-          <h3 style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#14532d;font-size:1.05rem;">📜 Nhật Ký Hoạt Động Gần Đây</h3>
-          <button class="btn-outline" style="padding:4px 12px;font-size:0.75rem;border-radius:8px;" onclick="showToast('Đang xuất báo cáo định dạng Excel...','info')">
-            <i class="fas fa-download" style="margin-right:4px;"></i>Xuất File
+        <div style="display:flex;gap:10px;">
+          <button class="btn-outline" style="font-size:0.8rem;" onclick="showToast('Đang xuất báo cáo...','info')">
+            <i class="fas fa-download" style="margin-right:5px;"></i>Xuất báo cáo
+          </button>
+          <button class="btn-eco" style="font-size:0.8rem;" onclick="navigate('store')">
+            <i class="fas fa-gift" style="margin-right:5px;"></i>Đổi quà ngay
           </button>
         </div>
+      </div>
 
-        <div style="width:100%;overflow-x:auto;">
-          <table class="eco-table">
+      <!-- Points + Stats row -->
+      <div style="display:grid;grid-template-columns:280px 1fr;gap:18px;margin-bottom:22px;" id="dash-grid">
+
+        <!-- Big Points Badge -->
+        <div class="points-badge">
+          <div style="position:relative;z-index:1;">
+            <div style="font-size:0.8rem;font-weight:700;color:rgba(255,255,255,0.7);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px;">
+              <i class="fas fa-leaf" style="margin-right:5px;"></i>Tổng Điểm Xanh
+            </div>
+            <div id="dash-points" style="font-size:3rem;font-weight:900;line-height:1;font-family:'Space Grotesk',sans-serif;" class="count-anim">1.240</div>
+            <div style="font-size:0.8rem;color:rgba(255,255,255,0.7);margin-top:4px;">điểm tích lũy</div>
+            <div style="margin-top:18px;background:rgba(255,255,255,0.15);border-radius:12px;padding:10px 14px;">
+              <div style="font-size:0.72rem;color:rgba(255,255,255,0.7);margin-bottom:3px;">Cấp độ hiện tại</div>
+              <div id="dash-level" style="font-weight:800;color:#bbf7d0;font-size:0.9rem;">🌿 Người Xanh Cấp II</div>
+              <div style="margin-top:6px;height:6px;border-radius:99px;background:rgba(255,255,255,0.2);overflow:hidden;">
+                <div id="dash-level-pct" style="height:100%;width:62%;background:#bbf7d0;border-radius:99px;"></div>
+              </div>
+              <div id="dash-level-next" style="font-size:0.68rem;color:rgba(255,255,255,0.7);margin-top:4px;">620/1000 đến Cấp III</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stat cards grid -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;align-content:start;">
+          <div class="stat-card">
+            <div style="font-size:1.6rem;margin-bottom:6px;">🍾</div>
+            <div style="font-size:1.55rem;font-weight:800;color:#15803d;font-family:'Space Grotesk',sans-serif;" id="stat-plastic">312</div>
+            <div style="font-size:0.75rem;color:#6b7280;font-weight:600;margin-top:2px;">Chai nhựa</div>
+          </div>
+          <div class="stat-card">
+            <div style="font-size:1.6rem;margin-bottom:6px;">🥫</div>
+            <div style="font-size:1.55rem;font-weight:800;color:#2563eb;font-family:'Space Grotesk',sans-serif;" id="stat-cans">89</div>
+            <div style="font-size:0.75rem;color:#6b7280;font-weight:600;margin-top:2px;">Lon nhôm</div>
+          </div>
+          <div class="stat-card">
+            <div style="font-size:1.6rem;margin-bottom:6px;">📄</div>
+            <div style="font-size:1.55rem;font-weight:800;color:#d97706;font-family:'Space Grotesk',sans-serif;" id="stat-paper">47</div>
+            <div style="font-size:0.75rem;color:#6b7280;font-weight:600;margin-top:2px;">Giấy/bìa</div>
+          </div>
+          <div class="stat-card">
+            <div style="font-size:1.6rem;margin-bottom:6px;">🌍</div>
+            <div style="font-size:1.55rem;font-weight:800;color:#7c3aed;font-family:'Space Grotesk',sans-serif;" id="stat-co2">14.8</div>
+            <div style="font-size:0.75rem;color:#6b7280;font-weight:600;margin-top:2px;">kg CO₂ giảm</div>
+          </div>
+          <div class="stat-card" style="grid-column:span 2;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+              <div>
+                <div style="font-size:0.75rem;color:#6b7280;font-weight:600;">Điểm tuần này</div>
+                <div style="font-size:1.3rem;font-weight:800;color:#15803d;font-family:'Space Grotesk',sans-serif;">+86 điểm</div>
+              </div>
+              <div style="background:#f0fdf4;border-radius:10px;padding:6px 10px;font-size:0.75rem;font-weight:700;color:#15803d;">
+                <i class="fas fa-arrow-up" style="margin-right:3px;"></i>+12%
+              </div>
+            </div>
+            <!-- Mini chart placeholder -->
+            <div style="display:flex;align-items:flex-end;gap:5px;height:40px;">
+              <div style="flex:1;background:#dcfce7;border-radius:4px;height:55%;"></div>
+              <div style="flex:1;background:#dcfce7;border-radius:4px;height:70%;"></div>
+              <div style="flex:1;background:#86efac;border-radius:4px;height:45%;"></div>
+              <div style="flex:1;background:#86efac;border-radius:4px;height:80%;"></div>
+              <div style="flex:1;background:#22c55e;border-radius:4px;height:60%;"></div>
+              <div style="flex:1;background:#22c55e;border-radius:4px;height:90%;"></div>
+              <div style="flex:1;background:#16a34a;border-radius:4px;height:100%;"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:0.65rem;color:#9ca3af;">
+              <span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span>CN</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- History table -->
+      <div class="eco-card" style="overflow:hidden;">
+        <div style="padding:18px 22px;border-bottom:1.5px solid #f0fdf4;display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <div style="font-weight:800;color:#14532d;font-family:'Space Grotesk',sans-serif;">📋 Lịch Sử Tích Điểm</div>
+            <div style="font-size:0.75rem;color:#6b7280;margin-top:2px;">30 giao dịch gần đây</div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <select style="border:1.5px solid #dcfce7;border-radius:10px;padding:6px 12px;font-size:0.78rem;color:#374151;outline:none;cursor:pointer;background:#f8fffe;font-family:'Nunito',sans-serif;" onchange="filterHistory(this.value)">
+              <option value="all">Tất cả loại</option>
+              <option value="Chai nhựa">Chai nhựa</option>
+              <option value="Lon nhôm">Lon nhôm</option>
+              <option value="Giấy/bìa">Giấy/bìa</option>
+            </select>
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="eco-table" id="history-table">
             <thead>
               <tr>
-                <th>Thời Gian</th>
-                <th>Vị Trí Trạm</th>
-                <th>Loại Rác Thải</th>
-                <th>Số Lượng</th>
-                <th>Cộng Điểm</th>
+                <th>Thời gian</th>
+                <th>Vị trí trạm</th>
+                <th>Loại rác</th>
+                <th>Số lượng</th>
+                <th style="text-align:right;">Điểm cộng</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td style="font-weight:600;color:#6b7280;">Hôm nay, 08:15</td>
-                <td style="font-weight:700;color:#15803d;">Trạm Khu Căn Tin</td>
-                <td>Chai nhựa Plastic (PET)</td>
-                <td style="font-weight:700;">3 chai</td>
-                <td style="color:#16a34a;font-weight:800;">+60 pts</td>
-              </tr>
-              <tr>
-                <td style="font-weight:600;color:#6b7280;">Hôm qua, 15:40</td>
-                <td style="font-weight:700;color:#15803d;">Trạm Khu Căn Tin</td>
-                <td>Lon nhôm nước ngọt</td>
-                <td style="font-weight:700;">4 lon</td>
-                <td style="color:#16a34a;font-weight:800;">+120 pts</td>
-              </tr>
-              <tr>
-                <td style="font-weight:600;color:#6b7280;">04 Th04, 11:20</td>
-                <td style="font-weight:700;color:#15803d;">Trạm Sân Cỏ Phía Tây</td>
-                <td>Chai nhựa Plastic (PET)</td>
-                <td style="font-weight:700;">5 chai</td>
-                <td style="color:#16a34a;font-weight:800;">+100 pts</td>
-              </tr>
-              <tr>
-                <td style="font-weight:600;color:#6b7280;">01 Th04, 09:05</td>
-                <td style="font-weight:700;color:#15803d;">Trạm Khu Căn Tin</td>
-                <td>Giấy vụn / Sách cũ</td>
-                <td style="font-weight:700;">0.8 kg</td>
-                <td style="color:#16a34a;font-weight:800;">+80 pts</td>
-              </tr>
+            <tbody id="history-tbody">
+              <!-- Filled by JS -->
             </tbody>
           </table>
         </div>
+        <div style="padding:12px 22px;background:#f8fffe;display:flex;align-items:center;justify-content:space-between;border-top:1px solid #f0fdf4;">
+          <span style="font-size:0.78rem;color:#6b7280;">Hiển thị 1–10 / 30 giao dịch</span>
+          <div style="display:flex;gap:6px;">
+            <button class="btn-outline" style="padding:6px 12px;font-size:0.75rem;">← Trước</button>
+            <button class="btn-eco" style="padding:6px 12px;font-size:0.75rem;">Sau →</button>
+          </div>
+        </div>
       </div>
 
     </div>
   </div>
 
+  <!-- ════════════════════════════════
+       PAGE 4: ECO-STORE (Đổi thưởng)
+  ════════════════════════════════ -->
   <div class="page" id="page-store">
     <div style="max-width:1100px;">
-
-      <div style="margin-bottom:24px;">
-        <h1 class="page-title">🛍️ Đổi Thưởng Eco-Store</h1>
-        <p class="page-sub">Sử dụng điểm tích lũy để đổi lấy dụng cụ học tập hoặc Voucher xanh bảo vệ môi trường</p>
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
+        <div>
+          <div class="page-title">🛍️ Eco-Store — Đổi Thưởng Xanh</div>
+          <div class="page-sub">Dùng Điểm Xanh để đổi lấy những phần thưởng ý nghĩa</div>
+        </div>
+        <div style="background:#f0fdf4;border:1.5px solid #dcfce7;border-radius:14px;padding:12px 20px;display:flex;align-items:center;gap:10px;">
+          <i class="fas fa-leaf" style="color:#22c55e;font-size:1.1rem;"></i>
+          <div>
+            <div style="font-size:0.72rem;color:#6b7280;font-weight:600;">Điểm hiện có</div>
+            <div style="font-size:1.4rem;font-weight:800;color:#15803d;font-family:'Space Grotesk',sans-serif;" id="store-points-display">1.240</div>
+          </div>
+        </div>
       </div>
 
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;">
-
-        <div class="store-card">
-          <div class="store-img">✏️</div>
-          <div style="padding:16px;flex:1;display:flex;flex-direction:column;justify-content:between;">
-            <div>
-              <div style="font-weight:800;color:#14532d;font-family:'Space Grotesk',sans-serif;font-size:0.95rem;">Bút Chì Gỗ Tái Chế</div>
-              <p style="font-size:0.75rem;color:#6b7280;line-height:1.4;margin-top:4px;">Làm từ vụn gỗ ép tự nhiên, thân thiện với môi trường học đường.</p>
-            </div>
-            <div style="margin-top:16px;display:flex;align-items:center;justify-content:between;">
-              <span style="font-weight:800;color:#16a34a;font-size:0.95rem;">150 pts</span>
-              <button class="btn-eco" style="padding:6px 14px;font-size:0.75rem;border-radius:8px;" onclick="claimReward('Bút Chì Gỗ Tái Chế', 150)">Đổi Quà</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="store-card">
-          <div class="store-img">📔</div>
-          <div style="padding:16px;flex:1;display:flex;flex-direction:column;justify-content:between;">
-            <div>
-              <div style="font-weight:800;color:#14532d;font-family:'Space Grotesk',sans-serif;font-size:0.95rem;">Vở Lò Xo Giấy Kraft</div>
-              <p style="font-size:0.75rem;color:#6b7280;line-height:1.4;margin-top:4px;">80 trang giấy chống lóa, sản xuất hoàn toàn từ bột giấy tái chế.</p>
-            </div>
-            <div style="margin-top:16px;display:flex;align-items:center;justify-content:between;">
-              <span style="font-weight:800;color:#16a34a;font-size:0.95rem;">300 pts</span>
-              <button class="btn-eco" style="padding:6px 14px;font-size:0.75rem;border-radius:8px;" onclick="claimReward('Vở Lò Xo Giấy Kraft', 300)">Đổi Quà</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="store-card">
-          <div class="store-img">🥤</div>
-          <div style="padding:16px;flex:1;display:flex;flex-direction:column;justify-content:between;">
-            <div>
-              <div style="font-weight:800;color:#14532d;font-family:'Space Grotesk',sans-serif;font-size:0.95rem;">Bình Nước Nhôm Cầm Tay</div>
-              <p style="font-size:0.75rem;color:#6b7280;line-height:1.4;margin-top:4px;">Dung tích 500ml, giữ nhiệt cơ bản, hạn chế chai nhựa dùng 1 lần.</p>
-            </div>
-            <div style="margin-top:16px;display:flex;align-items:center;justify-content:between;">
-              <span style="font-weight:800;color:#16a34a;font-size:0.95rem;">800 pts</span>
-              <button class="btn-eco" style="padding:6px 14px;font-size:0.75rem;border-radius:8px;" onclick="claimReward('Bình Nước Nhôm Cầm Tay', 800)">Đổi Quà</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="store-card">
-          <div class="store-img">🎟️</div>
-          <div style="padding:16px;flex:1;display:flex;flex-direction:column;justify-content:between;">
-            <div>
-              <div style="font-weight:800;color:#14532d;font-family:'Space Grotesk',sans-serif;font-size:0.95rem;">Voucher Căn Tin 20K</div>
-              <p style="font-size:0.75rem;color:#6b7280;line-height:1.4;margin-top:4px;">Phiếu giảm giá trực tiếp 20.000đ khi mua suất ăn tại hệ thống căn tin trường.</p>
-            </div>
-            <div style="margin-top:16px;display:flex;align-items:center;justify-content:between;">
-              <span style="font-weight:800;color:#16a34a;font-size:0.95rem;">1.000 pts</span>
-              <button class="btn-eco" style="padding:6px 14px;font-size:0.75rem;border-radius:8px;" onclick="claimReward('Voucher Căn Tin 20K', 1000)">Đổi Quà</button>
-            </div>
-          </div>
-        </div>
-
+      <!-- Filter tabs -->
+      <div style="display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap;" id="store-filters">
+        <button class="btn-eco" style="font-size:0.8rem;padding:8px 18px;" onclick="filterStore('all',this)">Tất cả</button>
+        <button class="btn-outline" style="font-size:0.8rem;padding:8px 18px;" onclick="filterStore('school',this)">📚 Đồ dùng học tập</button>
+        <button class="btn-outline" style="font-size:0.8rem;padding:8px 18px;" onclick="filterStore('food',this)">🥛 Thực phẩm</button>
+        <button class="btn-outline" style="font-size:0.8rem;padding:8px 18px;" onclick="filterStore('voucher',this)">🎫 Voucher</button>
+        <button class="btn-outline" style="font-size:0.8rem;padding:8px 18px;" onclick="filterStore('eco',this)">🌿 Đồ eco</button>
       </div>
 
+      <!-- Store Grid -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:18px;" id="store-grid">
+        <!-- Filled by JS -->
+      </div>
     </div>
   </div>
 
+  <!-- ════════════════════════════════
+       PAGE 5: MAP (Bản đồ trạm)
+  ════════════════════════════════ -->
   <div class="page" id="page-map">
     <div style="max-width:1100px;">
-
-      <div style="margin-bottom:24px;">
-        <h1 class="page-title">🚀 Tính Năng Mới Đang Phát Triển</h1>
-        <p class="page-sub">Bản đồ số định vị các trạm Thùng rác thông minh kết hợp IoT thời gian thực</p>
+      <div style="margin-bottom:22px;">
+        <div class="page-title">📍 Bản Đồ Trạm Tái Chế</div>
+        <div class="page-sub">Tìm trạm thùng rác thông minh gần bạn nhất · Cập nhật real-time</div>
       </div>
 
-      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px; align-items:start;">
-        <div class="eco-card" style="padding:12px; position:relative; overflow:hidden; background:#e3f2fd; height:340px; display:flex; align-items:center; justify-content:center; border-color:#90caf9;">
-          <div style="position:absolute; inset:0; opacity:0.25; background-image: radial-gradient(#15803d 1.5px, transparent 1.5px); background-size: 24px 24px;"></div>
-          <div style="position:absolute; top:30%; left:0; right:0; height:30px; background:rgba(255,255,255,0.7); transform:skewY(-5deg);"></div>
-          <div style="position:absolute; left:40%; top:0; bottom:0; width:35px; background:rgba(255,255,255,0.7); transform:skewX(10deg);"></div>
-          
-          <div style="position:absolute; top:25%; left:30%; display:flex; flex-direction:column; align-items:center;">
-            <div class="map-dot" style="background:#22c55e;"></div>
-            <span style="font-size:0.65rem; font-weight:700; background:#fff; padding:2px 6px; border-radius:6px; box-shadow:0 2px 6px rgba(0,0,0,0.1); margin-top:4px;">Trạm Căn Tin</span>
-          </div>
-          <div style="position:absolute; top:65%; left:65%; display:flex; flex-direction:column; align-items:center;">
-            <div class="map-dot" style="background:#ef4444;"></div>
-            <span style="font-size:0.65rem; font-weight:700; background:#fff; padding:2px 6px; border-radius:6px; box-shadow:0 2px 6px rgba(0,0,0,0.1); margin-top:4px;">Trạm Sân Bóng (Đầy)</span>
-          </div>
-          
-          <div style="text-align:center; position:relative; z-index:10; background:rgba(255,255,255,0.92); padding:20px 24px; border-radius:16px; border:1.5px solid #90caf9; max-width:280px; box-shadow:0 8px 32px rgba(0,0,0,0.06);">
-            <i class="fas fa-tools" style="font-size:2rem; color:#1e88e5; margin-bottom:10px; animation: bounce 2s infinite;"></i>
-            <div style="font-weight:800; color:#0d47a1; font-family:'Space Grotesk',sans-serif; font-size:1rem;">Hệ Thống Đang Phát Triển</div>
-            <p style="font-size:0.75rem; color:#546e7a; line-height:1.4; margin-top:4px;">Module tích hợp bản đồ số định vị trạm thu gom và cảnh báo dung tích trống thông qua sóng IoT truyền dẫn LoRa.</p>
-          </div>
+      <!-- Map placeholder + list side by side -->
+      <div style="display:grid;grid-template-columns:1fr 360px;gap:20px;" id="map-layout">
+
+        <!-- Bản đồ Việt Nam SVG -->
+        <div style="background:#dbeafe;border-radius:20px;min-height:460px;position:relative;overflow:hidden;border:2px solid #bbf7d0;display:flex;align-items:center;justify-content:center;">
+          <div id="vietnam-map-svg" style="width:100%;height:460px;"></div>
         </div>
 
-        <div style="display:flex; flex-direction:column; gap:12px;">
-          <h3 style="font-family:'Space Grotesk',sans-serif; font-weight:700; color:#14532d; font-size:1rem; margin-bottom:2px;">📍 Danh Sách Trạm Trực Tuyến (Live)</h3>
-          
-          <div class="map-item">
-            <div style="width:10px; height:10px; border-radius:50%; background:#22c55e; animation:pulse 2s infinite;"></div>
-            <div style="flex:1;">
-              <div style="font-weight:700; font-size:0.85rem; color:#1a2e1a;">Trạm Khu Căn Tin Mới</div>
-              <div style="font-size:0.72rem; color:#6b7280; margin-top:2px;">Dung tích lưu trữ hiện tại:</div>
-              <div class="capacity-bar" style="margin-top:4px;"><div class="capacity-fill" style="width:34%; background:#22c55e;"></div></div>
-            </div>
-            <span class="badge badge-green">34% (Trống)</span>
-          </div>
-
-          <div class="map-item">
-            <div style="width:10px; height:10px; border-radius:50%; background:#eab308; animation:pulse 2s infinite;"></div>
-            <div style="flex:1;">
-              <div style="font-weight:700; font-size:0.85rem; color:#1a2e1a;">Trạm Sân Trường Khu B</div>
-              <div style="font-size:0.72rem; color:#6b7280; margin-top:2px;">Dung tích lưu trữ hiện tại:</div>
-              <div class="capacity-bar" style="margin-top:4px;"><div class="capacity-fill" style="width:78%; background:#eab308;"></div></div>
-            </div>
-            <span class="badge badge-yellow">78% (Gần đầy)</span>
-          </div>
+        <!-- Station list -->
+        <div style="display:flex;flex-direction:column;gap:12px;max-height:520px;overflow-y:auto;" id="station-list">
+          <!-- Filled by JS -->
         </div>
       </div>
 
+      <!-- Stats bar -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-top:20px;">
+        <div style="background:#fff;border-radius:14px;padding:14px 16px;border:1.5px solid #dcfce7;text-align:center;">
+          <div style="font-size:1.3rem;font-weight:800;color:#15803d;font-family:'Space Grotesk',sans-serif;">1</div>
+          <div style="font-size:0.72rem;color:#6b7280;font-weight:600;margin-top:2px;">Tổng trạm</div>
+        </div>
+        <div style="background:#fff;border-radius:14px;padding:14px 16px;border:1.5px solid #dcfce7;text-align:center;">
+          <div style="font-size:1.3rem;font-weight:800;color:#22c55e;font-family:'Space Grotesk',sans-serif;">Gia Lai</div>
+          <div style="font-size:0.72rem;color:#6b7280;font-weight:600;margin-top:2px;">Tỉnh hoạt động</div>
+        </div>
+      </div>
     </div>
   </div>
 
+  <!-- ════════════════════════════════
+       PAGE 6: LEADERBOARD
+  ════════════════════════════════ -->
   <div class="page" id="page-leaderboard">
-    <div style="max-width:700px; margin: 0 auto;">
-
-      <div style="text-align:center; margin-bottom:28px;">
-        <h1 class="page-title">🏆 Bảng Xếp Hạng Kiện Tướng Xanh</h1>
-        <p class="page-sub">Tôn vinh các cá nhân và tập thể lớp có thành tích xuất sắc trong chiến dịch giải cứu rác thải</p>
+    <div style="max-width:860px;">
+      <div style="margin-bottom:24px;">
+        <div class="page-title">🏆 Bảng Xếp Hạng Điểm Xanh</div>
+        <div class="page-sub">Cộng đồng AI Recycle — Tháng 06/2025 · Cập nhật mỗi giờ</div>
       </div>
 
-      <div class="eco-card" style="padding:16px 12px;">
-        <div style="display:flex; justify-content:space-around; align-items:end; margin: 20px 0 28px; border-bottom:1.5px dashed #dcfce7; padding-bottom:20px;">
-          <div style="text-align:center; width:90px;">
-            <div style="position:relative; display:inline-block;">
-              <div class="lb-avatar rank-2" style="width:56px; height:56px; font-size:1.2rem; margin:0 auto;">TrB</div>
-              <span style="position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:#9ca3af; color:#fff; font-size:0.65rem; font-weight:800; padding:1px 6px; border-radius:10px;">TOP 2</span>
-            </div>
-            <div style="font-weight:700; font-size:0.82rem; color:#374151; margin-top:8px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Trần Tiến Bình</div>
-            <div style="font-weight:800; color:#4b5563; font-size:0.85rem; margin-top:2px;">1.480 <span style="font-size:0.65rem; font-weight:500;">pts</span></div>
-          </div>
-          <div style="text-align:center; width:110px;">
-            <div style="position:relative; display:inline-block;">
-              <div class="lb-avatar rank-1" style="width:72px; height:72px; font-size:1.5rem; margin:0 auto;">LeM</div>
-              <span style="position:absolute; top:-14px; left:50%; transform:translateX(-50%); background:#d97706; color:#fff; font-size:0.7rem; font-weight:900; padding:2px 8px; border-radius:10px; box-shadow:0 2px 8px rgba(217,119,6,0.3);"><i class="fas fa-crown"></i> TOP 1</span>
-            </div>
-            <div style="font-weight:800; font-size:0.9rem; color:#14532d; margin-top:8px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Lê Minh Tú</div>
-            <div style="font-weight:900; color:#d97706; font-size:1.05rem; margin-top:2px;">1.950 <span style="font-size:0.7rem; font-weight:600;">pts</span></div>
-          </div>
-          <div style="text-align:center; width:90px;">
-            <div style="position:relative; display:inline-block;">
-              <div class="lb-avatar rank-3" style="width:56px; height:56px; font-size:1.2rem; margin:0 auto;">PhA</div>
-              <span style="position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:#ea580c; color:#fff; font-size:0.65rem; font-weight:800; padding:1px 6px; border-radius:10px;">TOP 3</span>
-            </div>
-            <div style="font-weight:700; font-size:0.82rem; color:#374151; margin-top:8px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Phan Mỹ Anh</div>
-            <div style="font-weight:800; color:#c2410c; font-size:0.85rem; margin-top:2px;">1.310 <span style="font-size:0.65rem; font-weight:500;">pts</span></div>
-          </div>
+      <!-- Filter -->
+      <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;">
+        <button class="btn-eco" style="font-size:0.8rem;padding:8px 18px;" onclick="filterLB('month',this)">Tháng này</button>
+        <button class="btn-outline" style="font-size:0.8rem;padding:8px 18px;" onclick="filterLB('week',this)">Tuần này</button>
+        <button class="btn-outline" style="font-size:0.8rem;padding:8px 18px;" onclick="filterLB('all',this)">Tất cả thời gian</button>
+      </div>
+
+      <!-- Top 3 podium -->
+      <div style="display:flex;align-items:flex-end;justify-content:center;gap:16px;margin-bottom:24px;padding:24px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-radius:20px;border:1.5px solid #bbf7d0;" id="podium">
+        <!-- Filled by JS -->
+      </div>
+
+      <!-- Full list -->
+      <div class="eco-card" style="overflow:hidden;">
+        <div style="padding:16px 20px;border-bottom:1.5px solid #f0fdf4;">
+          <div style="font-weight:800;color:#14532d;font-family:'Space Grotesk',sans-serif;font-size:0.95rem;">Bảng xếp hạng đầy đủ</div>
         </div>
-
-        <div style="display:flex; flex-direction:column; gap:4px;">
-          <div class="lb-row" style="background:#f0fdf4; border:1px solid #bbf7d0;">
-            <span style="font-weight:800; color:#15803d; width:24px; font-size:0.85rem; text-align:center;">4</span>
-            <div class="lb-avatar rank-n">NV</div>
-            <div style="flex:1;">
-              <div style="font-weight:800; font-size:0.88rem; color:#14532d;">Nguyễn Văn An <span style="font-weight:600; font-size:0.72rem; color:#16a34a; background:#e6fbf0; padding:1px 6px; border-radius:6px; margin-left:4px;">Bạn</span></div>
-              <div style="font-size:0.7rem; color:#6b7280; margin-top:2px;">Lớp 11A2 — THPT Chu Văn An</div>
-            </div>
-            <div style="font-weight:800; color:#15803d; font-size:0.9rem;">1.240 <span style="font-size:0.7rem; color:#6b7280; font-weight:500;">pts</span></div>
-          </div>
-
-          <div class="lb-row">
-            <span style="font-weight:700; color:#6b7280; width:24px; font-size:0.85rem; text-align:center;">5</span>
-            <div class="lb-avatar rank-n" style="background:#f3f4f6; color:#4b5563;">HoG</div>
-            <div style="flex:1;">
-              <div style="font-weight:700; font-size:0.88rem; color:#374151;">Hoàng Đức Gia</div>
-              <div style="font-size:0.7rem; color:#6b7280; margin-top:2px;">Lớp 11A1 — THPT Chu Văn An</div>
-            </div>
-            <div style="font-weight:700; color:#374151; font-size:0.9rem;">1.190 <span style="font-size:0.7rem; color:#6b7280; font-weight:500;">pts</span></div>
-          </div>
+        <div id="lb-list" style="padding:8px;">
+          <!-- Filled by JS -->
         </div>
       </div>
 
-    </div>
-  </div>
-
-  <div class="page" id="page-aichat">
-    <div style="max-width:840px; margin: 0 auto; height:calc(100dvh - 72px); display:flex; flex-direction:column;">
-      
-      <div style="background:#fff; border:1.5px solid #dcfce7; border-bottom:none; padding:14px 20px; border-top-left-radius:20px; border-top-right-radius:20px; display:flex; align-items:center; justify-content:between; gap:12px; box-shadow:0 2px 10px rgba(0,0,0,0.02);">
-        <div style="display:flex; align-items:center; gap:12px;">
-          <div style="width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,#22c55e,#86efac); display:flex; align-items:center; justify-content:center; font-size:1.1rem; color:#14532d; box-shadow:0 4px 10px rgba(34,197,94,0.15);">
-            <i class="fas fa-robot"></i>
-          </div>
-          <div>
-            <div style="font-family:'Space Grotesk',sans-serif; font-weight:800; color:#14532d; font-size:0.95rem;">Trợ Lý Môi Trường AI</div>
-            <div style="font-size:0.7rem; color:#22c55e; display:flex; align-items:center; gap:4px; font-weight:600;">
-              <span style="width:6px; height:6px; border-radius:50%; background:#22c55e; display:inline-block;"></span> Sẵn sàng giải đáp mọi thắc mắc của học sinh
-            </div>
-          </div>
+      <!-- Your rank -->
+      <div style="background:linear-gradient(135deg,#22c55e,#16a34a);border-radius:16px;padding:16px 22px;margin-top:16px;display:flex;align-items:center;gap:14px;">
+        <div style="background:rgba(255,255,255,0.2);border-radius:12px;padding:8px 14px;font-weight:800;color:#fff;font-family:'Space Grotesk',sans-serif;font-size:1.1rem;">#23</div>
+        <div style="flex:1;">
+          <div style="font-weight:800;color:#fff;font-size:0.9rem;">Vị trí của bạn — Nguyễn Văn An</div>
+          <div style="font-size:0.78rem;color:rgba(255,255,255,0.75);margin-top:2px;">1.240 điểm · Còn 86 điểm để vươn lên #20</div>
         </div>
-        <button style="background:none; border:none; cursor:pointer; color:#9ca3af; font-size:0.88rem; padding:6px; border-radius:8px; display:flex; align-items:center; gap:4px; font-weight:600;" onclick="clearChat()" title="Xóa lịch sử chat">
-          <i class="fas fa-trash-alt"></i> <span style="font-size:0.75rem;">Xóa lịch sử</span>
+        <button class="btn-eco" style="background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.4);font-size:0.8rem;" onclick="navigate('dashboard')">
+          Tích thêm điểm
         </button>
       </div>
+    </div>
+  </div>
 
-      <div id="chat-messages" style="flex:1; background:#fff; border:1.5px solid #dcfce7; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:4px;">
-        <div style="display:flex; gap:12px; align-items:flex-start; margin-bottom:16px; width:100%;">
-          <div style="width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#22c55e,#86efac); color:#14532d; display:flex; align-items:center; justify-content:center; font-size:0.95rem; flex-shrink:0;">🤖</div>
-          <div style="padding:12px 16px; border-radius:16px; border-top-left-radius:4px; background:#fff; color:#1a1a1a; border:1.5px solid #dcfce7; font-size:0.9rem; line-height:1.5; max-width:75%; box-shadow:0 2px 12px rgba(21,128,61,0.04);">
-            Xin chào! Mình là Trợ lý AI Recycle. Mình có thể giúp gì cho bạn trong việc phân loại rác thải, kiểm tra điểm thưởng hoặc tìm hiểu về các giải pháp bảo vệ môi trường hôm nay? 🌿
-          </div>
-        </div>
+
+  <!-- ════════════════════════════════
+       PAGE 7: AI CHAT TƯ VẤN
+  ════════════════════════════════ -->
+  <div class="page" id="page-aichat">
+    <div style="max-width:860px;">
+      <div style="margin-bottom:22px;">
+        <div class="page-title">🤖 Tư Vấn AI Tái Chế</div>
+        <div class="page-sub">Hỏi bất cứ điều gì về phân loại rác, tái chế, và môi trường</div>
       </div>
 
-      <div style="background:#fff; border:1.5px solid #dcfce7; border-top:none; padding:12px 16px; border-bottom-left-radius:20px; border-bottom-right-radius:20px; box-shadow:0 -4px 16px rgba(0,0,0,0.01);">
-        <div id="chat-sug-wrap" style="display:flex; gap:8px; overflow-x:auto; padding-bottom:10px; margin-bottom:8px; border-bottom:1px solid #f0fdf4; scrollbar-width: none;">
-          <button style="white-space:nowrap; background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d; padding:5px 12px; border-radius:20px; font-size:0.75rem; font-weight:700; cursor:pointer; transition:all 0.15s;" onclick="sendChatMsg('Làm sao để tích được nhiều điểm Eco-Points?')">💡 Cách tích nhiều điểm?</button>
-          <button style="white-space:nowrap; background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d; padding:5px 12px; border-radius:20px; font-size:0.75rem; font-weight:700; cursor:pointer; transition:all 0.15s;" onclick="sendChatMsg('Chai nhựa trà sữa có thể tái chế không và thuộc nhóm nào?')">🥤 Chai trà sữa phân loại thế nào?</button>
-          <button style="white-space:nowrap; background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d; padding:5px 12px; border-radius:20px; font-size:0.75rem; font-weight:700; cursor:pointer; transition:all 0.15s;" onclick="sendChatMsg('Hệ thống trục nén cơ học của thùng rác AI hoạt động như thế nào?')">⚙️ Cơ chế nén rác hoạt động sao?</button>
+      <!-- Chat box -->
+      <div class="eco-card" style="display:flex;flex-direction:column;height:560px;">
+        <!-- Messages area -->
+        <div id="chat-messages" style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px;">
+          <!-- Tin nhắn chào -->
+          <div style="display:flex;gap:10px;align-items:flex-start;">
+            <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#16a34a);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <i class="fas fa-robot" style="color:#fff;font-size:0.85rem;"></i>
+            </div>
+            <div style="background:#f0fdf4;border:1.5px solid #dcfce7;border-radius:4px 16px 16px 16px;padding:12px 16px;max-width:80%;font-size:0.875rem;color:#374151;line-height:1.6;">
+              Xin chào! Mình là AI tư vấn tái chế của AI Recycle 🌱<br/>Bạn có thể hỏi mình về:<br/>
+              • Cách phân loại rác đúng cách<br/>
+              • Vật liệu nào có thể tái chế<br/>
+              • Tác động môi trường của rác thải<br/>
+              • Cách tiết kiệm điểm và đổi quà
+            </div>
+          </div>
         </div>
 
-        <div style="display:flex; align-items:end; gap:10px; position:relative;">
-          <textarea id="chat-input" rows="1" placeholder="Nhập câu hỏi của bạn tại đây..." style="flex:1; background:#f8fffe; border:1.5px solid #dcfce7; border-radius:14px; padding:11px 44px 11px 16px; font-family:'Nunito',sans-serif; font-size:0.88rem; color:#1a1a1a; outline:none; transition:border-color 0.2s; resize:none; max-height:150px; line-height:1.5;"></textarea>
-          <button id="chat-send-btn" style="position:absolute; right:8px; bottom:7px; width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,#22c55e,#16a34a); color:#fff; border:none; display:flex; align-items:center; justify-content:center; font-size:0.9rem; cursor:pointer; transition:all 0.2s; box-shadow:0 2px 8px rgba(22,163,74,0.25);">
+        <!-- Input area -->
+        <div style="padding:16px 20px;border-top:1.5px solid #f0fdf4;display:flex;gap:10px;align-items:flex-end;">
+          <div style="flex:1;">
+            <div id="chat-suggestions" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
+              <button onclick="sendChatMsg('Chai nhựa phân loại vào thùng nào?')" style="background:#f0fdf4;border:1.5px solid #dcfce7;border-radius:20px;padding:5px 12px;font-size:0.75rem;color:#15803d;font-weight:600;cursor:pointer;font-family:Nunito,sans-serif;">🍾 Chai nhựa</button>
+              <button onclick="sendChatMsg('Pin cũ bỏ ở đâu?')" style="background:#f0fdf4;border:1.5px solid #dcfce7;border-radius:20px;padding:5px 12px;font-size:0.75rem;color:#15803d;font-weight:600;cursor:pointer;font-family:Nunito,sans-serif;">🔋 Pin cũ</button>
+              <button onclick="sendChatMsg('Hữu cơ và vô cơ khác nhau thế nào?')" style="background:#f0fdf4;border:1.5px solid #dcfce7;border-radius:20px;padding:5px 12px;font-size:0.75rem;color:#15803d;font-weight:600;cursor:pointer;font-family:Nunito,sans-serif;">♻️ Hữu cơ vs Vô cơ</button>
+            </div>
+            <textarea id="chat-input" placeholder="Nhập câu hỏi về tái chế..."
+              style="width:100%;border:2px solid #dcfce7;border-radius:12px;padding:11px 14px;font-family:Nunito,sans-serif;font-size:0.875rem;outline:none;resize:none;height:44px;transition:border-color 0.2s;line-height:1.4;overflow:hidden;"
+              onfocus="this.style.borderColor='#22c55e'"
+              onblur="this.style.borderColor='#dcfce7'"
+              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"
+              oninput="this.style.height='44px';this.style.height=Math.min(this.scrollHeight,120)+'px'"></textarea>
+          </div>
+          <button onclick="sendChat()" id="chat-send-btn" class="btn-eco" style="padding:11px 18px;flex-shrink:0;height:44px;">
             <i class="fas fa-paper-plane"></i>
           </button>
         </div>
       </div>
-
     </div>
   </div>
 
-</div>
+</div><!-- end #main -->
 
-<script>
-  // Quản lý trạng thái Điểm số nội bộ
-  let userPoints = 1240;
+<!-- ═══════════════════════════════════════════════════
+     FIREBASE SDK
+═══════════════════════════════════════════════════ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+import { getDatabase, ref, set, get, onValue, push, update } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js";
 
-  // 1. Khởi tạo mảng lưu lịch sử hội thoại toàn bộ phiên chat (Chuẩn cấu trúc role & content)
-  let chatHistory = [];
+const firebaseConfig = {
+  apiKey: "AIzaSyAkYuYN8nPI02eJvIZnnPwN6fTL7E9ID-Y",
+  authDomain: "ai-recycle-4b608.firebaseapp.com",
+  databaseURL: "https://ai-recycle-4b608-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "ai-recycle-4b608",
+  storageBucket: "ai-recycle-4b608.firebasestorage.app",
+  messagingSenderId: "268162349916",
+  appId: "1:268162349916:web:cb5a42f2c9418b5ae81f99",
+  measurementId: "G-528YQ0RQ09"
+};
 
-  // DOM Elements bổ trợ điều hướng
-  const chatMessages = document.getElementById('chat-messages');
-  const chatInput = document.getElementById('chat-input');
-  const chatSendBtn = document.getElementById('chat-send-btn');
-  const typingIndicatorId = 'ai-typing-indicator';
+const app = initializeApp(firebaseConfig);
+const db  = getDatabase(app);
 
-  // Sự kiện khởi tạo ban đầu khi tải tài liệu hoàn tất
-  document.addEventListener('DOMContentLoaded', () => {
-    window.addEventListener('resize', handleResize);
-    handleResize();
+/* ========================================
+   STATE
+======================================== */
+let currentUser = null;  // 'guest1' | 'guest2' | null
+let unsubscribeUser = null;
+let unsubscribeHistory = null;
 
-    // Đồng bộ cài đặt Textarea AI Chat
-    if (chatInput) {
-      // 8. Xử lý Enter gửi tin, Shift+Enter xuống dòng mới
-      chatInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-          e.preventDefault();
-          sendChat();
-        }
-      });
-      // 9. Auto resize chiều cao textarea động
-      chatInput.addEventListener('input', autoResizeTextarea);
-    }
-    if (chatSendBtn) {
-      chatSendBtn.addEventListener('click', sendChat);
-    }
+/* ========================================
+   NAVIGATION — bảo vệ trang
+======================================== */
+const PROTECTED = ['dashboard','store','map','leaderboard','aichat'];
+
+window.navigate = function(page) {
+  if (PROTECTED.includes(page) && !currentUser) {
+    showToast('Vui lòng đăng nhập để sử dụng tính năng này!', 'warn');
+    page = 'login';
+  }
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const pageMap2 = {
+    home:'page-home', login:'page-login', register:'page-register', dashboard:'page-dashboard',
+    store:'page-store', map:'page-map', leaderboard:'page-leaderboard', aichat:'page-aichat'
+  };
+  const titles = {
+    home:'Trang Chủ', login:'Đăng Nhập', register:'Đăng Ký Tài Khoản', dashboard:'Dashboard Tích Điểm',
+    store:'Eco-Store Đổi Thưởng', map:'Bản Đồ Trạm', leaderboard:'Bảng Xếp Hạng', aichat:'Tư Vấn AI'
+  };
+  document.getElementById(pageMap2[page]).classList.add('active');
+  document.getElementById('topbar-title').textContent = titles[page];
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const navItem = document.querySelector(`.nav-item[data-page="${page}"]`);
+  if (navItem) navItem.classList.add('active');
+  if (window.innerWidth < 768) {
+    closeSidebar();
+  }
+  if (page === 'map') renderMap();
+  if (page === 'leaderboard') renderLeaderboard();
+};
+
+/* ========================================
+   LOGIN — Firebase Realtime
+======================================== */
+
+window.doRegister = async function() {
+  const name  = document.getElementById('reg-name').value.trim();
+  const uid   = document.getElementById('reg-user').value.trim().toLowerCase();
+  const pass  = document.getElementById('reg-pass').value.trim();
+  const pass2 = document.getElementById('reg-pass2').value.trim();
+
+  if (!name || !uid || !pass || !pass2) { showToast('Vui lòng điền đầy đủ thông tin!', 'warn'); return; }
+  if (!/^[a-z0-9]+$/.test(uid)) { showToast('Tên đăng nhập chỉ dùng chữ thường và số, không dấu!', 'warn'); return; }
+  if (pass.length < 6) { showToast('Mật khẩu phải tối thiểu 6 ký tự!', 'warn'); return; }
+  if (pass !== pass2) { showToast('Mật khẩu xác nhận không khớp!', 'error'); return; }
+
+  // Kiểm tra tên đăng nhập đã tồn tại chưa
+  const snap = await get(ref(db, 'users/' + uid));
+  if (snap.exists()) { showToast('Tên đăng nhập đã được sử dụng! Hãy chọn tên khác.', 'error'); return; }
+
+  // Tạo tài khoản mới trong Firebase
+  await set(ref(db, 'users/' + uid), {
+    name: name,
+    password: pass,
+    points: 0,
+    plastic: 0,
+    cans: 0,
+    paper: 0,
+    co2: 0
   });
+  await set(ref(db, 'history/' + uid + '/init'), true);
 
-  // --- HÀM ĐIỀU HƯỚNG ROUTING (SINGLE PAGE APPLICATION) ---
-  function navigate(pageId) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  showToast('Tạo tài khoản thành công! Đang đăng nhập...', 'success');
 
-    const targetPage = document.getElementById('page-' + pageId);
-    if(targetPage) targetPage.classList.add('active');
+  // Tự động đăng nhập sau khi đăng ký
+  const newSnap = await get(ref(db, 'users/' + uid));
+  await loginUser(uid, newSnap.val());
+};
 
-    const targetNav = document.querySelector(`.nav-item[data-page="${pageId}"]`);
-    if(targetNav) targetNav.classList.add('active');
+window.doLogin = async function() {
+  const u = document.getElementById('login-user').value.trim().toLowerCase();
+  const p = document.getElementById('login-pass').value.trim();
+  if (!u || !p) { showToast('Vui lòng nhập đầy đủ!', 'warn'); return; }
 
-    // Cập nhật tiêu đề Topbar tương ứng trang hiện hành
-    const titles = { home:'Trang Chủ', login:'Đăng Nhập', register:'Đăng Ký', dashboard:'Dashboard Tích Điểm', store:'Đổi Thưởng Eco-Store', map:'Tính Năng Mới', leaderboard:'Bảng Xếp Hạng', aichat:'Tư Vấn AI' };
-    document.getElementById('topbar-title').textContent = titles[pageId] || 'Hệ thống';
+  const snap = await get(ref(db, `users/${u}`));
+  if (!snap.exists()) { showToast('Tài khoản không tồn tại!', 'error'); return; }
+  const userData = snap.val();
+  if (userData.password !== p) { showToast('Sai mật khẩu!', 'error'); return; }
 
-    if (window.innerWidth <= 768) {
-      closeSidebar();
-    }
+  await loginUser(u, userData);
+};
+
+window.simulateQR = async function() {
+  // QR mô phỏng → luôn đăng nhập guest1
+  const snap = await get(ref(db, 'users/guest1'));
+  if (snap.exists()) {
+    document.getElementById('qr-box').innerHTML = '<i class="fas fa-check-circle" style="font-size:3rem;color:#22c55e;"></i>';
+    document.getElementById('qr-status').textContent = '✅ Nhận diện QR thành công!';
+    await loginUser('guest1', snap.val());
   }
+};
 
-  // --- QUẢN LÝ SIDEBAR RESPONSIVE TRÊN MOBILE ---
-  function closeSidebar() {
-    document.getElementById('sidebar').classList.remove('open');
-    document.getElementById('sidebar-overlay').classList.remove('show');
+window.simulateRFID = async function() {
+  showToast('📡 Đang đọc thẻ RFID...', 'info');
+  const snap = await get(ref(db, 'users/guest2'));
+  if (snap.exists()) {
+    setTimeout(async () => { await loginUser('guest2', snap.val()); }, 1200);
   }
-  function toggleSidebar() {
-    // Desktop >= 768px: sidebar luôn hiển thị, nút 3 gạch không làm gì
-    if (window.innerWidth >= 768) return;
-    const sb = document.getElementById('sidebar');
-    const ol = document.getElementById('sidebar-overlay');
-    if (sb.classList.contains('open')) {
-      sb.classList.remove('open'); ol.classList.remove('show');
-    } else {
-      sb.classList.add('open'); ol.classList.add('show');
-    }
+};
+
+async function loginUser(uid, userData) {
+  currentUser = uid;
+  // Ghi session lên Firebase để Python biết ai đang dùng
+  await set(ref(db, 'sessions/active_user'), uid);
+  showToast(`Đăng nhập thành công! Xin chào ${userData.name} 👋`, 'success');
+  updateSidebarUser(userData);
+  listenUserData(uid);
+  listenHistory(uid);
+  setTimeout(() => navigate('dashboard'), 800);
+}
+
+window.doLogout = async function() {
+  if (!currentUser) return;
+  await set(ref(db, 'sessions/active_user'), null);
+  if (unsubscribeUser) { unsubscribeUser(); unsubscribeUser = null; }
+  if (unsubscribeHistory) { unsubscribeHistory(); unsubscribeHistory = null; }
+  currentUser = null;
+
+  // Reset topbar về 0
+  document.getElementById('topbar-pts-val').textContent = '0';
+
+  showToast('Đã đăng xuất!', 'info');
+  navigate('home');
+  updateSidebarUser(null);
+};
+/* ========================================
+   REALTIME LISTENER — User data
+======================================== */
+function listenUserData(uid) {
+  if (unsubscribeUser) unsubscribeUser();
+  const userRef = ref(db, `users/${uid}`);
+  unsubscribeUser = onValue(userRef, (snap) => {
+    if (!snap.exists()) return;
+    const d = snap.val();
+    renderDashboard(d);
+    document.getElementById('topbar-pts-val').textContent = (d.points||0).toLocaleString('vi');
+  });
+}
+
+/* ========================================
+   REALTIME LISTENER — History
+======================================== */
+function listenHistory(uid) {
+  if (unsubscribeHistory) unsubscribeHistory();
+  const histRef = ref(db, `history/${uid}`);
+  unsubscribeHistory = onValue(histRef, (snap) => {
+    const data = snap.val() || {};
+    const rows = Object.values(data).filter(r => r && r.time).reverse();
+    renderHistory(rows);
+  });
+}
+
+/* ========================================
+   DASHBOARD RENDER
+======================================== */
+function getLevelInfo(pts) {
+  if (pts < 500)  return { label:'🌱 Người Xanh Cấp I',   next:500,  pct: pts/500*100 };
+  if (pts < 1500) return { label:'🌿 Người Xanh Cấp II',  next:1500, pct: pts/1500*100 };
+  if (pts < 3000) return { label:'🌳 Người Xanh Cấp III', next:3000, pct: pts/3000*100 };
+  return { label:'🏆 Đại Sứ Xanh', next:pts, pct:100 };
+}
+
+function renderDashboard(d) {
+  const pts = d.points || 0;
+  const el = id => document.getElementById(id);
+  if (el('dash-points'))   el('dash-points').textContent   = pts.toLocaleString('vi');
+  if (el('stat-plastic'))  el('stat-plastic').textContent  = d.plastic || 0;
+  if (el('stat-cans'))     el('stat-cans').textContent     = d.cans    || 0;
+  if (el('stat-paper'))    el('stat-paper').textContent    = d.paper   || 0;
+  if (el('stat-co2'))      el('stat-co2').textContent      = (d.co2||0).toFixed(1);
+  if (el('dash-username')) el('dash-username').textContent = `${d.name} · ${currentUser}`;
+  const lv = getLevelInfo(pts);
+  if (el('dash-level'))      el('dash-level').textContent      = lv.label;
+  if (el('dash-level-pct'))  el('dash-level-pct').style.width  = Math.min(100,lv.pct).toFixed(0)+'%';
+  if (el('dash-level-next')) el('dash-level-next').textContent = `${pts.toLocaleString('vi')}/${lv.next.toLocaleString('vi')} đến cấp tiếp`;
+}
+
+function updateSidebarUser(d) {
+  const nameEl = document.getElementById('sidebar-username');
+  const roleEl = document.getElementById('sidebar-role');
+  const avEl   = document.getElementById('sidebar-avatar');
+  if (!d) {
+    if (nameEl) nameEl.textContent = 'Chưa đăng nhập';
+    if (roleEl) roleEl.textContent = 'Vui lòng đăng nhập';
+    if (avEl)   avEl.textContent   = '?';
+    return;
   }
-  function handleResize() {
-    const w = window.innerWidth;
-    const dg = document.getElementById('dash-grid'); 
-    if(dg) dg.style.gridTemplateColumns = w < 640 ? '1fr' : '280px 1fr';
-  }
+  if (nameEl) nameEl.textContent = d.name;
+  if (roleEl) roleEl.textContent = currentUser;
+  if (avEl)   avEl.textContent   = d.name.split(' ').slice(-2).map(w=>w[0]).join('').toUpperCase();
+}
 
-  // --- LOGIC XỬ LÝ ĐỔI THƯỞNG ECO-STORE ---
-  function claimReward(name, cost) {
-    if(userPoints < cost) {
-      showToast('Số điểm Eco-Points của bạn không đủ để đổi quà này!', 'error');
-      return;
-    }
-    userPoints -= cost;
-    updatePointsDisplay();
-    showToast(`Đổi quà thành công! Đã trừ ${cost} điểm cho mặt hàng "${name}". Mã nhận quà đã gửi về Email của bạn.`, 'success');
-  }
+/* ========================================
+   HISTORY RENDER
+======================================== */
+function renderHistory(rows) {
+  const tbody = document.getElementById('history-tbody');
+  if (!tbody) return;
+  const typeColors = { 'Chai nhựa':'badge-blue','Lon nhôm':'badge-yellow','Giấy/bìa':'badge-green','Đổi quà':'badge-red' };
+  tbody.innerHTML = rows.length ? rows.map(r => `
+    <tr>
+      <td style="color:#6b7280;font-size:0.82rem;white-space:nowrap;">${r.time}</td>
+      <td style="font-weight:600;color:#374151;font-size:0.83rem;">${r.station}</td>
+      <td><span class="badge ${typeColors[r.type]||'badge-green'}">${r.type}</span></td>
+      <td style="text-align:center;font-weight:700;">${r.qty}</td>
+      <td style="text-align:right;">
+        <span style="background:#f0fdf4;color:#15803d;border:1px solid #dcfce7;border-radius:10px;padding:4px 11px;font-weight:800;font-size:0.82rem;">
+          ${r.pts > 0 ? '+' : ''}${r.pts} pts
+        </span>
+      </td>
+    </tr>`).join('') :
+    '<tr><td colspan="5" style="text-align:center;color:#9ca3af;padding:24px;">Chưa có giao dịch nào</td></tr>';
+}
 
-  function updatePointsDisplay() {
-    const fmt = userPoints.toLocaleString('vi-VN');
-    document.getElementById('topbar-pts-val').textContent = fmt;
-    const dp = document.getElementById('dash-points-val'); if(dp) dp.textContent = fmt;
-  }
+window.filterHistory = function(type) {
+  // Lắng nghe lại với filter
+  if (!currentUser) return;
+  get(ref(db, `history/${currentUser}`)).then(snap => {
+    const data = snap.val() || {};
+    let rows = Object.values(data).filter(r => r && r.time).reverse();
+    if (type !== 'all') rows = rows.filter(r => r.type === type);
+    renderHistory(rows);
+  });
+};
 
-  // --- TOAST NOTIFICATION SYSTEM ---
-  function showToast(msg, type='success') {
-    const container = document.getElementById('toast-container');
-    const t = document.createElement('div');
-    t.className = `toast ${type==='error'?'error':type==='warn'?'warn':''}`;
-    
-    let icon = '<i class="fas fa-check-circle" style="color:#22c55e;"></i>';
-    if(type==='error') icon = '<i class="fas fa-exclamation-circle" style="color:#ef4444;"></i>';
-    if(type==='info')  icon = '<i class="fas fa-info-circle" style="color:#3b82f6;"></i>';
+/* ========================================
+   STORE — Đổi quà trừ điểm Firebase
+======================================== */
+const storeItems = [
+  { id:1, cat:'school', emoji:'📓', name:'Vở 200 trang Hồng Hà',   pts:80,  stock:45, hot:true  },
+  { id:2, cat:'school', emoji:'✏️', name:'Bộ bút chì màu 24 màu', pts:120, stock:22, hot:false },
+  { id:3, cat:'school', emoji:'🎒', name:'Balo học sinh eco',        pts:500, stock:8,  hot:true  },
+  { id:4, cat:'school', emoji:'📐', name:'Bộ dụng cụ hình học',     pts:95,  stock:30, hot:false },
+  { id:5, cat:'food',   emoji:'🥛', name:'Sữa Vinamilk 220ml',      pts:60,  stock:100,hot:false },
+  { id:6, cat:'food',   emoji:'🍫', name:'Bánh quy dinh dưỡng',     pts:75,  stock:60, hot:false },
+  { id:7, cat:'voucher',emoji:'🎫', name:'Voucher Circle K 20k',    pts:180, stock:50, hot:true  },
+  { id:8, cat:'voucher',emoji:'🎟️', name:'Vé xe buýt điện 1 lượt',pts:100, stock:200,hot:false },
+  { id:9, cat:'voucher',emoji:'☕', name:'Trà sữa Gong Cha vừa',    pts:250, stock:20, hot:true  },
+  { id:10,cat:'eco',    emoji:'🌱', name:'Hạt giống rau sạch',      pts:70,  stock:80, hot:false },
+  { id:11,cat:'eco',    emoji:'🌿', name:'Túi vải canvas tái chế',  pts:150, stock:35, hot:false },
+  { id:12,cat:'eco',    emoji:'🪴', name:'Chậu cây mini văn phòng', pts:200, stock:15, hot:false },
+];
 
-    t.innerHTML = `${icon}<span style="flex:1;">${msg}</span>`;
-    container.appendChild(t);
+window.renderStore = function(items) {
+  const grid = document.getElementById('store-grid');
+  if (!grid) return;
+  get(ref(db, `users/${currentUser}`)).then(snap => {
+    const userData = snap.exists() ? snap.val() : {};
+    const pts = userData.points || 0;
+    document.getElementById('store-points-display').textContent = pts.toLocaleString('vi');
+    grid.innerHTML = items.map(item => {
+      const canAfford = pts >= item.pts;
+      return `
+        <div class="store-card">
+          <div class="store-img">
+            <span style="font-size:3.5rem;position:relative;z-index:1;">${item.emoji}</span>
+            ${item.hot ? '<span style="position:absolute;top:10px;right:10px;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;font-size:0.65rem;font-weight:800;padding:3px 9px;border-radius:10px;">HOT</span>' : ''}
+          </div>
+          <div style="padding:14px 16px;flex:1;display:flex;flex-direction:column;">
+            <div style="font-weight:700;color:#14532d;font-size:0.85rem;line-height:1.3;flex:1;margin-bottom:8px;">${item.name}</div>
+            <div style="font-size:0.72rem;color:#9ca3af;margin-bottom:10px;">Còn ${item.stock} phần</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+              <div style="display:flex;align-items:center;gap:4px;">
+                <i class="fas fa-leaf" style="color:#22c55e;font-size:0.8rem;"></i>
+                <span style="font-weight:800;color:#15803d;font-size:1rem;font-family:'Space Grotesk',sans-serif;">${item.pts}</span>
+                <span style="font-size:0.7rem;color:#6b7280;">pts</span>
+              </div>
+              <button class="btn-eco" style="font-size:0.75rem;padding:7px 14px;"
+                ${canAfford ? '' : 'disabled'}
+                onclick="redeemItem(${item.id},${item.pts},'${item.name.replace(/'/g,"\\'")}')">
+                ${canAfford ? 'Đổi quà' : 'Không đủ pts'}
+              </button>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+  });
+};
 
-    setTimeout(() => {
-      t.style.animation = 'slideOut 0.3s forwards';
-      setTimeout(() => t.remove(), 300);
-    }, 4000);
-  }
+window.redeemItem = async function(id, pts, name) {
+  if (!currentUser) return;
+  const snap = await get(ref(db, `users/${currentUser}`));
+  const userData = snap.val();
+  if ((userData.points||0) < pts) { showToast(`Không đủ điểm!`, 'error'); return; }
 
-  function doLogin() {
-    showToast('Đăng nhập thành công tài khoản Học Sinh!', 'success');
-    navigate('dashboard');
-  }
-  function doLogout() {
-    showToast('Đã đăng xuất khỏi tài khoản hệ thống.', 'info');
-    navigate('home');
-  }
+  const newPts = (userData.points||0) - pts;
+  await update(ref(db, `users/${currentUser}`), { points: newPts });
 
-  // =========================================================================
-  // 💻 KHỐI LOGIC JAVASCRIPT GIAO TIẾP VÀ XỬ LÝ AI CHAT CHUYÊN SÂU (CHỈ DÙNG VANILLA JS)
-  // =========================================================================
+  // Ghi lịch sử
+  const now = new Date();
+  const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')} — ${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}`;
+  await push(ref(db, `history/${currentUser}`), { time:timeStr, station:'🎁 Eco-Store', type:'Đổi quà', qty:1, pts:-pts });
 
-  /**
-   * 9. Hàm tự động thay đổi chiều cao (Auto-resize) của khung Textarea nhập văn bản
-   */
-  function autoResizeTextarea() {
-    if (!chatInput) return;
-    chatInput.style.height = 'auto';
-    const maxHeight = 150;
-    const nextHeight = chatInput.scrollHeight;
-    chatInput.style.height = (nextHeight > maxHeight ? maxHeight : nextHeight) + 'px';
-  }
+  showToast(`🎉 Đổi thành công: ${name}!`, 'success');
+  renderStore(storeItems);
+};
 
-  /**
-   * 2. Hàm tạo và thêm Bong bóng hội thoại (Chat Bubble) lên màn hình giao diện
-   */
-  function addMessage(text, isUser) {
-    if (!chatMessages) return;
+window.filterStore = function(cat, btn) {
+  document.querySelectorAll('#store-filters button').forEach(b => { b.classList.remove('btn-eco'); b.classList.add('btn-outline'); });
+  btn.classList.add('btn-eco'); btn.classList.remove('btn-outline');
+  const filtered = cat === 'all' ? storeItems : storeItems.filter(i => i.cat === cat);
+  renderStore(filtered);
+};
 
-    const msgRow = document.createElement('div');
-    msgRow.style.display = 'flex';
-    msgRow.style.gap = '12px';
-    msgRow.style.alignItems = 'flex-start';
-    msgRow.style.marginBottom = '16px';
-    msgRow.style.width = '100%';
-    
-    // Đặt vị trí: Người dùng bên phải màn hình, Trợ lý AI bên trái màn hình
-    if (isUser) {
-      msgRow.style.flexDirection = 'row-reverse';
-    } else {
-      msgRow.style.flexDirection = 'row';
-    }
+/* ========================================
+   MAP — Bản đồ Việt Nam + 1 trạm Gia Lai
+======================================== */
+window.renderMap = function() {
+  renderVietnamMap();
+  renderStationList();
+};
 
-    // Thiết kế Avatar
-    const avatar = document.createElement('div');
-    avatar.style.width = '36px';
-    avatar.style.height = '36px';
-    avatar.style.borderRadius = '50%';
-    avatar.style.display = 'flex';
-    avatar.style.alignItems = 'center';
-    avatar.style.justifyContent = 'center';
-    avatar.style.fontSize = '0.95rem';
-    avatar.style.flexShrink = '0';
-    avatar.style.fontWeight = '700';
-    avatar.style.boxShadow = '0 2px 8px rgba(21,128,61,0.1)';
+function renderVietnamMap() {
+  const mapEl = document.getElementById('vietnam-map-svg');
+  if (!mapEl) return;
+  // Điểm trạm Gia Lai (tọa độ tương đối trên bản đồ VN SVG)
+  // Gia Lai nằm khoảng 55% từ trái, 52% từ trên
+  mapEl.innerHTML = `
+    <svg viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
+      <!-- Nền biển -->
+      <rect width="400" height="600" fill="#dbeafe"/>
+      <!-- Hình dạng Việt Nam đơn giản hóa -->
+      <path d="
+        M 200 20
+        C 220 20 240 25 255 35
+        C 270 45 280 60 285 75
+        C 290 90 285 105 280 115
+        C 275 125 270 130 265 140
+        C 260 150 255 155 252 165
+        C 249 175 248 185 245 195
+        C 242 205 238 212 235 220
+        C 232 228 230 235 228 245
+        C 226 255 225 265 224 275
+        C 223 285 222 295 220 305
+        C 218 315 215 322 213 330
+        C 211 338 210 345 209 355
+        C 208 365 208 375 207 385
+        C 206 395 204 402 202 410
+        C 200 418 198 425 196 432
+        C 194 439 192 445 190 452
+        C 188 459 185 465 182 472
+        C 179 479 175 484 172 490
+        C 169 496 165 500 162 505
+        C 159 510 155 514 151 517
+        C 147 520 143 521 140 520
+        C 137 519 134 516 132 512
+        C 130 508 129 503 130 498
+        C 131 493 133 489 135 485
+        C 137 481 138 477 138 473
+        C 138 469 137 465 135 462
+        C 133 459 130 457 127 456
+        C 124 455 121 455 118 456
+        C 115 457 112 459 110 461
+        C 108 463 107 465 108 467
+        C 109 469 111 470 113 470
+        C 115 470 117 469 118 467
+        L 130 460
+        C 135 458 140 460 143 465
+        C 146 470 145 477 142 482
+        C 139 487 134 490 130 492
+        C 126 494 122 494 119 492
+        C 116 490 114 487 113 484
+        C 112 481 112 478 114 476
+        L 120 468
+        C 122 465 125 463 128 462
+        C 131 461 134 462 136 464
+        C 138 466 139 469 138 472
+        C 137 475 135 477 133 478
+        C 131 479 129 479 128 477
+        L 125 472
+        C 124 470 124 468 126 467
+        C 128 466 130 467 131 469
+        L 132 471
+        L 160 530
+        C 165 540 170 545 175 548
+        C 180 551 185 551 190 549
+        C 195 547 199 543 202 539
+        C 205 535 207 531 208 527
+        C 209 523 209 519 208 516
+        C 207 513 205 511 203 510
+        C 201 509 199 510 198 512
+        C 197 514 197 517 199 519
+        C 201 521 203 521 205 519
+        L 210 510
+        C 212 505 215 500 218 496
+        C 221 492 225 489 229 487
+        C 233 485 237 484 241 484
+        C 245 484 249 485 252 487
+        C 255 489 258 492 260 496
+        C 262 500 263 505 263 510
+        C 263 515 262 520 260 524
+        C 258 528 256 531 253 533
+        L 230 555
+        C 225 559 220 561 215 561
+        C 210 561 205 559 202 556
+        L 180 570
+        C 175 573 170 574 165 574
+        C 160 574 156 572 153 569
+        L 148 563
+        C 145 559 143 554 143 549
+        C 143 544 144 540 147 537
+        L 155 528
+        C 158 524 162 522 166 522
+        C 170 522 174 524 176 528
+        C 178 532 177 537 174 540
+        C 171 543 167 544 164 542
+        C 161 540 160 537 161 534
+        C 162 531 164 529 167 528
+        L 178 525
+        L 200 540
+        C 205 544 210 546 215 546
+        C 220 546 225 544 229 540
+        C 233 536 235 531 235 526
+        C 235 521 234 517 231 514
+        C 228 511 225 510 222 511
+        C 219 512 217 514 217 517
+        C 217 520 219 522 222 522
+        L 230 520
+        L 270 530
+        C 275 532 279 535 282 539
+        C 285 543 286 548 285 553
+        C 284 558 281 562 278 565
+        C 275 568 271 569 268 568
+        C 265 567 263 564 263 561
+        L 265 545
+        L 270 510
+        L 268 495
+        L 265 480
+        L 262 468
+        C 260 460 258 452 258 444
+        C 258 436 260 428 262 420
+        L 265 408
+        L 268 395
+        L 270 382
+        L 272 368
+        L 273 354
+        L 274 340
+        L 273 326
+        L 272 312
+        L 270 298
+        L 267 284
+        L 263 270
+        L 259 256
+        L 254 242
+        L 249 228
+        L 244 214
+        L 240 200
+        L 237 186
+        L 235 172
+        L 234 158
+        L 234 144
+        L 235 130
+        L 237 116
+        L 238 102
+        L 237 88
+        L 234 74
+        L 229 61
+        L 222 50
+        L 214 41
+        L 207 35
+        L 200 32 Z
+      " fill="#86efac" stroke="#15803d" stroke-width="1.5" opacity="0.85"/>
 
-    if (isUser) {
-      avatar.style.background = 'linear-gradient(135deg, #16a34a, #14532d)';
-      avatar.style.color = '#fff';
-      avatar.innerHTML = 'U'; 
-    } else {
-      avatar.style.background = 'linear-gradient(135deg, #22c55e, #86efac)';
-      avatar.style.color = '#14532d';
-      avatar.innerHTML = '🤖'; 
-    }
+      <!-- Label tỉnh Gia Lai -->
+      <text x="215" y="305" font-size="10" fill="#14532d" font-weight="bold" font-family="Nunito,sans-serif" text-anchor="middle">Gia Lai</text>
 
-    // Thiết kế Bubble Chat chứa nội dung văn bản tin nhắn
-    const bubble = document.createElement('div');
-    bubble.style.padding = '12px 16px';
-    bubble.style.borderRadius = '16px';
-    bubble.style.fontSize = '0.9rem';
-    bubble.style.lineHeight = '1.5';
-    bubble.style.maxWidth = '75%';
-    bubble.style.wordBreak = 'break-word';
-    bubble.style.boxShadow = '0 2px 12px rgba(21,128,61,0.04)';
+      <!-- Pin trạm tại Gia Lai (55% x, 52% y → ~220, 312) -->
+      <g transform="translate(218, 295)" style="cursor:pointer;" onclick="showToast('Trạm 55 Nguyễn Chí Thanh · Gia Lai · Còn trống','info')">
+        <!-- Pin shape -->
+        <path d="M 0 -22 C -10 -22 -16 -14 -16 -8 C -16 2 0 18 0 18 C 0 18 16 2 16 -8 C 16 -14 10 -22 0 -22 Z" 
+              fill="#22c55e" stroke="#fff" stroke-width="2"/>
+        <!-- Pin inner circle -->
+        <circle cx="0" cy="-8" r="5" fill="#fff"/>
+        <!-- Pulse animation -->
+        <circle cx="0" cy="-8" r="14" fill="none" stroke="#22c55e" stroke-width="1.5" opacity="0.4">
+          <animate attributeName="r" from="8" to="20" dur="2s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" from="0.6" to="0" dur="2s" repeatCount="indefinite"/>
+        </circle>
+      </g>
 
-    if (isUser) {
-      bubble.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
-      bubble.style.color = '#fff';
-      bubble.style.borderTopRightRadius = '4px';
-    } else {
-      bubble.style.background = '#fff';
-      bubble.style.color = '#1a1a1a';
-      bubble.style.border = '1.5px solid #dcfce7';
-      bubble.style.borderTopLeftRadius = '4px';
-    }
+      <!-- Tooltip label -->
+      <rect x="135" y="316" width="166" height="22" rx="6" fill="white" opacity="0.9" stroke="#dcfce7" stroke-width="1"/>
+      <text x="218" y="331" font-size="9" fill="#15803d" font-weight="700" font-family="Nunito,sans-serif" text-anchor="middle">📍 55 Nguyễn Chí Thanh, Phù Cát</text>
 
-    // Chuyển ký tự xuống dòng thành thẻ break-line nhằm hiển thị đúng cấu trúc văn bản
-    bubble.innerHTML = text.replace(/\n/g, '<br/>');
+      <!-- Tiêu đề -->
+      <rect x="8" y="8" width="140" height="24" rx="8" fill="white" opacity="0.85"/>
+      <text x="78" y="24" font-size="11" fill="#14532d" font-weight="800" font-family="Nunito,sans-serif" text-anchor="middle">🇻🇳 Bản Đồ Trạm VN</text>
+    </svg>
+  `;
+}
 
-    msgRow.appendChild(avatar);
-    msgRow.appendChild(bubble);
-    chatMessages.appendChild(msgRow);
-
-    // 10. Tự động cuộn khung nhìn xuống tin nhắn mới nhất dưới cùng
-    scrollToBottom();
-  }
-
-  /**
-   * 3. Hàm hiển thị chỉ báo trạng thái AI đang phân tích dữ liệu ("AI đang trả lời...")
-   */
-  function showTyping() {
-    if (!chatMessages || document.getElementById(typingIndicatorId)) return;
-
-    const typingRow = document.createElement('div');
-    typingRow.id = typingIndicatorId;
-    typingRow.style.display = 'flex';
-    typingRow.style.gap = '12px';
-    typingRow.style.alignItems = 'flex-start';
-    typingRow.style.marginBottom = '16px';
-    typingRow.style.width = '100%';
-
-    const avatar = document.createElement('div');
-    avatar.style.width = '36px';
-    avatar.style.height = '36px';
-    avatar.style.borderRadius = '50%';
-    avatar.style.background = 'linear-gradient(135deg, #22c55e, #86efac)';
-    avatar.style.color = '#14532d';
-    avatar.style.display = 'flex';
-    avatar.style.alignItems = 'center';
-    avatar.style.justifyContent = 'center';
-    avatar.style.fontSize = '0.95rem';
-    avatar.style.flexShrink = '0';
-    avatar.innerHTML = '🤖';
-
-    const bubble = document.createElement('div');
-    bubble.style.padding = '12px 16px';
-    bubble.style.borderRadius = '16px';
-    bubble.style.borderTopLeftRadius = '4px';
-    bubble.style.background = '#fff';
-    bubble.style.border = '1.5px solid #dcfce7';
-    bubble.style.color = '#6b7280';
-    bubble.style.fontSize = '0.88rem';
-    bubble.style.display = 'flex';
-    bubble.style.alignItems = 'center';
-    bubble.style.gap = '6px';
-
-    bubble.innerHTML = `
-      <span>AI đang trả lời</span>
-      <span style="display:inline-flex; gap:3px; margin-left:2px;">
-        <span class="typing-dot" style="width:4px; height:4px; background:#22c55e; border-radius:50%; animation: pulseDot 1.4s infinite both;"></span>
-        <span class="typing-dot" style="width:4px; height:4px; background:#22c55e; border-radius:50%; animation: pulseDot 1.4s infinite both; animation-delay: 0.2s;"></span>
-        <span class="typing-dot" style="width:4px; height:4px; background:#22c55e; border-radius:50%; animation: pulseDot 1.4s infinite both; animation-delay: 0.4s;"></span>
-      </span>
-    `;
-
-    // Nhúng Keyframe CSS Động xử lý animation nhảy dấu 3 chấm tuần hoàn
-    if (!document.getElementById('typing-animation-style')) {
-      const style = document.createElement('style');
-      style.id = 'typing-animation-style';
-      style.innerHTML = `
-        @keyframes pulseDot {
-          0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
-          40% { transform: scale(1.2); opacity: 1; }
-        }
-      `;
-      document.head.appendChild(style);
-    }
-
-    typingRow.appendChild(avatar);
-    typingRow.appendChild(bubble);
-    chatMessages.appendChild(typingRow);
-    
-    scrollToBottom();
-  }
-
-  /**
-   * 4. Hàm dọn dẹp và ẩn dòng trạng thái chờ "AI đang trả lời..."
-   */
-  function removeTyping() {
-    const indicator = document.getElementById(typingIndicatorId);
-    if (indicator) {
-      indicator.remove();
-    }
-  }
-
-  /**
-   * Hàm phụ trợ điều phối thanh cuộn xuống sát đáy khung danh sách tin nhắn
-   */
-  function scrollToBottom() {
-    if (chatMessages) {
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-  }
-
-  /**
-   * 5. Hàm điều phối trung tâm: Gửi tin nhắn, khóa Form, Fetch Serverless Function và kết xuất câu trả lời
-   */
-  async function sendChat() {
-    if (!chatInput || !chatSendBtn) return;
-
-    const text = chatInput.value.trim();
-    if (!text) return;
-
-    // Hiển thị tin nhắn người dùng lên UI
-    addMessage(text, true);
-
-    // ✅ Push đúng: lưu tin nhắn của USER vào history (không phải assistant)
-    chatHistory.push({ role: 'user', content: text });
-
-    // Reset textarea
-    chatInput.value = '';
-    chatInput.style.height = 'auto';
-
-    // Khoá form trong lúc chờ AI trả lời
-    chatInput.disabled = true;
-    chatSendBtn.disabled = true;
-    const originalBtnHTML = chatSendBtn.innerHTML;
-    chatSendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-
-    showTyping();
-
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: chatHistory })
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
-
-      const data = await response.json();
-      removeTyping();
-
-      // ✅ Khai báo aiReply TRƯỚC khi dùng
-      const aiReply = (data && data.reply) ? data.reply : 'Xin lỗi, không nhận được phản hồi từ AI.';
-
-      addMessage(aiReply, false);
-
-      // Push phản hồi của AI vào history để giữ ngữ cảnh
-      chatHistory.push({ role: 'assistant', content: aiReply });
-
-    } catch (error) {
-      console.error('Lỗi AI Chat:', error);
-      removeTyping();
-      addMessage('Xin lỗi, AI đang bận. Vui lòng thử lại sau! 🌿', false);
-    } finally {
-      chatInput.disabled = false;
-      chatSendBtn.disabled = false;
-      chatSendBtn.innerHTML = originalBtnHTML;
-      chatInput.focus();
-      scrollToBottom();
-    }
-  }
-
-  /**
-   * 7. Hàm tiếp nhận yêu cầu từ các nút gợi ý câu hỏi nhanh có sẵn trên giao diện mẫu
-   */
-  function sendChatMsg(text) {
-    if (!chatInput) return;
-    
-    // Ẩn vùng chứa các nút gợi ý câu hỏi nhanh (nếu muốn dọn dẹp sau lần bấm đầu tiên)
-    const sugWrap = document.getElementById('chat-sug-wrap');
-    if (sugWrap) {
-      sugWrap.style.display = 'none';
-    }
-
-    // Đưa chuỗi câu hỏi gợi ý vào khung Textarea và tự động kích hoạt gửi
-    chatInput.value = text;
-    sendChat();
-  }
-
-  /**
-   * Hàm dọn dẹp nhanh màn hình hội thoại chat khi học sinh bấm nút "Xóa lịch sử"
-   */
-  function clearChat() {
-    if (!chatMessages) return;
-    // Xóa sạch mảng lưu vết hội thoại phiên hiện hành
-    chatHistory = [];
-    // Reset khung nhìn về trạng thái bong bóng chào mừng nguyên bản
-    chatMessages.innerHTML = `
-      <div style="display:flex; gap:12px; align-items:flex-start; margin-bottom:16px; width:100%;">
-        <div style="width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#22c55e,#86efac); color:#14532d; display:flex; align-items:center; justify-content:center; font-size:0.95rem; flex-shrink:0;">🤖</div>
-        <div style="padding:12px 16px; border-radius:16px; border-top-left-radius:4px; background:#fff; color:#1a1a1a; border:1.5px solid #dcfce7; font-size:0.9rem; line-height:1.5; max-width:75%; box-shadow:0 2px 12px rgba(21,128,61,0.04);">
-          Lịch sử cuộc trò chuyện đã được làm sạch! Hệ thống AI Recycle đã sẵn sàng tiếp nhận câu hỏi mới từ bạn. 🌿
+function renderStationList() {
+  const list = document.getElementById('station-list');
+  if (!list) return;
+  // Lắng nghe realtime từ Firebase
+  onValue(ref(db, 'stations/tram1'), (snap) => {
+    const s = snap.val() || {};
+    const cap = s.capacity || 0;
+    const status = cap >= 90 ? 'full' : cap >= 70 ? 'warn' : 'ok';
+    const statusConfig = {
+      ok:   { color:'#22c55e', label:'Còn trống',  badgeClass:'badge-green'  },
+      warn: { color:'#f59e0b', label:'Gần đầy',    badgeClass:'badge-yellow' },
+      full: { color:'#ef4444', label:'Đã đầy',     badgeClass:'badge-red'    },
+    };
+    const sc = statusConfig[status];
+    list.innerHTML = `
+      <div class="map-item">
+        <div class="map-dot" style="background:${sc.color};"></div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-weight:700;color:#14532d;font-size:0.83rem;">55 Nguyễn Chí Thanh</div>
+          <div style="font-size:0.72rem;color:#9ca3af;margin-top:2px;">Xã Phù Cát, Tỉnh Gia Lai</div>
+          <div style="margin-top:6px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
+              <span style="font-size:0.68rem;color:#6b7280;">Dung lượng</span>
+              <span style="font-size:0.68rem;font-weight:700;color:${sc.color};">${cap}%</span>
+            </div>
+            <div class="capacity-bar"><div class="capacity-fill" style="width:${cap}%;background:${sc.color};transition:width 0.5s;"></div></div>
+          </div>
+        </div>
+        <span class="badge ${sc.badgeClass}">${sc.label}</span>
+      </div>
+      <!-- Stats -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
+        <div style="background:#fff;border-radius:12px;padding:12px;border:1.5px solid #dcfce7;text-align:center;">
+          <div style="font-size:1.2rem;font-weight:800;color:#15803d;font-family:'Space Grotesk',sans-serif;">1</div>
+          <div style="font-size:0.7rem;color:#6b7280;">Tổng trạm</div>
+        </div>
+        <div style="background:#fff;border-radius:12px;padding:12px;border:1.5px solid #dcfce7;text-align:center;">
+          <div style="font-size:1.2rem;font-weight:800;color:${sc.color};font-family:'Space Grotesk',sans-serif;">${cap}%</div>
+          <div style="font-size:0.7rem;color:#6b7280;">Mức đầy</div>
         </div>
       </div>
     `;
-    // Hiển thị lại thanh gợi ý câu hỏi nhanh nếu trước đó bị ẩn
-    const sugWrap = document.getElementById('chat-sug-wrap');
-    if (sugWrap) sugWrap.style.display = 'flex';
-    showToast('Đã xóa lịch sử chat thành công!', 'info');
-  }
-</script>
+  });
+}
 
+/* ========================================
+   LEADERBOARD — từ Firebase
+======================================== */
+window.renderLeaderboard = function() {
+  get(ref(db, 'users')).then(snap => {
+    if (!snap.exists()) return;
+    const users = snap.val();
+    const lbData = Object.entries(users).map(([uid, u]) => ({
+      name: u.name || uid,
+      uid,
+      pts: u.points || 0,
+      plastic: u.plastic || 0,
+    })).sort((a,b) => b.pts - a.pts);
+    renderPodium(lbData);
+    renderLBList(lbData);
+  });
+};
+
+function renderPodium(data) {
+  const podium = document.getElementById('podium');
+  if (!podium || data.length === 0) return;
+  const top = data.slice(0,3);
+  while (top.length < 3) top.push({ name:'---', pts:0, uid:'' });
+  const order = [1,0,2];
+  const rankEmoji = ['🥇','🥈','🥉'];
+  const pedestal = ['140px','120px','100px'];
+  podium.innerHTML = order.map(i => {
+    const p = top[i] || { name:'---', pts:0 };
+    const initials = p.name.split(' ').slice(-2).map(w=>w[0]||'').join('').toUpperCase();
+    const avatarClass = ['rank-1','rank-2','rank-3'][i];
+    return `
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;flex:1;max-width:160px;">
+        <div style="font-size:1.8rem;">${rankEmoji[i]}</div>
+        <div class="lb-avatar ${avatarClass}" style="width:52px;height:52px;font-size:1rem;">${initials}</div>
+        <div style="text-align:center;">
+          <div style="font-weight:800;color:#14532d;font-size:0.8rem;">${p.name}</div>
+          <div style="font-weight:900;color:#15803d;font-size:1.1rem;font-family:'Space Grotesk',sans-serif;margin-top:4px;">${(p.pts||0).toLocaleString('vi')}</div>
+        </div>
+        <div style="width:100%;height:${pedestal[i]};background:linear-gradient(180deg,${i===0?'#fbbf24':'#d1d5db'} 0%,${i===0?'#f59e0b':'#9ca3af'} 100%);
+                    border-radius:10px 10px 4px 4px;display:flex;align-items:center;justify-content:center;
+                    font-weight:800;color:#fff;font-size:1.2rem;">#${i+1}</div>
+      </div>`;
+  }).join('');
+}
+
+function renderLBList(data) {
+  const list = document.getElementById('lb-list');
+  if (!list) return;
+  const rankStyles = ['rank-1','rank-2','rank-3'];
+  list.innerHTML = data.map((p,i) => {
+    const initials = p.name.split(' ').slice(-2).map(w=>w[0]||'').join('').toUpperCase();
+    const avatarClass = i < 3 ? rankStyles[i] : 'rank-n';
+    const isMe = p.uid === currentUser;
+    return `
+      <div class="lb-row" style="${isMe?'background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:14px;':''}">
+        <div style="width:28px;text-align:center;font-weight:800;color:${i<3?'#15803d':'#9ca3af'};font-family:'Space Grotesk',sans-serif;font-size:${i<3?'1rem':'0.85rem'};">
+          ${i<3?['🥇','🥈','🥉'][i]:'#'+(i+1)}
+        </div>
+        <div class="lb-avatar ${avatarClass}" style="${i>=3?'background:#f0fdf4;color:#15803d;':''}">${initials}</div>
+        <div style="flex:1;">
+          <div style="font-weight:700;color:#14532d;font-size:0.85rem;">${p.name}${isMe?' <span style="background:#dcfce7;color:#15803d;font-size:0.65rem;padding:2px 7px;border-radius:8px;font-weight:700;">Bạn</span>':''}</div>
+        </div>
+        <div style="font-weight:800;color:#15803d;font-size:0.95rem;font-family:'Space Grotesk',sans-serif;">${(p.pts||0).toLocaleString('vi')} pts</div>
+      </div>`;
+  }).join('');
+}
+
+/* ========================================
+   AI CHAT
+======================================== */
+let chatHistory = [];
+
+window.sendChat = async function() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  input.style.height = '44px';
+  await sendChatMsg(msg);
+};
+
+window.sendChatMsg = async function(msg) {
+  appendMsg('user', msg.replace(/</g,'&lt;'));
+  document.getElementById('chat-send-btn').disabled = true;
+  const loadingDiv = appendMsg('bot', '<span style="color:#9ca3af;">💬 Đang suy nghĩ...</span>', true);
+  chatHistory.push({ role:'user', content:msg });
+  try {
+    // Gọi Vercel Serverless Function /api/chat thay vì gọi Anthropic trực tiếp
+    // → tránh CORS block và giữ bí mật API key
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: chatHistory.slice(-8) }),
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    }
+
+    const data = await res.json();
+    const reply = data.reply || 'Xin lỗi, thử lại nhé!';
+    chatHistory.push({ role: 'assistant', content: reply });
+    loadingDiv.remove();
+    appendMsg('bot', reply.replace(/\n/g, '<br/>'));
+  } catch(e) {
+    loadingDiv.remove();
+    appendMsg('bot', '⚠️ Không kết nối được AI. Vui lòng thử lại.');
+    console.error('Chat error:', e);
+  }
+  document.getElementById('chat-send-btn').disabled = false;
+};
+
+function appendMsg(role, html, isLoading=false) {
+  const area = document.getElementById('chat-messages');
+  const isBot = role === 'bot';
+  const div = document.createElement('div');
+  if (isLoading) div.id = 'chat-loading';
+  div.style.cssText = 'display:flex;gap:10px;align-items:flex-start;';
+  div.innerHTML = isBot ? `
+    <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#16a34a);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <i class="fas fa-robot" style="color:#fff;font-size:0.85rem;"></i>
+    </div>
+    <div style="background:#f0fdf4;border:1.5px solid #dcfce7;border-radius:4px 16px 16px 16px;padding:12px 16px;max-width:80%;font-size:0.875rem;color:#374151;line-height:1.65;">${html}</div>
+  ` : `
+    <div style="flex:1;"></div>
+    <div style="background:linear-gradient(135deg,#22c55e,#16a34a);border-radius:16px 4px 16px 16px;padding:12px 16px;max-width:80%;font-size:0.875rem;color:#fff;line-height:1.6;">${html}</div>
+  `;
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+  return div;
+}
+
+/* ========================================
+   SIDEBAR + TOAST + RESPONSIVE
+======================================== */
+window.closeSidebar = function() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('show');
+};
+
+window.toggleSidebar = function() {
+  // Desktop >= 768px: sidebar luon hien thi, nut 3 gach khong lam gi
+  if (window.innerWidth >= 768) return;
+  // Mobile: toggle open / close
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('sidebar-overlay');
+  if (sb.classList.contains('open')) {
+    sb.classList.remove('open');
+    ov.classList.remove('show');
+  } else {
+    sb.classList.add('open');
+    ov.classList.add('show');
+  }
+};
+
+
+window.showToast = function(msg, type='success') {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  const icons  = { success:'fa-check-circle', error:'fa-times-circle', info:'fa-info-circle', warn:'fa-exclamation-triangle' };
+  const colors = { success:'#22c55e', error:'#ef4444', info:'#3b82f6', warn:'#f59e0b' };
+  toast.className = `toast ${type==='error'?'error':type==='warn'?'warn':''}`;
+  toast.style.borderLeftColor = colors[type]||colors.success;
+  toast.innerHTML = `
+    <i class="fas ${icons[type]||icons.success}" style="color:${colors[type]||colors.success};font-size:1.1rem;flex-shrink:0;"></i>
+    <span style="color:#374151;flex:1;">${msg}</span>
+    <i class="fas fa-times" style="color:#9ca3af;cursor:pointer;font-size:0.8rem;" onclick="this.parentElement.remove()"></i>
+  `;
+  container.appendChild(toast);
+  setTimeout(() => { toast.style.animation='slideOut 0.3s ease forwards'; setTimeout(()=>toast.remove(),300); }, 3500);
+};
+
+window.filterLB = function(period, btn) {
+  document.querySelectorAll('#page-leaderboard button').forEach(b => {
+    if (['Tháng này','Tuần này','Tất cả thời gian'].includes(b.textContent.trim())) {
+      b.classList.remove('btn-eco'); b.classList.add('btn-outline');
+    }
+  });
+  btn.classList.add('btn-eco'); btn.classList.remove('btn-outline');
+  renderLeaderboard();
+};
+
+window.addEventListener('resize', () => {
+  const sidebar = document.getElementById('sidebar');
+  if (window.innerWidth >= 768) {
+    sidebar.classList.remove('open');
+    document.getElementById('sidebar-overlay').classList.remove('show');
+  }
+});
+
+/* ========================================
+   INIT
+======================================== */
+document.addEventListener('DOMContentLoaded', () => {
+  updateSidebarUser(null);
+  document.getElementById('topbar-pts-val').textContent = '0';
+});
+
+</script>
 </body>
 </html>
